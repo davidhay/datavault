@@ -68,7 +68,7 @@ public class DataVaultBrokerAppTest extends BaseDatabaseTest {
     assertEquals("james", found.getFirstname());
     assertEquals("bond", found.getLastname());
 
-    //TODO : yuch - should be easier way to clean up
+    //TODO : yuch - should be easier way to clean up - Create tested utility (if it doesn't already exist)
     Session session = sessionFactory.openSession();
     Transaction tx = session.beginTransaction();
     session.delete(user);

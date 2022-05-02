@@ -41,8 +41,16 @@ public class Archive {
         this.creationTime = creationTime;
     }
 
+    public Date getCreationTime() {
+        return creationTime;
+    }
+
     public void setDeposit(Deposit deposit) {
         this.deposit = deposit;
+    }
+
+    public Deposit getDeposit() {
+        return deposit;
     }
 
     public void setArchiveStore(ArchiveStore archiveStore) {

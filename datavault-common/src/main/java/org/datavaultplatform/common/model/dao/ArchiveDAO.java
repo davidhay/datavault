@@ -15,4 +15,6 @@ public interface ArchiveDAO {
 
     public Archive findById(String Id);
 
+    public int count();
+
 }

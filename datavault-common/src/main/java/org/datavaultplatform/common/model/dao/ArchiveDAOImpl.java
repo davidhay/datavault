@@ -5,6 +5,7 @@ import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 
 import java.util.List;
@@ -56,6 +57,14 @@ public class ArchiveDAOImpl implements ArchiveDAO {
         Archive archive = (Archive)criteria.uniqueResult();
         session.close();
         return archive;
+    }
+
+    @Override
+    public int count() {
+        Session session = this.sessionFactory.openSession();
+        Long result = (Long)session.createCriteria(Archive.class).setProjection(Projections.rowCount()).uniqueResult();
+        session.close();
+        return result.intValue();
     }
 
 }
