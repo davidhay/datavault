@@ -1,9 +1,11 @@
-package org.datavaultplatform.broker.scheduled;
+package org.datavaultplatform.broker.initialise;
 
 import org.datavaultplatform.broker.services.ArchiveStoreService;
 import org.datavaultplatform.common.model.ArchiveStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
@@ -17,18 +19,18 @@ import java.util.List;
  */
 
 @Component
+//TODO - DHAY this class *might* be redundant - if we use flyway/liquibase to manage db
 public class InitialiseDatabase {
 
     private static final Logger logger = LoggerFactory.getLogger(InitialiseDatabase.class);
 
-    private ArchiveStoreService archiveStoreService;
-    private String archiveDir;
+    private final ArchiveStoreService archiveStoreService;
+    private final String archiveDir;
 
-    public void setArchiveStoreService(ArchiveStoreService archiveStoreService) {
+    @Autowired
+    public InitialiseDatabase(ArchiveStoreService archiveStoreService,
+        @Value("${archiveDir}") String archiveDir) {
         this.archiveStoreService = archiveStoreService;
-    }
-
-    public void setArchiveDir(String archiveDir) {
         this.archiveDir = archiveDir;
     }
 

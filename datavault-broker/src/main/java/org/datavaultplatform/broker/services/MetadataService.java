@@ -17,19 +17,20 @@ import gov.loc.repository.bagit.Bag;
 import gov.loc.repository.bagit.Bag.BagPartFactory;
 import gov.loc.repository.bagit.Manifest;
 import gov.loc.repository.bagit.ManifestReader;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
 import org.datavaultplatform.common.model.FileFixity;
 
-import org.springframework.stereotype.Service;
 @Service
 public class MetadataService {
 
-    private String metaDir;
-    
-    public void setMetaDir(String metaDir) {
+    private final String metaDir;
+
+    public MetadataService(@Value("${metaDir}")String metaDir) {
         this.metaDir = metaDir;
     }
-    
+
     private HashMap<String, String> getFileTypes(Path bag) {
        
         try {

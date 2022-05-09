@@ -1,7 +1,12 @@
 package org.datavaultplatform.broker.queue;
 
+import static org.datavaultplatform.broker.config.RabbitConfig.QUEUE_EVENT;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.nio.charset.StandardCharsets;
+import lombok.extern.slf4j.Slf4j;
 import org.datavaultplatform.broker.services.*;
+import org.datavaultplatform.common.email.EmailTemplate;
 import org.datavaultplatform.common.event.*;
 import org.datavaultplatform.common.event.Error;
 import org.datavaultplatform.common.event.audit.*;
@@ -16,23 +21,29 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
+@Slf4j
+@Component
 public class EventListener implements MessageListener {
 
-    private JobsService jobsService;
-    private EventService eventService;
-    private VaultsService vaultsService;
-    private DepositsService depositsService;
-    private ArchiveStoreService archiveStoreService;
-    private ArchivesService archivesService;
-    private RetrievesService retrievesService;
+    private final JobsService jobsService;
+    private final EventService eventService;
+    private final VaultsService vaultsService;
+    private final DepositsService depositsService;
+    private final ArchiveStoreService archiveStoreService;
+    private final ArchivesService archivesService;
+    private final RetrievesService retrievesService;
     private UsersService usersService;
-    private EmailService emailService;
-    private AuditsService auditsService;
-    private String homeUrl;
-	private String helpUrl;
-	private String helpMail;
-    private String auditAdminEmail;
+    private final EmailService emailService;
+    private final AuditsService auditsService;
+    private final String homeUrl;
+	  private final String helpUrl;
+	  private final String helpMail;
+    private final String auditAdminEmail;
     private Deposit.Status preDeletionStatus;
     
 	private static final Map<String, String> EMAIL_SUBJECTS;
@@ -48,29 +59,51 @@ public class EventListener implements MessageListener {
     	EMAIL_SUBJECTS.put("user-deposit-retrievecomplete", "Confirmation - a new DataVault retrieval is complete.");
     	EMAIL_SUBJECTS.put("admin-deposit-retrievestart", "Confirmation - a new DataVault retrieval is starting.");
     	EMAIL_SUBJECTS.put("admin-deposit-retrievecomplete", "Confirmation - a new DataVault retrieval is complete.");
-        EMAIL_SUBJECTS.put("audit-chunk-error", "DataVault ERROR - Chunk failed checksum during audit.");
+      EMAIL_SUBJECTS.put("audit-chunk-error", "DataVault ERROR - Chunk failed checksum during audit.");
     }
 
     private static final Logger logger = LoggerFactory.getLogger(EventListener.class);
 
-    public void setJobsService(JobsService jobsService) { this.jobsService = jobsService; }
-    public void setEventService(EventService eventService) { this.eventService = eventService; }
-    public void setVaultsService(VaultsService vaultsService) { this.vaultsService = vaultsService; }
-    public void setDepositsService(DepositsService depositsService) { this.depositsService = depositsService; }
-    public void setArchiveStoreService(ArchiveStoreService archiveStoreService) {this.archiveStoreService = archiveStoreService;}
-    public void setArchivesService(ArchivesService archivesService) { this.archivesService = archivesService;}
-    public void setRetrievesService(RetrievesService retrievesService) { this.retrievesService = retrievesService; }
-    public void setUsersService(UsersService usersService) { this.usersService = usersService; }
-    public void setEmailService(EmailService emailService) { this.emailService = emailService; }
-    public void setAuditsService(AuditsService auditsService) { this.auditsService = auditsService; }
-    public void setAuditAdminEmail(String auditAdminEmail) { this.auditAdminEmail = auditAdminEmail; }
+    @Autowired
+    public EventListener(
+        JobsService jobsService,
+        VaultsService vaultsService,
+        DepositsService depositsService,
+        ArchiveStoreService archiveStoreService,
+        ArchivesService archivesService,
+        RetrievesService retrievesService,
+        EventService eventService,
+        UsersService usersService,
+        EmailService emailService,
+        AuditsService auditsService,
+        @Value("${home.page}") String homeUrl,
+        @Value("${help.page}") String helpUrl,
+        @Value("${help.mail}") String helpMail,
+        @Value("${audit.adminEmail}") String auditAdminEmail) {
+        this.jobsService = jobsService;
+        this.vaultsService = vaultsService;
+        this.depositsService = depositsService;
+        this.archiveStoreService = archiveStoreService;
+        this.archivesService = archivesService;
+        this.retrievesService = retrievesService;
+        this.eventService = eventService;
+        this.usersService = usersService;
+        this.emailService = emailService;
+        this.auditsService = auditsService;
+        this.homeUrl = homeUrl;
+        this.helpUrl = helpUrl;
+        this.helpMail = helpMail;
+        this.auditAdminEmail = auditAdminEmail;
+    }
+
 
     @Override
+    @RabbitListener(queues = QUEUE_EVENT)
     public void onMessage(Message msg) {
         
-        String messageBody = new String(msg.getBody());
+        String messageBody = new String(msg.getBody(), StandardCharsets.UTF_8);
         logger.info("Received '" + messageBody + "'");
-        
+
         try {
             // Decode the event
             ObjectMapper mapper = new ObjectMapper();
@@ -172,7 +205,7 @@ public class EventListener implements MessageListener {
                 
 //              // Get related information for emails
               String type = "start";
-              this.sendEmails(deposit, concreteEvent, type, "user-deposit-start.vm", "group-admin-deposit-start.vm");
+              this.sendEmails(deposit, concreteEvent, type, EmailTemplate.USER_DEPOSIT_START, EmailTemplate.GROUP_ADMIN_DEPOSIT_START);
                 
             } else if (concreteEvent instanceof ComputedSize) {
                 
@@ -347,7 +380,7 @@ public class EventListener implements MessageListener {
 
                 // Get related information for emails
                 //String type = "complete";
-                //this.sendEmails(deposit, completeEvent, type, "user-deposit-complete.vm", "group-admin-deposit-complete.vm");
+                //this.sendEmails(deposit, completeEvent, type, EmailTemplate.USER_DEPOSIT_COMPLETE, EmailTemplate.GROUP_ADMIN_DEPOSIT_COMPLETE);
 
             } else if (concreteEvent instanceof Complete) {
 
@@ -391,7 +424,7 @@ public class EventListener implements MessageListener {
                 
 //                // Get related information for emails
                 String type = "complete";
-                this.sendEmails(deposit, completeEvent, type, "user-deposit-complete.vm", "group-admin-deposit-complete.vm");
+                this.sendEmails(deposit, completeEvent, type, EmailTemplate.USER_DEPOSIT_COMPLETE, EmailTemplate.GROUP_ADMIN_DEPOSIT_COMPLETE);
                 
             } else if (concreteEvent instanceof Error) {
 
@@ -433,7 +466,7 @@ public class EventListener implements MessageListener {
                     //TODO - send email by using correct template when deposit delete fails
                     // Get related information for emails
                     String type = "error";
-                    this.sendEmails(deposit, errorEvent, type, "user-deposit-error.vm", "group-admin-deposit-error.vm");
+                    this.sendEmails(deposit, errorEvent, type, EmailTemplate.USER_DEPOSIT_ERROR, EmailTemplate.GROUP_ADMIN_DEPOSIT_ERROR);
                 }
                 else if(errorEvent.getAuditId() != null) {
                     // TODO: what to do with audit eror
@@ -447,7 +480,7 @@ public class EventListener implements MessageListener {
                 retrievesService.updateRetrieve(retrieve);
                 
                 String type = "retrievestart";
-                this.sendEmails(deposit, startEvent, type, "user-retrieve-start.vm", "group-admin-retrieve-start.vm");
+                this.sendEmails(deposit, startEvent, type, EmailTemplate.USER_RETRIEVE_START, EmailTemplate.GROUP_ADMIN_RETRIEVE_START);
             } else if (concreteEvent instanceof RetrieveComplete) {
 
             	RetrieveComplete completeEvent = (RetrieveComplete)concreteEvent;
@@ -457,7 +490,7 @@ public class EventListener implements MessageListener {
                 retrievesService.updateRetrieve(retrieve);
                 
                 String type = "retrievecomplete";
-                this.sendEmails(deposit, completeEvent, type, "user-retrieve-complete.vm", "group-admin-retrieve-complete.vm");
+                this.sendEmails(deposit, completeEvent, type, EmailTemplate.USER_RETRIEVE_COMPLETE, EmailTemplate.GROUP_ADMIN_RETRIEVE_COMPLETE);
             } else if (concreteEvent instanceof DeleteStart) {
                 preDeletionStatus = deposit.getStatus();
                 logger.info("Pre Deletion Status:" + preDeletionStatus);
@@ -557,7 +590,7 @@ public class EventListener implements MessageListener {
 
                 // At the moment just email
                 logger.info("Sending Error email to Admin");
-                sendAuditEmails(concreteEvent, "error", "audit-chunk-error.vm");
+                sendAuditEmails(concreteEvent, "error", EmailTemplate.AUDIT_CHUNK_ERROR);
 
                 // TODO: try to fix chunk
             }
@@ -649,20 +682,11 @@ public class EventListener implements MessageListener {
     public String getHomeUrl() {
 		return this.homeUrl;
 	}
-	public void setHomeUrl(String homeUrl) {
-		this.homeUrl = homeUrl;
-	}
 	public String getHelpUrl() {
 		return this.helpUrl;
 	}
-	public void setHelpUrl(String helpUrl) {
-		this.helpUrl = helpUrl;
-	}
-	
+
 	public String getHelpMail() {
 		return this.helpMail;
-	}
-	public void setHelpMail(String helpMail) {
-		this.helpMail = helpMail;
 	}
 }

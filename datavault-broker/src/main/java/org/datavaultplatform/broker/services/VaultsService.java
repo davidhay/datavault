@@ -10,9 +10,10 @@ import org.datavaultplatform.common.model.dao.VaultDAO;
 import org.datavaultplatform.common.request.CreateVault;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
+import org.datavaultplatform.common.email.EmailTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 @Service
 public class VaultsService {
 
@@ -90,19 +91,19 @@ public class VaultsService {
     public void sendVaultOwnerEmail(Vault vault, String homePage, String helpPage, User user) {
         // send mail to owner
         this.sendEmail(vault, user.getEmail(), "A new vault you own has been created", "Owner",
-                "user-vault-create.vm", homePage, helpPage);
+                EmailTemplate.USER_VAULT_CREATE, homePage, helpPage);
     }
 
     public void sendVaultDepositorsEmail(Vault vault, String homePage, String helpPage, User user) {
         // send mail to depositor
         this.sendEmail(vault, user.getEmail(), "A new vault you have a role on has been created", "Depositor",
-                "user-vault-create.vm", homePage, helpPage);
+                EmailTemplate.USER_VAULT_CREATE, homePage, helpPage);
     }
 
     public void sendVaultNDMsEmail(Vault vault, String homePage, String helpPage, User user) {
         // send mail to ndm
         this.sendEmail(vault, user.getEmail(), "A new vault you have a role on has been created", "Nominated Data Manager",
-                "user-vault-create.vm", homePage, helpPage);
+                EmailTemplate.USER_VAULT_CREATE, homePage, helpPage);
     }
 
     private void sendEmail(Vault vault, String email, String subject, String role, String template, String homePage, String helpPage) {

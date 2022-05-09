@@ -2,6 +2,7 @@ package org.datavaultplatform.broker.scheduled;
 
 import org.datavaultplatform.broker.services.DepositsService;
 import org.datavaultplatform.broker.services.EmailService;
+import org.datavaultplatform.common.email.EmailTemplate;
 import org.datavaultplatform.common.event.Event;
 import org.datavaultplatform.common.event.deposit.ComputedEncryption;
 import org.datavaultplatform.common.model.*;
@@ -10,6 +11,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
 
+import org.springframework.stereotype.Component;
+import org.springframework.beans.factory.annotation.Autowired;
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -17,22 +20,22 @@ import java.util.concurrent.TimeUnit;
 import org.bouncycastle.util.encoders.Base64;
 
 
-public class CheckEncryptionData {
+@Component
+public class CheckEncryptionData implements ScheduledTask {
 
-    private DepositsService depositsService;
-    private EmailService emailService;
+    private final DepositsService depositsService;
+    private final EmailService emailService;
 
-    public void setDepositsService(DepositsService depositsService) {
+    @Autowired
+    public CheckEncryptionData(DepositsService depositsService, EmailService emailService) {
         this.depositsService = depositsService;
-    }
-    public void setEmailService(EmailService emailService) {
         this.emailService = emailService;
     }
 
     private static final Logger log = LoggerFactory.getLogger(CheckEncryptionData.class);
 
-    @Scheduled(cron = "${cron.expression}")
-    public void checkAll() throws Exception {
+    @Scheduled(cron = ScheduledUtils.SCHEDULE_2_ENCRYPTION_CHECK)
+    public void execute() throws Exception {
 
         Date start = new Date();
         log.info("Initiating check of encryption data at " + start);
@@ -122,7 +125,7 @@ public class CheckEncryptionData {
             if (groupAdmin.getEmail() != null) {
                 emailService.sendTemplateMail(groupAdmin.getEmail(),
                         "Found missing IV in Deposit",
-                        "group-admin-missing-iv.vm",
+                        EmailTemplate.GROUP_ADMIN_MISSING_IV,
                         model);
             }
         }
