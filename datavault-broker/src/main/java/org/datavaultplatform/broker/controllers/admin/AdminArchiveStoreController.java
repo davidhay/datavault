@@ -23,22 +23,22 @@ public class AdminArchiveStoreController {
         this.archiveStoreService = archiveStoreService;
     }
 
-    @RequestMapping(value = "/admin/archivestores", method = RequestMethod.GET)
+    @GetMapping("/admin/archivestores")
     public ResponseEntity<List<ArchiveStore>> getArchiveStores(@RequestHeader(value = "X-UserID", required = true) String userID) {
 
         List<ArchiveStore> archiveStores = archiveStoreService.getArchiveStores();
         return new ResponseEntity<>(archiveStores, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/admin/archivestores/{archivestoreid}", method = RequestMethod.GET)
+    @GetMapping("/admin/archivestores/{archivestoreid}")
     public ResponseEntity<ArchiveStore> getArchiveStore(@RequestHeader(value = "X-UserID", required = true) String userID, @PathVariable("archivestoreid") String archivestoreid) {
 
         return new ResponseEntity<>(archiveStoreService.getArchiveStore(archivestoreid), HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/admin/archivestores", method = RequestMethod.POST)
+    @PostMapping("/admin/archivestores")
     public ResponseEntity<ArchiveStore> addArchiveStore(@RequestHeader(value = "X-UserID", required = true) String userID,
-                                                        @RequestBody ArchiveStore store) throws Exception {
+                                                        @RequestBody ArchiveStore store) {
         try{
             archiveStoreService.addArchiveStore(store);
         }catch(Exception e){
@@ -49,16 +49,16 @@ public class AdminArchiveStoreController {
         return new ResponseEntity<>(store, HttpStatus.CREATED);
     }
 
-    @RequestMapping(value = "/admin/archivestores", method = RequestMethod.PUT)
+    @PutMapping("/admin/archivestores")
     public ResponseEntity<ArchiveStore> editArchiveStore(@RequestHeader(value = "X-UserID", required = true) String userID,
-                                                         @RequestBody ArchiveStore store) throws Exception {
+                                                         @RequestBody ArchiveStore store) {
 
         archiveStoreService.updateArchiveStore(store);
         return new ResponseEntity<>(store, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/admin/archivestores/{archivestoreid}", method = RequestMethod.DELETE)
-    public ResponseEntity<Object>  deleteArchiveStore(@RequestHeader(value = "X-UserID", required = true) String userID,
+    @DeleteMapping("/admin/archivestores/{archivestoreid}")
+    public ResponseEntity<Void>  deleteArchiveStore(@RequestHeader(value = "X-UserID", required = true) String userID,
                                                       @PathVariable("archivestoreid") String archivestoreid) {
 
         archiveStoreService.deleteArchiveStore(archivestoreid);

@@ -103,7 +103,7 @@ public class VaultsController {
     @ApiHeaders(headers={
             @ApiHeader(name="X-UserID", description="DataVault Broker User ID")
     })
-    @RequestMapping(value = "/vaults", method = RequestMethod.GET)
+    @GetMapping("/vaults")
     public List<VaultInfo> getVaults(@RequestHeader(value = "X-UserID", required = true) String userID) {
 
         List<VaultInfo> vaultResponses = permissionsService.getRoleAssignmentsForUser(userID).stream()
@@ -134,7 +134,7 @@ public class VaultsController {
     @ApiHeaders(headers={
             @ApiHeader(name="X-UserID", description="DataVault Broker User ID")
     })
-    @RequestMapping(value = "/pendingVaults", method = RequestMethod.GET)
+    @GetMapping("/pendingVaults")
     public List<VaultInfo> getPendingVaults(@RequestHeader(value = "X-UserID", required = true) String userID) {
 
         List<VaultInfo> vaultResponses = permissionsService.getRoleAssignmentsForUser(userID).stream()
@@ -160,7 +160,7 @@ public class VaultsController {
         //return null;
     }
 
-    @RequestMapping(value = "/vaults/user", method = RequestMethod.GET)
+    @GetMapping("/vaults/user")
     public List<VaultInfo> getVaultsForUser(@RequestParam(value = "userID", required = true)String userID) {
 
         List<VaultInfo> vaultResponses = new ArrayList<>();
@@ -174,11 +174,11 @@ public class VaultsController {
     }
 
 
-    @RequestMapping(value = "/vaults/{vaultId}/transfer", method = RequestMethod.POST)
-    public ResponseEntity transferVault(@RequestHeader(value = "X-UserID", required = true) String userID,
+    @PostMapping("/vaults/{vaultId}/transfer")
+    public ResponseEntity<Void> transferVault(@RequestHeader(value = "X-UserID", required = true) String userID,
                                         @RequestHeader(value = "X-Client-Key", required = true) String clientKey,
                                         @PathVariable("vaultId") String vaultId,
-                                        @RequestBody TransferVault transfer) throws Exception {
+                                        @RequestBody TransferVault transfer) {
 
         Vault vault = vaultsService.getVault(vaultId);
 
@@ -252,7 +252,7 @@ public class VaultsController {
         return ResponseEntity.ok().build();
     }
 
-    @RequestMapping(value = "/vaults/search", method = RequestMethod.GET)
+    @GetMapping("/vaults/search")
     public VaultsData searchAllVaults(@RequestHeader(value = "X-UserID", required = true) String userID,
                                       @RequestParam String query,
                                       @RequestParam(value = "sort", required = false) String sort,
@@ -296,7 +296,7 @@ public class VaultsController {
         return data;
     }
 
-    @RequestMapping(value = "/pendingVaults/search", method = RequestMethod.GET)
+    @GetMapping("/pendingVaults/search")
     public VaultsData searchAllPendingVaults(@RequestHeader(value = "X-UserID", required = true) String userID,
                                       @RequestParam String query,
                                       @RequestParam(value = "sort", required = false) String sort,
@@ -340,7 +340,7 @@ public class VaultsController {
         return data;
     }
 
-    @RequestMapping(value = "/vaults/deposits/search", method = RequestMethod.GET)
+    @GetMapping(value = "/vaults/deposits/search")
     public List<DepositInfo> searchAllDeposits(@RequestHeader(value = "X-UserID", required = true) String userID,
                                                @RequestParam(value = "query", required = false, defaultValue = "") String query,
                                                @RequestParam(value = "sort", required = false, defaultValue = "creationTime") String sort,
@@ -371,12 +371,11 @@ public class VaultsController {
     }
 
 
-    @RequestMapping(value = "/vaults/deposits/data/search", method = RequestMethod.GET)
+    @GetMapping("/vaults/deposits/data/search")
     public DepositsData searchAllDepositsData(@RequestHeader(value = "X-UserID", required = true) String userID,
                                               @RequestParam(value = "query", required = false, defaultValue = "") String query,
                                               @RequestParam(value = "sort", required = false, defaultValue = "creationTime") String sort,
-                                              @RequestParam(value = "order", required = false, defaultValue = "desc") String order)
-            throws Exception {
+                                              @RequestParam(value = "order", required = false, defaultValue = "desc") String order) {
 
 
         List<DepositInfo> depositResponses = new ArrayList<>();
@@ -410,7 +409,7 @@ public class VaultsController {
 
     }
 
-    @RequestMapping(value = "/pendingVaults/update", method = RequestMethod.POST)
+    @PostMapping("/pendingVaults/update")
     public VaultInfo updatePendingVault(@RequestHeader(value = "X-UserID", required=true) String userID,
                                         @RequestHeader(value = "X-Client-Key", required = true) String clientKey,
                                         @RequestBody CreateVault createVault) throws Exception {
@@ -462,7 +461,7 @@ public class VaultsController {
         //}
         return vault.convertToResponse();
     }
-    @RequestMapping(value = "/pendingVaults", method = RequestMethod.POST)
+    @PostMapping(value = "/pendingVaults")
     public VaultInfo addPendingVault(@RequestHeader(value = "X-UserID", required = true) String userID,
                               @RequestHeader(value = "X-Client-Key", required = true) String clientKey,
                               @RequestBody CreateVault createVault) throws Exception {
@@ -492,7 +491,7 @@ public class VaultsController {
         return vault.convertToResponse();
     }
 
-    @RequestMapping(value = "/vaults", method = RequestMethod.POST)
+    @PostMapping("/vaults")
     public VaultInfo addVault(@RequestHeader(value = "X-UserID", required = true) String userID,
                               @RequestHeader(value = "X-Client-Key", required = true) String clientKey,
                               @RequestBody CreateVault createVault) throws Exception {
@@ -576,7 +575,7 @@ public class VaultsController {
         return vault.convertToResponse();
     }
 
-    @RequestMapping(value = "/vaults/{vaultid}", method = RequestMethod.GET)
+    @GetMapping("/vaults/{vaultid}")
     public VaultInfo getVault(@RequestHeader(value = "X-UserID", required = true) String userID,
                               @PathVariable("vaultid") String vaultID) throws Exception {
 
@@ -589,7 +588,7 @@ public class VaultsController {
         }
     }
 
-    @RequestMapping(value = "/pendingVaults/{vaultid}", method = RequestMethod.GET)
+    @GetMapping("/pendingVaults/{vaultid}")
     public VaultInfo getPendingVault(@RequestHeader(value = "X-UserID", required = true) String userID,
                               @PathVariable("vaultid") String vaultID) throws Exception {
 
@@ -620,28 +619,28 @@ public class VaultsController {
     }
     
 
-    @RequestMapping(value = "/vaults/{vaultid}/checkretentionpolicy", method = RequestMethod.GET)
+    @GetMapping("/vaults/{vaultid}/checkretentionpolicy")
     public Vault checkVaultRetentionPolicy(@RequestHeader(value = "X-UserID", required = true) String userID,
-                                           @PathVariable("vaultid") String vaultID) throws Exception {
+                                           @PathVariable("vaultid") String vaultID) {
 
         return vaultsService.checkRetentionPolicy(vaultID);
     }
 
-    @RequestMapping(value = "/vaults/{vaultid}/record", method = RequestMethod.GET)
+    @GetMapping("/vaults/{vaultid}/record")
     public Vault getVaultRecord(@RequestHeader(value = "X-UserID", required = true) String userID,
                                 @PathVariable("vaultid") String vaultID) {
 
         return vaultsService.getVault(vaultID);
     }
     
-    @RequestMapping(value = "/pendingVaults/{vaultid}/record", method = RequestMethod.GET)
+    @GetMapping("/pendingVaults/{vaultid}/record")
     public PendingVault getPendingVaultRecord(@RequestHeader(value = "X-UserID", required = true) String userID,
                                 @PathVariable("vaultid") String vaultID) {
 
         return pendingVaultsService.getPendingVault(vaultID);
     }
 
-    @RequestMapping(value = "/vaults/{vaultid}/deposits", method = RequestMethod.GET)
+    @GetMapping("/vaults/{vaultid}/deposits")
     public List<DepositInfo> getDeposits(@RequestHeader(value = "X-UserID", required = true) String userID,
                                          @PathVariable("vaultid") String vaultID) throws Exception {
 
@@ -655,7 +654,7 @@ public class VaultsController {
         return depositResponses;
     }
 
-    @RequestMapping(value = "/vaults/{vaultid}/roleEvents", method = RequestMethod.GET)
+    @GetMapping("/vaults/{vaultid}/roleEvents")
     public List<EventInfo> getRoleEvents(@RequestHeader(value = "X-UserID", required = true) String userID,
                                          @PathVariable("vaultid") String vaultID) throws Exception {
 
@@ -670,10 +669,10 @@ public class VaultsController {
         return events;
     }
 
-    @RequestMapping(value = "/vaults/{vaultid}/addDataManager", method = RequestMethod.POST)
+    @PostMapping("/vaults/{vaultid}/addDataManager")
     public VaultInfo addDataManager(@RequestHeader(value = "X-UserID", required = true) String userID,
                                     @PathVariable("vaultid") String vaultID,
-                                    @RequestBody() String unn) throws Exception {
+                                    @RequestBody String unn) throws Exception {
         User user = usersService.getUser(userID);
         Vault vault = vaultsService.getUserVault(user, vaultID);
 
@@ -684,7 +683,7 @@ public class VaultsController {
         return vault.convertToResponse();
     }
 
-    @RequestMapping(value = "/vaults/{vaultid}/dataManagers", method = RequestMethod.GET)
+    @GetMapping("/vaults/{vaultid}/dataManagers")
     public List<DataManager> getDataManagers(@RequestHeader(value = "X-UserID", required = true) String userID,
                                              @PathVariable("vaultid") String vaultID) throws Exception {
         User user = usersService.getUser(userID);
@@ -694,7 +693,7 @@ public class VaultsController {
         return dataManagersList;
     }
 
-    @RequestMapping(value = "/vaults/{vaultid}/dataManager/{uun}", method = RequestMethod.GET)
+    @GetMapping("/vaults/{vaultid}/dataManager/{uun}")
     public DataManager getDataManager(@RequestHeader(value = "X-UserID", required = true) String userID,
                                       @PathVariable("vaultid") String vaultID,
                                       @PathVariable("uun") String uun) throws Exception {
@@ -704,7 +703,7 @@ public class VaultsController {
         return vault.getDataManager(uun);
     }
 
-    @RequestMapping(value = "/vaults/{vaultid}/deleteDataManager/{dataManagerID}", method = RequestMethod.DELETE)
+    @DeleteMapping( "/vaults/{vaultid}/deleteDataManager/{dataManagerID}")
     public VaultInfo deleteDataManager(@RequestHeader(value = "X-UserID", required = true) String userID,
                                        @PathVariable("vaultid") String vaultID,
                                        @PathVariable("dataManagerID") String dataManagerID) throws Exception {
@@ -716,7 +715,7 @@ public class VaultsController {
         return vault.convertToResponse();
     }
 
-    @RequestMapping(value = "/vaults/{vaultid}/updateVaultDescription", method = RequestMethod.POST)
+    @PostMapping("/vaults/{vaultid}/updateVaultDescription")
     public VaultInfo updateVaultDescription(@RequestHeader(value = "X-UserID", required = true) String userID,
                                             @RequestHeader(value = "X-Client-Key", required = true) String clientKey,
                                             @PathVariable("vaultid") String vaultID,
@@ -738,11 +737,11 @@ public class VaultsController {
         return vault.convertToResponse();
     }
 
-    @RequestMapping(value = "/vaults/{vaultid}/updateVaultName", method = RequestMethod.POST)
+    @PostMapping(value = "/vaults/{vaultid}/updateVaultName")
     public VaultInfo updateVaultName(@RequestHeader(value = "X-UserID", required = true) String userID,
                                      @RequestHeader(value = "X-Client-Key", required = true) String clientKey,
                                      @PathVariable("vaultid") String vaultID,
-                                     @RequestBody() String name) throws Exception {
+                                     @RequestBody String name) throws Exception {
         User user = usersService.getUser(userID);
         Vault vault = vaultsService.getUserVault(user, vaultID);
         String oldName = vault.getName();
@@ -760,10 +759,10 @@ public class VaultsController {
         return vault.convertToResponse();
     }
 
-    @RequestMapping(value = "/vaults/{vaultid}/updatereviewdate", method = RequestMethod.POST)
+    @PostMapping("/vaults/{vaultid}/updatereviewdate")
     public VaultInfo updateVaultReviewDate(@RequestHeader(value = "X-UserID", required = true) String userID,
                                             @PathVariable("vaultid") String vaultID,
-                                            @RequestBody() String reviewDate) throws Exception {
+                                            @RequestBody String reviewDate) throws Exception {
         User user = usersService.getUser(userID);
         Vault vault = vaultsService.getUserVault(user, vaultID);
 

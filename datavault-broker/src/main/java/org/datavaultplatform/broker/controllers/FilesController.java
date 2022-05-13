@@ -52,7 +52,7 @@ public class FilesController {
         this.maxAdminDepositByteSize = FileUtils.parseFormattedSizeToBytes(maxAdminDepositByteSize);
     }
 
-    @RequestMapping("/files")
+    @GetMapping("/files")
     public List<FileInfo> getStorageListing(@RequestHeader(value = "X-UserID", required = true) String userID,
                                             HttpServletRequest request) {
         
@@ -72,7 +72,7 @@ public class FilesController {
         return files;
     }
     
-    @RequestMapping("/files/{storageid}/**")
+    @GetMapping("/files/{storageid}/**")
     public List<FileInfo> getFilesListing(@RequestHeader(value = "X-UserID", required = true) String userID,
                                           HttpServletRequest request,
                                           @PathVariable("storageid") String storageID) throws Exception {
@@ -115,7 +115,7 @@ public class FilesController {
         return files;
     }
     
-    @RequestMapping("/filesize/{storageid}/**")
+    @GetMapping("/filesize/{storageid}/**")
     public String getFilesize(@RequestHeader(value = "X-UserID", required = true) String userID,
                                       HttpServletRequest request,
                                       @PathVariable("storageid") String storageID) throws Exception {
@@ -147,7 +147,7 @@ public class FilesController {
         }
     }
 
-    @RequestMapping("/checkdepositsize")
+    @GetMapping("/checkdepositsize")
     public DepositSize checkDepositSize(@RequestHeader(value = "X-UserID", required = true) String userID,
                               HttpServletRequest request) throws Exception {
 
@@ -200,7 +200,7 @@ public class FilesController {
         return retVal;
     }
     
-    @RequestMapping(value="/upload/{fileUploadHandle}/{filename:.+}", method = RequestMethod.POST)
+    @PostMapping(value="/upload/{fileUploadHandle}/{filename:.+}")
     public String postFileChunk(@RequestHeader(value = "X-UserID", required = true) String userID,
                                 HttpServletRequest request,
                                 @PathVariable("fileUploadHandle") String fileUploadHandle,

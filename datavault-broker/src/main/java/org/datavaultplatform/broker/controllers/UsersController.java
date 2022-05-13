@@ -36,7 +36,7 @@ public class UsersController {
     @ApiHeaders(headers={
             @ApiHeader(name="X-UserID", description="DataVault Broker User ID")
     })
-    @RequestMapping(value = "/users", method = RequestMethod.GET)
+    @GetMapping( "/users")
     public List<User> getUsers(@RequestHeader(value = "X-UserID", required = true) String userID) {
         return usersService.getUsers();
     }
@@ -52,7 +52,7 @@ public class UsersController {
             @ApiHeader(name="X-UserID", description="DataVault Broker User ID"),
             @ApiHeader(name="X-Client-Key", description="DataVault API Client Key")
     })
-    @RequestMapping(value = "/users", method = RequestMethod.POST)
+    @PostMapping("/users")
     public User addUser(@RequestBody User user) {
         usersService.addUser(user);
         return user;
@@ -69,22 +69,22 @@ public class UsersController {
             @ApiHeader(name="X-UserID", description="DataVault Broker User ID"),
             @ApiHeader(name="X-Client-Key", description="DataVault API Client Key")
     })
-    @RequestMapping(value = "/users/{userid}", method = RequestMethod.GET)
+    @GetMapping("/users/{userid}")
     public User getUser(@PathVariable("userid") @ApiPathParam(name = "User ID", description = "The User ID to retrieve") String queryUserID) {
         return usersService.getUser(queryUserID);
     }
 
-    @RequestMapping(value = "/auth/users/exists", method = RequestMethod.POST)
+    @PostMapping("/auth/users/exists")
     public Boolean exists(@RequestBody ValidateUser validateUser) {
         return usersService.getUser(validateUser.getUserid()) != null;
     }
 
-    @RequestMapping(value = "/auth/users/isvalid", method = RequestMethod.POST)
+    @PostMapping("/auth/users/isvalid")
     public Boolean validateUser(@RequestBody ValidateUser validateUser) {
         return usersService.validateUser(validateUser.getUserid(), validateUser.getPassword());
     }
 
-    @RequestMapping(value = "/auth/users/isadmin", method = RequestMethod.POST)
+    @PostMapping("/auth/users/isadmin")
     public Boolean isAdmin(@RequestBody ValidateUser validateUser) {
         return adminService.isAdminUser(validateUser.getUserid());
     }

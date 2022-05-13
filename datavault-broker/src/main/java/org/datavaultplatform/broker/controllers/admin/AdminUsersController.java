@@ -38,7 +38,7 @@ public class AdminUsersController {
     @ApiHeaders(headers={
             @ApiHeader(name="X-UserID", description="DataVault Broker User ID")
     })
-    @RequestMapping(value = "/admin/users/search", method = RequestMethod.GET)
+    @GetMapping("/admin/users/search")
     public List<User> getUsers(@RequestHeader(value = "X-UserID", required = true) String userID,
                                @RequestParam String query) {
         return usersService.search(query);
@@ -70,9 +70,9 @@ public class AdminUsersController {
             @ApiHeader(name="X-UserID", description="DataVault Broker User ID"),
             @ApiHeader(name="X-Client-Key", description="DataVault API Client Key")
     })
-    @RequestMapping(value = "/admin/users", method = RequestMethod.POST)
+    @PostMapping("/admin/users")
     public User addUser(@RequestHeader(value = "X-UserID", required = true) String userID,
-                        @RequestBody User user) throws Exception {
+                        @RequestBody User user) {
         usersService.addUser(user);
 
         // Add default fileStores for the new user?
@@ -93,7 +93,7 @@ public class AdminUsersController {
     })
     @RequestMapping(value = "/admin/users", method = RequestMethod.PUT)
     public User editUser(@RequestHeader(value = "X-UserID", required = true) String userID,
-                         @RequestBody User user) throws Exception {
+                         @RequestBody User user) {
 
         usersService.updateUser(user);
 

@@ -38,81 +38,81 @@ public class StatisticsController {
         this.eventService = eventService;
     }
 
-    @RequestMapping(value = "/statistics/count", method = RequestMethod.GET)
+    @GetMapping("/statistics/count")
     public int getVaultsCount(@RequestHeader(value = "X-UserID", required = true) String userID) {
 
         return vaultsService.count(userID);
     }
     
-    @RequestMapping(value = "/statistics/pendingVaultsTotal", method = RequestMethod.GET)
+    @GetMapping("/statistics/pendingVaultsTotal")
     public int getTotalNumberOfPendingVaults() {
 
         return pendingVaultsService.getTotalNumberOfPendingVaults();
     }
 
-    @RequestMapping(value = "/statistics/size", method = RequestMethod.GET)
+    @GetMapping("/statistics/size")
     public Long getVaultsSize(@RequestHeader(value = "X-UserID", required = true) String userID) {
 
         return depositsService.size(userID);
     }
 
-    @RequestMapping(value = "/statistics/depositcount", method = RequestMethod.GET)
+    @GetMapping(value = "/statistics/depositcount")
     public int getDepositsCount(@RequestHeader(value = "X-UserID", required = true) String userID) {
 
         return depositsService.count(userID);
     }
 
-    @RequestMapping(value = "/statistics/depositinprogresscount", method = RequestMethod.GET)
+    @GetMapping("/statistics/depositinprogresscount")
     public int getDepositsInProgressCount(@RequestHeader(value = "X-UserID", required = true) String userID) {
 
         return depositsService.inProgressCount(userID);
     }
 
-    @RequestMapping(value = "/statistics/retrievecount", method = RequestMethod.GET)
+    @GetMapping("/statistics/retrievecount")
     public int getRetrievesCount(@RequestHeader(value = "X-UserID", required = true) String userID) {
 
         return retrievesService.count(userID);
     }
 
-    @RequestMapping(value = "/statistics/retrieveinprogresscount", method = RequestMethod.GET)
+    @GetMapping("/statistics/retrieveinprogresscount")
     public int getRetrievesInProgressCount(@RequestHeader(value = "X-UserID", required = true) String userID) {
 
         return retrievesService.inProgressCount(userID);
     }
 
-    @RequestMapping(value = "/vaults/depositqueuecount", method = RequestMethod.GET)
+    @GetMapping("/vaults/depositqueuecount")
     public int getDepositsQueueCount(@RequestHeader(value = "X-UserID", required = true) String userID) {
 
         return depositsService.queueCount(userID);
     }
 
-    @RequestMapping(value = "/vaults/depositinprogress", method = RequestMethod.GET)
+    @GetMapping("/vaults/depositinprogress")
     public List<Deposit> getDepositsInProgress(@RequestHeader(value = "X-UserID", required = true) String userID) {
 
         return depositsService.inProgress();
     }
 
-    @RequestMapping(value = "/vaults/retrievequeuecount", method = RequestMethod.GET)
+    @GetMapping("/vaults/retrievequeuecount")
     public int getRetrievesQueuedCount(@RequestHeader(value = "X-UserID", required = true) String userID) {
 
         return retrievesService.queueCount(userID);
     }
 
-    @RequestMapping(value = "/vaults/retrieveinprogress", method = RequestMethod.GET)
+    @GetMapping("/vaults/retrieveinprogress")
     public List<Retrieve> getRetrievesInProgress(@RequestHeader(value = "X-UserID", required = true) String userID) {
 
         return retrievesService.inProgress();
     }
 
 
-    @RequestMapping(value = "/vaults/retentionpolicycount/{status}", method = RequestMethod.GET)
+    @GetMapping(value = "/vaults/retentionpolicycount/{status}")
     public int getPolicyStatusCount(@RequestHeader(value = "X-UserID", required = true) String userID,
                                     @PathVariable("status") int status) {
 
         return vaultsService.getRetentionPolicyCount(status);
     }
     
-    @RequestMapping(value = "/statistics/eventcount", method = RequestMethod.GET)
+    @GetMapping("/statistics/eventcount")
     public int getEventCount(@RequestHeader(value = "X-UserID", required = true) String userID) {
 
         return eventService.count();

@@ -2,6 +2,7 @@ package org.datavaultplatform.common.response;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.Data;
 import org.jsondoc.core.annotation.ApiObject;
 import org.jsondoc.core.annotation.ApiObjectField;
 import java.util.HashMap;
@@ -14,6 +15,7 @@ import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @ApiObject(name = "ReviewInfo")
+@Data
 public class ReviewInfo {
 
     @ApiObjectField(description = "Universally Unique Identifier for the VaultReview", name="VaultReview Id")

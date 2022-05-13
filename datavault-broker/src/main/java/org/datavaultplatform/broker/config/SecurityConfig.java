@@ -38,6 +38,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
   protected void configure(HttpSecurity http) throws Exception {
 
     http.antMatcher("/**")
+    /*
+    http.authorizeRequests( requests -> {
+      requests.antMatchers("/actuator/info").permitAll();  //OKAY
+      requests.antMatchers("/actuator/health").permitAll();  //OKAY
+      requests.antMatchers("/actuator/customtime").permitAll();  //OKAY
+      requests.antMatchers("/actuator","/actuator/").permitAll(); //OKAY
+      requests.antMatchers("/actuator/**").hasRole("ADMIN"); //TODO - check this
+      requests.antMatchers("/","/resources/**","jsondoc").permitAll();
+    });
+    */
         .csrf().disable()
         .addFilterAt(restFilter(), AbstractPreAuthenticatedProcessingFilter.class)
         .exceptionHandling(ex -> ex.authenticationEntryPoint(http403EntryPoint()))
@@ -48,7 +58,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     <security:http pattern="/resources/**" security="none"/>
     <security:http pattern="/jsondoc" security="none"/>
            */
-          .antMatchers("/","/resources/**","jsondoc").permitAll()
+          .antMatchers("/","/resources/**","jsondoc").permitAll() //pretty sure this DOES NOT WORK
         /*
         <security:intercept-url pattern="/admin/users/**" access="hasRole('ROLE_ADMIN')" />
         <security:intercept-url pattern="/admin/archivestores/**" access="hasRole('ROLE_ADMIN_ARCHIVESTORES')" />
@@ -82,7 +92,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
    <property name="filterProcessesUrl" value="/**" />
    </bean>
    */
-  @Bean
+
   RestAuthenticationFilter restFilter() throws Exception {
     RestAuthenticationFilter result = new RestAuthenticationFilter();
     result.setPrincipalRequestHeader("X-UserID");

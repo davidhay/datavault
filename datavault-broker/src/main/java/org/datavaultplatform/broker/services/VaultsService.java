@@ -153,7 +153,7 @@ public class VaultsService {
         return vaultDAO.getRetentionPolicyCount(status);
     }
 
-    public Vault checkRetentionPolicy(String vaultID) throws Exception {
+    public Vault checkRetentionPolicy(String vaultID) {
         // Get the vault
         Vault vault = vaultDAO.findById(vaultID);
 

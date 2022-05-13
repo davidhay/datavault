@@ -54,8 +54,8 @@ public class AdminReviewsController {
     @ApiHeaders(headers={
             @ApiHeader(name="X-UserID", description="DataVault Broker User ID")
     })
-    @RequestMapping(value = "/admin/vaultsForReview", method = RequestMethod.GET)
-    public VaultsData getVaultsForReview(@RequestHeader(value = "X-UserID", required = true) String userID) throws Exception {
+    @GetMapping("/admin/vaultsForReview")
+    public VaultsData getVaultsForReview(@RequestHeader(value = "X-UserID", required = true) String userID) {
 
         List<VaultInfo> vaultResponses = new ArrayList<>();
         List<Vault> vaults = vaultsService.getVaults();
@@ -83,13 +83,13 @@ public class AdminReviewsController {
     @ApiHeaders(headers={
             @ApiHeader(name="X-UserID", description="DataVault Broker User ID")
     })
-    @RequestMapping(value = "/admin/vaults/{vaultid}/vaultreviews/current", method = RequestMethod.GET)
+    @GetMapping("/admin/vaults/{vaultid}/vaultreviews/current")
     public ReviewInfo getCurrentReview(@RequestHeader(value = "X-UserID", required = true) String userID,
                                              @PathVariable("vaultid") String vaultID) throws Exception {
 
         User user = usersService.getUser(userID);
         Vault vault = vaultsService.getUserVault(user, vaultID);
-        List<Deposit> deposits = vault.getDeposits();
+        //List<Deposit> deposits = vault.getDeposits();
 
         VaultReview vaultReview = null;
         List <DepositReview> depositReviews = null;
@@ -136,7 +136,7 @@ public class AdminReviewsController {
     @ApiHeaders(headers={
             @ApiHeader(name="X-UserID", description="DataVault Broker User ID")
     })
-    @RequestMapping(value = "/admin/vaults/vaultreviews/current", method = RequestMethod.POST)
+    @PostMapping("/admin/vaults/vaultreviews/current")
     public ReviewInfo createCurrentReview(@RequestHeader(value = "X-UserID", required = true) String userID,
                                        @RequestBody String vaultID) throws Exception {
 
@@ -177,10 +177,10 @@ public class AdminReviewsController {
             @ApiHeader(name="X-UserID", description="DataVault Broker User ID"),
             @ApiHeader(name="X-Client-Key", description="DataVault API Client Key")
     })
-    @RequestMapping(value = "/admin/vaults/vaultreviews", method = RequestMethod.PUT)
+    @PutMapping("/admin/vaults/vaultreviews")
     public VaultReview editVaultReview(@RequestHeader(value = "X-UserID", required = true) String userID,
                                        @RequestHeader(value = "X-Client-Key", required = true) String clientKey,
-                                       @RequestBody VaultReview vaultReview) throws Exception {
+                                       @RequestBody VaultReview vaultReview) {
 
 
         vaultsReviewService.updateVaultReview(vaultReview);
@@ -211,9 +211,9 @@ public class AdminReviewsController {
             @ApiHeader(name="X-UserID", description="DataVault Broker User ID"),
             @ApiHeader(name="X-Client-Key", description="DataVault API Client Key")
     })
-    @RequestMapping(value = "/admin/vaultreviews/depositreviews", method = RequestMethod.PUT)
+    @PutMapping("/admin/vaultreviews/depositreviews")
     public DepositReview editDepositReview(@RequestHeader(value = "X-UserID", required = true) String userID,
-                                       @RequestBody DepositReview depositReview) throws Exception {
+                                       @RequestBody DepositReview depositReview) {
 
 
         depositsReviewService.updateDepositReview(depositReview);
