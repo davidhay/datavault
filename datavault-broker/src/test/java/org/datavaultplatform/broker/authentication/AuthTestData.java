@@ -3,36 +3,49 @@ package org.datavaultplatform.broker.authentication;
 import java.util.Arrays;
 import org.datavaultplatform.common.model.ArchiveStore;
 import org.datavaultplatform.common.model.DataManager;
+import org.datavaultplatform.common.model.Dataset;
 import org.datavaultplatform.common.model.Deposit;
 import org.datavaultplatform.common.model.DepositReview;
+import org.datavaultplatform.common.model.FileFixity;
+import org.datavaultplatform.common.model.FileInfo;
+import org.datavaultplatform.common.model.FileStore;
+import org.datavaultplatform.common.model.Group;
+import org.datavaultplatform.common.model.Job;
 import org.datavaultplatform.common.model.PendingVault;
 import org.datavaultplatform.common.model.PermissionModel;
+import org.datavaultplatform.common.model.RetentionPolicy;
 import org.datavaultplatform.common.model.Retrieve;
 import org.datavaultplatform.common.model.RoleAssignment;
 import org.datavaultplatform.common.model.RoleModel;
 import org.datavaultplatform.common.model.User;
 import org.datavaultplatform.common.model.Vault;
 import org.datavaultplatform.common.model.VaultReview;
+import org.datavaultplatform.common.request.CreateClientEvent;
+import org.datavaultplatform.common.request.CreateDeposit;
 import org.datavaultplatform.common.request.CreateVault;
 import org.datavaultplatform.common.request.TransferVault;
 import org.datavaultplatform.common.request.ValidateUser;
 import org.datavaultplatform.common.response.AuditInfo;
 import org.datavaultplatform.common.response.DepositInfo;
+import org.datavaultplatform.common.response.DepositSize;
 import org.datavaultplatform.common.response.DepositsData;
 import org.datavaultplatform.common.response.EventInfo;
 import org.datavaultplatform.common.response.ReviewInfo;
 import org.datavaultplatform.common.response.VaultInfo;
 import org.datavaultplatform.common.response.VaultsData;
-import org.testcontainers.shaded.com.google.common.util.concurrent.RateLimiter;
 
 public class AuthTestData {
 
   public static final VaultsData VAULTS_DATA;
-  public static final ReviewInfo REVIEW_INFO;
+  public static final ReviewInfo REVIEW_INFO_1;
+  public static final ReviewInfo REVIEW_INFO_2;
 
-  public static final VaultReview VAULT_REVIEW;
+  public static final VaultReview VAULT_REVIEW_1;
+  public static final VaultReview VAULT_REVIEW_2;
 
-  public static final DepositReview DEPOSIT_REVIEW;
+  public static final DepositReview DEPOSIT_REVIEW_1;
+
+  public static final DepositReview DEPOSIT_REVIEW_2;
 
   public static final ArchiveStore ARCHIVE_STORE_1;
   public static final ArchiveStore ARCHIVE_STORE_2;
@@ -64,6 +77,24 @@ public class AuthTestData {
   public static final User USER_2;
   public static final ValidateUser VALIDATE_USER;
 
+  public static final CreateDeposit CREATE_DEPOSIT_1;
+  public static final Job JOB_1;
+  public static final Job JOB_2;
+  public static final FileFixity FILE_FIXITY_1;
+  public static final FileFixity FILE_FIXITY_2;
+  public static final FileStore FILESTORE_1;
+  public static final FileStore FILESTORE_2;
+  public static final DepositSize DEPOSIT_SIZE;
+  public static final FileInfo FILE_INFO_1;
+  public static final FileInfo FILE_INFO_2;
+  public static final Group GROUP_1;
+  public static final Group GROUP_2;
+  public static final Dataset DATASET_1;
+  public static final Dataset DATASET_2;
+  public static final CreateClientEvent CREATE_CLIENT_EVENT;
+  public static final RetentionPolicy RETENTION_1;
+  public static final RetentionPolicy RETENTION_2;
+
   static {
     VaultInfo vaultInfo1 = new VaultInfo();
     vaultInfo1.setID("vaultInfo1");
@@ -76,18 +107,31 @@ public class AuthTestData {
     VAULTS_DATA.setRecordsTotal(2);
     VAULTS_DATA.setRecordsFiltered(123);
 
-    REVIEW_INFO = new ReviewInfo();
-    REVIEW_INFO.setVaultReviewId("2112");
-    REVIEW_INFO.setDepositIds(Arrays.asList("d1", "d2"));
-    REVIEW_INFO.setDepositReviewIds(Arrays.asList("dr1", "dr2"));
+    REVIEW_INFO_1 = new ReviewInfo();
+    REVIEW_INFO_1.setVaultReviewId("2112");
+    REVIEW_INFO_1.setDepositIds(Arrays.asList("d1", "d2"));
+    REVIEW_INFO_1.setDepositReviewIds(Arrays.asList("dr1", "dr2"));
 
-    VAULT_REVIEW = new VaultReview();
-    VAULT_REVIEW.setId("vault-review-1");
-    VAULT_REVIEW.setComment("this is a comment");
+    REVIEW_INFO_2 = new ReviewInfo();
+    REVIEW_INFO_2.setVaultReviewId("2222");
+    REVIEW_INFO_2.setDepositIds(Arrays.asList("d3", "d4"));
+    REVIEW_INFO_2.setDepositReviewIds(Arrays.asList("dr3", "dr4"));
 
-    DEPOSIT_REVIEW = new DepositReview();
-    DEPOSIT_REVIEW.setId("deposit-review-1");
-    DEPOSIT_REVIEW.setComment("this is a comment");
+    VAULT_REVIEW_1 = new VaultReview();
+    VAULT_REVIEW_1.setId("vault-review-1");
+    VAULT_REVIEW_1.setComment("this is a comment1");
+
+    VAULT_REVIEW_2 = new VaultReview();
+    VAULT_REVIEW_2.setId("vault-review-2");
+    VAULT_REVIEW_2.setComment("this is a comment2");
+
+    DEPOSIT_REVIEW_1 = new DepositReview();
+    DEPOSIT_REVIEW_1.setId("deposit-review-1");
+    DEPOSIT_REVIEW_1.setComment("this is a comment1");
+
+    DEPOSIT_REVIEW_2 = new DepositReview();
+    DEPOSIT_REVIEW_2.setId("deposit-review-2");
+    DEPOSIT_REVIEW_2.setComment("this is a comment2");
 
     ARCHIVE_STORE_1 = new ArchiveStore();
     ARCHIVE_STORE_1.setLabel("ARCHIVE STORE 1");
@@ -164,7 +208,6 @@ public class AuthTestData {
     DEPOSIT_2 = new Deposit();
     DEPOSIT_2.setName("deposit-two");
 
-
     USER_1 = new User();
     USER_1.setID("user-one");
 
@@ -174,5 +217,66 @@ public class AuthTestData {
     VALIDATE_USER = new ValidateUser();
     VALIDATE_USER.setUserid("validate-user-id-one");
 
+    CREATE_DEPOSIT_1 = new CreateDeposit();
+    CREATE_DEPOSIT_1.setName("create-deposit-1");
+
+    JOB_1 = new Job();
+    JOB_1.setDeposit(DEPOSIT_1);
+    JOB_1.setState(100);
+
+    JOB_2 = new Job();
+    JOB_2.setDeposit(DEPOSIT_2);
+    JOB_1.setState(200);
+
+    FILE_FIXITY_1 = new FileFixity();
+    FILE_FIXITY_1.setFile("file-1");
+    FILE_FIXITY_1.setFixity("fixity-1");
+    FILE_FIXITY_1.setFileType("type-1");
+    FILE_FIXITY_1.setAlgorithm("algo-1");
+
+    FILE_FIXITY_2 = new FileFixity();
+    FILE_FIXITY_2.setFile("file-2");
+    FILE_FIXITY_2.setFixity("fixity-2");
+    FILE_FIXITY_2.setFileType("type-2");
+    FILE_FIXITY_2.setAlgorithm("algo-2");
+
+    FILESTORE_1 = new FileStore();
+    FILESTORE_1.setLabel("file-store-1");
+
+    FILESTORE_2 = new FileStore();
+    FILESTORE_2.setLabel("file-store-2");
+
+    DEPOSIT_SIZE = new DepositSize();
+    DEPOSIT_SIZE.setResult(true);
+    DEPOSIT_SIZE.setMax(2112L);
+
+    FILE_INFO_1 = new FileInfo();
+    FILE_INFO_1.setName("file-info-one");
+
+    FILE_INFO_2 = new FileInfo();
+    FILE_INFO_2.setName("file-info-two");
+
+    GROUP_1 = new Group();
+    GROUP_1.setID("group-one");
+
+    GROUP_2 = new Group();
+    GROUP_2.setID("group-two");
+
+    DATASET_1 = new Dataset();
+    DATASET_1.setID("dataset-1");
+
+    DATASET_2 = new Dataset();
+    DATASET_2.setID("dataset-2");
+
+    CREATE_CLIENT_EVENT = new CreateClientEvent();
+    CREATE_CLIENT_EVENT.setSessionId("session-123");
+
+    RETENTION_1 = new RetentionPolicy();
+    RETENTION_1.setId(1);
+    RETENTION_1.setName("retention-policy-1");
+
+    RETENTION_2 = new RetentionPolicy();
+    RETENTION_2.setId(2);
+    RETENTION_2.setName("retention-policy-2");
   }
 }

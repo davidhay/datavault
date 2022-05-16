@@ -4,6 +4,7 @@ import org.datavaultplatform.broker.services.PendingVaultsService;
 import org.jsondoc.core.annotation.Api;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,7 +30,7 @@ public class AdminPendingVaultsController {
 		return false;
 	}*/
 
-	@RequestMapping(value = "/admin/pendingVaults/{id}", method = RequestMethod.DELETE)
+	@DeleteMapping("/admin/pendingVaults/{id}")
 	public void delete(@RequestHeader(value = "X-UserID", required = true) String userID,
 									  @PathVariable("id") String vaultID) throws Exception {
 

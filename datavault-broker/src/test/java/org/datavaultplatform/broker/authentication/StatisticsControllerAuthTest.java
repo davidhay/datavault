@@ -48,9 +48,8 @@ public class StatisticsControllerAuthTest extends BaseControllerAuthTest {
     public int getDepositsCount(@RequestHeader(value = "X-UserID", required = true) String userID) {
    */
   @Test
-  void testGetDepositsCount(){
+  void testGetDepositsCount() {
     when(controller.getDepositsCount(USER_ID_1)).thenReturn(1234);
-
 
     checkWorksWhenAuthenticatedFailsOtherwise(get("/statistics/depositcount"),
         1234, HttpStatus.OK,
@@ -58,16 +57,18 @@ public class StatisticsControllerAuthTest extends BaseControllerAuthTest {
 
     verify(controller).getDepositsCount(USER_ID_1);
   }
+
   /*
     @GetMapping("/vaults/depositinprogress")
     public List<Deposit> getDepositsInProgress(@RequestHeader(value = "X-UserID", required = true) String userID) {
    */
   @Test
-  void testGetDepositsInProgress(){
-    when(controller.getDepositsInProgress(USER_ID_1)).thenReturn(Arrays.asList(AuthTestData.DEPOSIT_1,  AuthTestData.DEPOSIT_2));
+  void testGetDepositsInProgress() {
+    when(controller.getDepositsInProgress(USER_ID_1)).thenReturn(
+        Arrays.asList(AuthTestData.DEPOSIT_1, AuthTestData.DEPOSIT_2));
 
     checkWorksWhenAuthenticatedFailsOtherwise(get("/vaults/depositinprogress"),
-        Arrays.asList(AuthTestData.DEPOSIT_1,  AuthTestData.DEPOSIT_2), HttpStatus.OK,
+        Arrays.asList(AuthTestData.DEPOSIT_1, AuthTestData.DEPOSIT_2), HttpStatus.OK,
         false);
 
     verify(controller).getDepositsInProgress(USER_ID_1);
@@ -78,7 +79,7 @@ public class StatisticsControllerAuthTest extends BaseControllerAuthTest {
     public int getDepositsQueueCount(@RequestHeader(value = "X-UserID", required = true) String userID) {
    */
   @Test
-  void testGetDepositsQueueCount(){
+  void testGetDepositsQueueCount() {
     when(controller.getDepositsQueueCount(USER_ID_1)).thenReturn(1234);
 
     checkWorksWhenAuthenticatedFailsOtherwise(get("/vaults/depositqueuecount"),
@@ -87,6 +88,7 @@ public class StatisticsControllerAuthTest extends BaseControllerAuthTest {
 
     verify(controller).getDepositsQueueCount(USER_ID_1);
   }
+
   /*
     @GetMapping("/statistics/depositinprogresscount")
     public int getDepositsInProgressCount(@RequestHeader(value = "X-UserID", required = true) String userID) {
@@ -116,21 +118,22 @@ public class StatisticsControllerAuthTest extends BaseControllerAuthTest {
 
     verify(controller).getEventCount(USER_ID_1);
   }
+
   /*
     @GetMapping(value = "/vaults/retentionpolicycount/{status}")
     public int getPolicyStatusCount(@RequestHeader(value = "X-UserID", required = true) String userID,
                                     @PathVariable("status") int status) {
    */
   @Test
-  void testGetPolicyStatusCount(){
+  void testGetPolicyStatusCount() {
 
-    when(controller.getPolicyStatusCount(USER_ID_1,111)).thenReturn(1234);
+    when(controller.getPolicyStatusCount(USER_ID_1, 111)).thenReturn(1234);
 
     checkWorksWhenAuthenticatedFailsOtherwise(get("/vaults/retentionpolicycount/111"),
         1234, HttpStatus.OK,
         false);
 
-    verify(controller).getPolicyStatusCount(USER_ID_1,111);
+    verify(controller).getPolicyStatusCount(USER_ID_1, 111);
   }
 
   /*
@@ -146,20 +149,23 @@ public class StatisticsControllerAuthTest extends BaseControllerAuthTest {
 
     verify(controller).getRetrievesCount(USER_ID_1);
   }
+
   /*
     @GetMapping("/vaults/retrieveinprogress")
     public List<Retrieve> getRetrievesInProgress(@RequestHeader(value = "X-UserID", required = true) String userID) {
    */
   @Test
   void testGetRetrievesInProgress() {
-    when(controller.getRetrievesInProgress(USER_ID_1)).thenReturn(Arrays.asList(AuthTestData.RETRIEVE_1,AuthTestData.RETRIEVE_2));
+    when(controller.getRetrievesInProgress(USER_ID_1)).thenReturn(
+        Arrays.asList(AuthTestData.RETRIEVE_1, AuthTestData.RETRIEVE_2));
 
     checkWorksWhenAuthenticatedFailsOtherwise(get("/vaults/retrieveinprogress"),
-        Arrays.asList(AuthTestData.RETRIEVE_1,AuthTestData.RETRIEVE_2), HttpStatus.OK,
+        Arrays.asList(AuthTestData.RETRIEVE_1, AuthTestData.RETRIEVE_2), HttpStatus.OK,
         false);
 
     verify(controller).getRetrievesInProgress(USER_ID_1);
   }
+
   /*
     @GetMapping("/statistics/retrieveinprogresscount")
     public int getRetrievesInProgressCount(@RequestHeader(value = "X-UserID", required = true) String userID) {
@@ -174,6 +180,7 @@ public class StatisticsControllerAuthTest extends BaseControllerAuthTest {
 
     verify(controller).getRetrievesInProgressCount(USER_ID_1);
   }
+
   /*
     @GetMapping("/vaults/retrievequeuecount")
     public int getRetrievesQueuedCount(@RequestHeader(value = "X-UserID", required = true) String userID) {
@@ -188,6 +195,7 @@ public class StatisticsControllerAuthTest extends BaseControllerAuthTest {
 
     verify(controller).getRetrievesQueuedCount(USER_ID_1);
   }
+
   /*
     @GetMapping("/statistics/pendingVaultsTotal")
     public int getTotalNumberOfPendingVaults() {
@@ -202,6 +210,7 @@ public class StatisticsControllerAuthTest extends BaseControllerAuthTest {
 
     verify(controller).getTotalNumberOfPendingVaults();
   }
+
   /*
     @GetMapping("/statistics/count")
     public int getVaultsCount(@RequestHeader(value = "X-UserID", required = true) String userID) {
@@ -216,6 +225,7 @@ public class StatisticsControllerAuthTest extends BaseControllerAuthTest {
 
     verify(controller).getVaultsCount(USER_ID_1);
   }
+
   /*
     @GetMapping("/statistics/size")
     public Long getVaultsSize(@RequestHeader(value = "X-UserID", required = true) String userID) {

@@ -8,12 +8,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import io.vavr.API;
-import java.util.Arrays;
 import org.datavaultplatform.broker.app.DataVaultBrokerApp;
 import org.datavaultplatform.broker.config.MockServicesConfig;
 import org.datavaultplatform.broker.controllers.RolesAndPermissionsController;
-import org.datavaultplatform.broker.controllers.VaultsController;
 import org.datavaultplatform.broker.queue.Sender;
 import org.datavaultplatform.broker.test.AddTestProperties;
 import org.datavaultplatform.common.model.PermissionModel;
@@ -69,6 +66,7 @@ public class RolesAndPermissonsControllerAuthTest extends BaseControllerAuthTest
 
     verify(controller).createRole(AuthTestData.ROLE_MODEL);
   }
+
   /*
     @PostMapping("/roleAssignment")
     public RoleAssignment createRoleAssignment(@RequestHeader(value = "X-UserID", required = true) String userID,
@@ -77,7 +75,8 @@ public class RolesAndPermissonsControllerAuthTest extends BaseControllerAuthTest
    */
   @Test
   void testPostCreateRoleAssignment() throws Exception {
-    when(controller.createRoleAssignment(USER_ID_1, API_KEY_1, AuthTestData.ROLE_ASSIGNMENT)).thenReturn(AuthTestData.ROLE_ASSIGNMENT);
+    when(controller.createRoleAssignment(USER_ID_1, API_KEY_1,
+        AuthTestData.ROLE_ASSIGNMENT)).thenReturn(AuthTestData.ROLE_ASSIGNMENT);
 
     checkWorksWhenAuthenticatedFailsOtherwise(post("/permissions/roleAssignment")
             .contentType(MediaType.APPLICATION_JSON)
@@ -87,12 +86,13 @@ public class RolesAndPermissonsControllerAuthTest extends BaseControllerAuthTest
 
     verify(controller).createRoleAssignment(USER_ID_1, API_KEY_1, AuthTestData.ROLE_ASSIGNMENT);
   }
+
   /*
     @DeleteMapping("/role/{roleId}")
     public ResponseEntity deleteRole(@PathVariable("roleId") Long roleId) {
    */
   @Test
-  void testDeleteRole(){
+  void testDeleteRole() {
     when(controller.deleteRole(1234L)).thenReturn(ResponseEntity.ok().build());
 
     checkWorksWhenAuthenticatedFailsOtherwise(delete("/permissions/role/1234"),
@@ -100,6 +100,7 @@ public class RolesAndPermissonsControllerAuthTest extends BaseControllerAuthTest
         false);
     verify(controller).deleteRole(1234L);
   }
+
   /*
     @DeleteMapping("/roleAssignment/{roleAssignmentId}")
     public ResponseEntity deleteRoleAssignment(
@@ -110,7 +111,8 @@ public class RolesAndPermissonsControllerAuthTest extends BaseControllerAuthTest
    */
   @Test
   void testDeleteRoleAssignment() throws Exception {
-    when(controller.deleteRoleAssignment(USER_ID_1, API_KEY_1, 1234L)).thenReturn(ResponseEntity.ok().build());
+    when(controller.deleteRoleAssignment(USER_ID_1, API_KEY_1, 1234L)).thenReturn(
+        ResponseEntity.ok().build());
 
     checkWorksWhenAuthenticatedFailsOtherwise(delete("/permissions/roleAssignment/1234"),
         null, HttpStatus.OK,
@@ -128,7 +130,7 @@ public class RolesAndPermissonsControllerAuthTest extends BaseControllerAuthTest
     when(controller.getAllSchoolRoles()).thenReturn(new RoleModel[]{AuthTestData.ROLE_MODEL});
 
     checkWorksWhenAuthenticatedFailsOtherwise(get("/permissions/roles/school"),
-        new RoleModel[]{ AuthTestData.ROLE_MODEL}, HttpStatus.OK,
+        new RoleModel[]{AuthTestData.ROLE_MODEL}, HttpStatus.OK,
         false);
 
     verify(controller).getAllSchoolRoles();
@@ -139,11 +141,11 @@ public class RolesAndPermissonsControllerAuthTest extends BaseControllerAuthTest
     public RoleModel[] getAllVaultRoles() {
    */
   @Test
-  void testGetAllVaultRoles(){
+  void testGetAllVaultRoles() {
     when(controller.getAllVaultRoles()).thenReturn(new RoleModel[]{AuthTestData.ROLE_MODEL});
 
     checkWorksWhenAuthenticatedFailsOtherwise(get("/permissions/roles/vault"),
-        new RoleModel[]{ AuthTestData.ROLE_MODEL}, HttpStatus.OK,
+        new RoleModel[]{AuthTestData.ROLE_MODEL}, HttpStatus.OK,
         false);
 
     verify(controller).getAllVaultRoles();
@@ -158,17 +160,18 @@ public class RolesAndPermissonsControllerAuthTest extends BaseControllerAuthTest
     when(controller.getEditableRoles()).thenReturn(new RoleModel[]{AuthTestData.ROLE_MODEL});
 
     checkWorksWhenAuthenticatedFailsOtherwise(get("/permissions/roles"),
-        new RoleModel[]{ AuthTestData.ROLE_MODEL}, HttpStatus.OK,
+        new RoleModel[]{AuthTestData.ROLE_MODEL}, HttpStatus.OK,
         false);
 
     verify(controller).getEditableRoles();
   }
+
   /*
     @GetMapping("/role/isAdmin")
     public RoleModel getIsAdmin() {
    */
   @Test
-  void testGetIsAdmin(){
+  void testGetIsAdmin() {
     when(controller.getIsAdmin()).thenReturn(AuthTestData.ROLE_MODEL);
 
     checkWorksWhenAuthenticatedFailsOtherwise(get("/permissions/role/isAdmin"),
@@ -177,12 +180,13 @@ public class RolesAndPermissonsControllerAuthTest extends BaseControllerAuthTest
 
     verify(controller).getIsAdmin();
   }
+
   /*
     @GetMapping("/role/{roleId}")
     public RoleModel getRole(@PathVariable("roleId") Long id) {
    */
   @Test
-  void testGetRole(){
+  void testGetRole() {
     when(controller.getRole(1234L)).thenReturn(AuthTestData.ROLE_MODEL);
 
     checkWorksWhenAuthenticatedFailsOtherwise(get("/permissions/role/1234"),
@@ -191,12 +195,13 @@ public class RolesAndPermissonsControllerAuthTest extends BaseControllerAuthTest
 
     verify(controller).getRole(1234L);
   }
+
   /*
     @GetMapping("/roleAssignment/{assignmentId}")
     public RoleAssignment getRoleAssignment(@PathVariable("assignmentId") Long assignmentId) {
    */
   @Test
-  void testGetRoleAssignment(){
+  void testGetRoleAssignment() {
     when(controller.getRoleAssignment(1234L)).thenReturn(AuthTestData.ROLE_ASSIGNMENT);
 
     checkWorksWhenAuthenticatedFailsOtherwise(get("/permissions/roleAssignment/1234"),
@@ -212,8 +217,9 @@ public class RolesAndPermissonsControllerAuthTest extends BaseControllerAuthTest
             @PathVariable("roleId") Long roleId) {
    */
   @Test
-  void testGetRoleAssignmentsForRole(){
-    when(controller.getRoleAssignmentsForRole(1234L)).thenReturn(new RoleAssignment[]{AuthTestData.ROLE_ASSIGNMENT});
+  void testGetRoleAssignmentsForRole() {
+    when(controller.getRoleAssignmentsForRole(1234L)).thenReturn(
+        new RoleAssignment[]{AuthTestData.ROLE_ASSIGNMENT});
 
     checkWorksWhenAuthenticatedFailsOtherwise(get("/permissions/roleAssignments/role/1234"),
         new RoleAssignment[]{AuthTestData.ROLE_ASSIGNMENT}, HttpStatus.OK,
@@ -228,23 +234,27 @@ public class RolesAndPermissonsControllerAuthTest extends BaseControllerAuthTest
             @PathVariable("schoolId") String schoolId) {
    */
   @Test
-  void testGetRoleAssignmentForSchool(){
-    when(controller.getRoleAssignmentsForSchool("school-id-1")).thenReturn(new RoleAssignment[]{AuthTestData.ROLE_ASSIGNMENT});
+  void testGetRoleAssignmentForSchool() {
+    when(controller.getRoleAssignmentsForSchool("school-id-1")).thenReturn(
+        new RoleAssignment[]{AuthTestData.ROLE_ASSIGNMENT});
 
-    checkWorksWhenAuthenticatedFailsOtherwise(get("/permissions/roleAssignments/school/school-id-1"),
+    checkWorksWhenAuthenticatedFailsOtherwise(
+        get("/permissions/roleAssignments/school/school-id-1"),
         new RoleAssignment[]{AuthTestData.ROLE_ASSIGNMENT}, HttpStatus.OK,
         false);
 
     verify(controller).getRoleAssignmentsForSchool("school-id-1");
   }
+
   /*
     @GetMapping("/roleAssignments/user/{userId}")
     public RoleAssignment[] getRoleAssignmentsForUser(
       @PathVariable("userId") String userId) {
    */
   @Test
-  void testGetRoleAssignmentForUser(){
-    when(controller.getRoleAssignmentsForUser("user-id-1")).thenReturn(new RoleAssignment[]{AuthTestData.ROLE_ASSIGNMENT});
+  void testGetRoleAssignmentForUser() {
+    when(controller.getRoleAssignmentsForUser("user-id-1")).thenReturn(
+        new RoleAssignment[]{AuthTestData.ROLE_ASSIGNMENT});
 
     checkWorksWhenAuthenticatedFailsOtherwise(get("/permissions/roleAssignments/user/user-id-1"),
         new RoleAssignment[]{AuthTestData.ROLE_ASSIGNMENT}, HttpStatus.OK,
@@ -252,13 +262,15 @@ public class RolesAndPermissonsControllerAuthTest extends BaseControllerAuthTest
 
     verify(controller).getRoleAssignmentsForUser("user-id-1");
   }
+
   /*
     @GetMapping("/roleAssignments/vault/{vaultId}")
     public RoleAssignment[] getRoleAssignmentsForVault(
    */
   @Test
-  void testGetRoleAssignmentForVault(){
-    when(controller.getRoleAssignmentsForVault("vault-id-1")).thenReturn(new RoleAssignment[]{AuthTestData.ROLE_ASSIGNMENT});
+  void testGetRoleAssignmentForVault() {
+    when(controller.getRoleAssignmentsForVault("vault-id-1")).thenReturn(
+        new RoleAssignment[]{AuthTestData.ROLE_ASSIGNMENT});
 
     checkWorksWhenAuthenticatedFailsOtherwise(get("/permissions/roleAssignments/vault/vault-id-1"),
         new RoleAssignment[]{AuthTestData.ROLE_ASSIGNMENT}, HttpStatus.OK,
@@ -266,13 +278,15 @@ public class RolesAndPermissonsControllerAuthTest extends BaseControllerAuthTest
 
     verify(controller).getRoleAssignmentsForVault("vault-id-1");
   }
+
   /*
     @GetMapping("/school")
     public PermissionModel[] getSchoolPermissions() {
    */
   @Test
-  void testGetSchoolPermissions(){
-    when(controller.getSchoolPermissions()).thenReturn(new PermissionModel[]{AuthTestData.PERMISSION_MODEL});
+  void testGetSchoolPermissions() {
+    when(controller.getSchoolPermissions()).thenReturn(
+        new PermissionModel[]{AuthTestData.PERMISSION_MODEL});
 
     checkWorksWhenAuthenticatedFailsOtherwise(get("/permissions/school"),
         new PermissionModel[]{AuthTestData.PERMISSION_MODEL}, HttpStatus.OK,
@@ -286,8 +300,9 @@ public class RolesAndPermissonsControllerAuthTest extends BaseControllerAuthTest
     public PermissionModel[] getVaultPermissions() {
    */
   @Test
-  void testGetVaultPermissions(){
-    when(controller.getVaultPermissions()).thenReturn(new PermissionModel[]{AuthTestData.PERMISSION_MODEL});
+  void testGetVaultPermissions() {
+    when(controller.getVaultPermissions()).thenReturn(
+        new PermissionModel[]{AuthTestData.PERMISSION_MODEL});
 
     checkWorksWhenAuthenticatedFailsOtherwise(get("/permissions/vault"),
         new PermissionModel[]{AuthTestData.PERMISSION_MODEL}, HttpStatus.OK,
@@ -301,7 +316,7 @@ public class RolesAndPermissonsControllerAuthTest extends BaseControllerAuthTest
     public RoleModel[] getViewableRoles() {
    */
   @Test
-  void testGetViewableRoles(){
+  void testGetViewableRoles() {
     when(controller.getViewableRoles()).thenReturn(new RoleModel[]{AuthTestData.ROLE_MODEL});
 
     checkWorksWhenAuthenticatedFailsOtherwise(get("/permissions/roles/readOnly"),
@@ -327,6 +342,7 @@ public class RolesAndPermissonsControllerAuthTest extends BaseControllerAuthTest
 
     verify(controller).updateRole(AuthTestData.ROLE_MODEL);
   }
+
   /*
     @PutMapping("/roleAssignment")
     public RoleAssignment updateRoleAssignment(@RequestHeader(value = "X-UserID", required = true) String userID,
@@ -335,7 +351,8 @@ public class RolesAndPermissonsControllerAuthTest extends BaseControllerAuthTest
    */
   @Test
   void testPutUpdateRoleAssignment() throws Exception {
-    when(controller.updateRoleAssignment(USER_ID_1,API_KEY_1, AuthTestData.ROLE_ASSIGNMENT)).thenReturn(AuthTestData.ROLE_ASSIGNMENT);
+    when(controller.updateRoleAssignment(USER_ID_1, API_KEY_1,
+        AuthTestData.ROLE_ASSIGNMENT)).thenReturn(AuthTestData.ROLE_ASSIGNMENT);
 
     checkWorksWhenAuthenticatedFailsOtherwise(put("/permissions/roleAssignment")
             .content(mapper.writeValueAsString(AuthTestData.ROLE_ASSIGNMENT))
@@ -343,7 +360,7 @@ public class RolesAndPermissonsControllerAuthTest extends BaseControllerAuthTest
         AuthTestData.ROLE_ASSIGNMENT, HttpStatus.OK,
         false);
 
-    verify(controller).updateRoleAssignment(USER_ID_1,API_KEY_1, AuthTestData.ROLE_ASSIGNMENT);
+    verify(controller).updateRoleAssignment(USER_ID_1, API_KEY_1, AuthTestData.ROLE_ASSIGNMENT);
   }
 
   /*

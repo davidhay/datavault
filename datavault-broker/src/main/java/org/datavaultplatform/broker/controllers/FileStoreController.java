@@ -49,7 +49,7 @@ public class FileStoreController {
     }
 
 
-    @RequestMapping(value = "/filestores", method = RequestMethod.GET)
+    @GetMapping("/filestores")
     public ResponseEntity<List<FileStore>> getFileStores(@RequestHeader(value = "X-UserID", required = true) String userID) {
         User user = usersService.getUser(userID);
         
@@ -64,9 +64,9 @@ public class FileStoreController {
 
 
 
-    @RequestMapping(value = "/filestores", method = RequestMethod.POST)
+    @PostMapping("/filestores")
     public ResponseEntity<FileStore> addFileStore(@RequestHeader(value = "X-UserID", required = true) String userID,
-                                  @RequestBody FileStore store) throws Exception {
+                                  @RequestBody FileStore store) {
 
         User user = usersService.getUser(userID);
         store.setUser(user);
@@ -74,7 +74,7 @@ public class FileStoreController {
         return new ResponseEntity<>(store, HttpStatus.CREATED);
     }
 
-    @RequestMapping(value = "/filestores/{filestoreid}", method = RequestMethod.GET)
+    @GetMapping("/filestores/{filestoreid}")
     public ResponseEntity<FileStore> getFileStore(@RequestHeader(value = "X-UserID", required = true) String userID,
                                @PathVariable("filestoreid") String filestoreid) {
 
@@ -82,15 +82,15 @@ public class FileStoreController {
         return new ResponseEntity<>(store, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "filestores/{filestoreid}", method = RequestMethod.DELETE)
-    public ResponseEntity<Object>  deleteFileStore(@RequestHeader(value = "X-UserID", required = true) String userID,
+    @DeleteMapping("/filestores/{filestoreid}")
+    public ResponseEntity<Void>  deleteFileStore(@RequestHeader(value = "X-UserID", required = true) String userID,
                                                @PathVariable("filestoreid") String filestoreid) {
 
         fileStoreService.deleteFileStore(filestoreid);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @RequestMapping(value = "/filestores/local", method = RequestMethod.GET)
+    @GetMapping("/filestores/local")
     public ResponseEntity<List<FileStore>> getFileStoresLocal(@RequestHeader(value = "X-UserID", required = true) String userID) {
         User user = usersService.getUser(userID);
 
@@ -109,7 +109,7 @@ public class FileStoreController {
 
 
 
-    @RequestMapping(value = "/filestores/sftp", method = RequestMethod.POST)
+    @PostMapping("/filestores/sftp")
     public ResponseEntity<FileStore> addFileStoreSFTP(@RequestHeader(value = "X-UserID", required = true) String userID,
                                       @RequestBody FileStore store) {
 
@@ -151,7 +151,7 @@ public class FileStoreController {
         return new ResponseEntity<>(store, HttpStatus.CREATED);
     }
 
-    @RequestMapping(value = "/filestores/sftp", method = RequestMethod.GET)
+    @GetMapping("/filestores/sftp")
     public ResponseEntity<List<FileStore>> getFileStoresSFTP(@RequestHeader(value = "X-UserID", required = true) String userID) {
         User user = usersService.getUser(userID);
 
@@ -167,7 +167,7 @@ public class FileStoreController {
         return new ResponseEntity<>(localStores, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/filestores/sftp/{filestoreid}", method = RequestMethod.GET)
+    @GetMapping("/filestores/sftp/{filestoreid}")
     public ResponseEntity<FileStore> getFilestoreSFTP(@RequestHeader(value = "X-UserID", required = true) String userID,
                                    @PathVariable("filestoreid") String filestoreid) {
 

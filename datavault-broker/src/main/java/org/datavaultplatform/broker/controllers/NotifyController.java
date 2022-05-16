@@ -38,10 +38,10 @@ public class NotifyController {
     @ApiHeaders(headers={
             @ApiHeader(name="X-UserID", description="DataVault Broker User ID")
     })
-    @RequestMapping(value = "/notify/login", method = RequestMethod.PUT)
+    @PutMapping("/notify/login")
     public String login(@RequestHeader(value = "X-UserID", required = true) String userID,
                         @RequestHeader(value = "X-Client-Key", required = true) String clientKey,
-                        @RequestBody CreateClientEvent clientEvent) throws Exception {
+                        @RequestBody CreateClientEvent clientEvent) {
         
         Login loginEvent = new Login(clientEvent.getRemoteAddress(), clientEvent.getUserAgent());
         loginEvent.setUser(usersService.getUser(userID));
@@ -62,10 +62,10 @@ public class NotifyController {
     @ApiHeaders(headers={
             @ApiHeader(name="X-UserID", description="DataVault Broker User ID")
     })
-    @RequestMapping(value = "/notify/logout", method = RequestMethod.PUT)
+    @PutMapping("/notify/logout")
     public String logout(@RequestHeader(value = "X-UserID", required = true) String userID,
                          @RequestHeader(value = "X-Client-Key", required = true) String clientKey,
-                         @RequestBody CreateClientEvent clientEvent) throws Exception {
+                         @RequestBody CreateClientEvent clientEvent) {
         
         Logout logoutEvent = new Logout(clientEvent.getRemoteAddress());
         logoutEvent.setUser(usersService.getUser(userID));

@@ -10,7 +10,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 
 import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
 import org.datavaultplatform.broker.app.DataVaultBrokerApp;
 import org.datavaultplatform.broker.config.MockServicesConfig;
 import org.datavaultplatform.broker.controllers.admin.AdminRetentionPoliciesController;
@@ -95,7 +94,8 @@ public class AdminRetentionPolicicesControllerAuthTest extends BaseControllerAut
         argUserId.capture(),
         argClientKey.capture(), argPolicyId.capture())).thenReturn(ResponseEntity.ok(policy));
 
-    checkWorksWhenAuthenticatedFailsOtherwise(get("/admin/retentionpolicies/123"), policy, HttpStatus.OK, false);
+    checkWorksWhenAuthenticatedFailsOtherwise(get("/admin/retentionpolicies/123"), policy,
+        HttpStatus.OK, false);
 
     verify(controller).getRetentionPolicy(USER_ID_1, API_KEY_1, "123");
   }
@@ -142,7 +142,8 @@ public class AdminRetentionPolicicesControllerAuthTest extends BaseControllerAut
         argUserId.capture(),
         argPolicyId.capture());
 
-    checkWorksWhenAuthenticatedFailsOtherwise(delete("/admin/retentionpolicies/delete/123"), null, HttpStatus.OK, false);
+    checkWorksWhenAuthenticatedFailsOtherwise(delete("/admin/retentionpolicies/delete/123"), null,
+        HttpStatus.OK, false);
 
     verify(controller).deleteRetentionPolicy(USER_ID_1, "123");
 

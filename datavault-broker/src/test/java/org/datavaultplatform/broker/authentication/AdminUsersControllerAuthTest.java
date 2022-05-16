@@ -8,7 +8,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import java.util.Arrays;
-import lombok.extern.slf4j.Slf4j;
 import org.datavaultplatform.broker.app.DataVaultBrokerApp;
 import org.datavaultplatform.broker.config.MockServicesConfig;
 import org.datavaultplatform.broker.controllers.admin.AdminUsersController;

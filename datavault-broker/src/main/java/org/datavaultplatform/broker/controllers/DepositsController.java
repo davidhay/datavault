@@ -97,7 +97,7 @@ public class DepositsController {
 
 
 
-    @RequestMapping(value = "/deposits/{depositid}", method = RequestMethod.GET)
+    @GetMapping("/deposits/{depositid}")
     public DepositInfo getDeposit(@RequestHeader(value = "X-UserID", required = true) String userID,
                                   @PathVariable("depositid") String depositID) throws Exception {
 
@@ -106,8 +106,8 @@ public class DepositsController {
         return depositsService.getUserDeposit(user, depositID).convertToResponse();
     }
 
-    @RequestMapping(value = "/deposits", method = RequestMethod.POST)
-    public ResponseEntity<Object> addDeposit(@RequestHeader(value = "X-UserID", required = true) String userID,
+    @PostMapping("/deposits")
+    public ResponseEntity<DepositInfo> addDeposit(@RequestHeader(value = "X-UserID", required = true) String userID,
                                              @RequestBody CreateDeposit createDeposit) throws Exception {
 
         Deposit deposit = new Deposit();
@@ -117,7 +117,7 @@ public class DepositsController {
 
         deposit.setName(createDeposit.getName());
         deposit.setDescription(createDeposit.getDescription());
-        if (createDeposit.getHasPersonalData().toLowerCase().equals("yes")) {
+        if (createDeposit.getHasPersonalData().equalsIgnoreCase("yes")) {
             deposit.setHasPersonalData(true);
         } else {
             deposit.setHasPersonalData(false);
@@ -157,7 +157,7 @@ public class DepositsController {
         return new ResponseEntity<>(deposit.convertToResponse(), HttpStatus.OK);
     }
     
-    @RequestMapping(value = "/deposits/{depositid}/manifest", method = RequestMethod.GET)
+    @GetMapping("/deposits/{depositid}/manifest")
     public List<FileFixity> getDepositManifest(@RequestHeader(value = "X-UserID", required = true) String userID,
                                                @PathVariable("depositid") String depositID) throws Exception {
 
@@ -173,7 +173,7 @@ public class DepositsController {
         return manifest;
     }
 
-    @RequestMapping(value = "/deposits/{depositid}/events", method = RequestMethod.GET)
+    @GetMapping("/deposits/{depositid}/events")
     public List<EventInfo> getDepositEvents(@RequestHeader(value = "X-UserID", required = true) String userID,
                                             @PathVariable("depositid") String depositID) throws Exception {
 
@@ -189,7 +189,7 @@ public class DepositsController {
         return events;
     }
 
-    @RequestMapping(value = "/deposits/{depositid}/retrieves", method = RequestMethod.GET)
+    @GetMapping("/deposits/{depositid}/retrieves")
     public List<Retrieve> getDepositRetrieves(@RequestHeader(value = "X-UserID", required = true) String userID,
                                             @PathVariable("depositid") String depositID) throws Exception {
 
@@ -199,7 +199,7 @@ public class DepositsController {
         return deposit.getRetrieves();
     }
 
-    @RequestMapping(value = "/deposits/{depositid}/jobs", method = RequestMethod.GET)
+    @GetMapping("/deposits/{depositid}/jobs")
     public List<Job> getDepositJobs(@RequestHeader(value = "X-UserID", required = true) String userID,
                                     @PathVariable("depositid") String depositID) throws Exception {
 
@@ -209,7 +209,8 @@ public class DepositsController {
         return deposit.getJobs();
     }
 
-    @RequestMapping(value = "/deposits/{depositid}/retrieve", method = RequestMethod.POST)
+    //TODO - from DavidHay - the name of this method seems wrong
+    @PostMapping( "/deposits/{depositid}/retrieve")
     public Boolean retrieveDeposit(@RequestHeader(value = "X-UserID", required = true) String userID,
                                   @PathVariable("depositid") String depositID,
                                   @RequestBody Retrieve retrieve) throws Exception {
@@ -408,7 +409,7 @@ public class DepositsController {
     	return archiveStores;
     }
 
-    @RequestMapping(value = "/deposits/{depositid}/restart", method = RequestMethod.POST)
+    @PostMapping("/deposits/{depositid}/restart")
     public Deposit restartDeposit(@RequestHeader(value = "X-UserID", required = true) String userID,
                                    @PathVariable("depositid") String depositID) throws Exception{
 

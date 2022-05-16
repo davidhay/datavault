@@ -66,10 +66,10 @@ public class AdminReviewsControllerAuthTest extends BaseControllerAuthTest {
   @Test
   void testGetCurrentReview() throws Exception {
     when(controller.getCurrentReview(
-        USER_ID_1, "2112")).thenReturn(AuthTestData.REVIEW_INFO);
+        USER_ID_1, "2112")).thenReturn(AuthTestData.REVIEW_INFO_1);
 
     checkWorksWhenAuthenticatedFailsOtherwise(get("/admin/vaults/2112/vaultreviews/current"),
-        AuthTestData.REVIEW_INFO, HttpStatus.OK,
+        AuthTestData.REVIEW_INFO_1, HttpStatus.OK,
         false,
         Permission.CAN_MANAGE_VAULTS);
 
@@ -98,13 +98,13 @@ public class AdminReviewsControllerAuthTest extends BaseControllerAuthTest {
   @Test
   void testPostCreateCurrentReview() throws Exception {
     when(controller.createCurrentReview(
-        USER_ID_1, "vaultID1")).thenReturn(AuthTestData.REVIEW_INFO);
+        USER_ID_1, "vaultID1")).thenReturn(AuthTestData.REVIEW_INFO_1);
 
     checkWorksWhenAuthenticatedFailsOtherwise(
         post("/admin/vaults/vaultreviews/current")
             .content("vaultID1")
             .contentType(MediaType.APPLICATION_JSON),
-        AuthTestData.REVIEW_INFO, HttpStatus.OK,
+        AuthTestData.REVIEW_INFO_1, HttpStatus.OK,
         false,
         Permission.CAN_MANAGE_VAULTS);
 
@@ -125,18 +125,18 @@ public class AdminReviewsControllerAuthTest extends BaseControllerAuthTest {
     when(controller.editVaultReview(
         argUserId.capture(),
         argClientKey.capture(),
-        argVaultReview.capture())).thenReturn(AuthTestData.VAULT_REVIEW);
+        argVaultReview.capture())).thenReturn(AuthTestData.VAULT_REVIEW_1);
 
     checkWorksWhenAuthenticatedFailsOtherwise(
         put("/admin/vaults/vaultreviews")
-            .content(mapper.writeValueAsString(AuthTestData.VAULT_REVIEW))
+            .content(mapper.writeValueAsString(AuthTestData.VAULT_REVIEW_1))
             .contentType(MediaType.APPLICATION_JSON),
-        AuthTestData.VAULT_REVIEW, HttpStatus.OK,
+        AuthTestData.VAULT_REVIEW_1, HttpStatus.OK,
         false,
         Permission.CAN_MANAGE_VAULTS);
 
     verify(controller).editVaultReview(USER_ID_1, API_KEY_1, argVaultReview.getValue());
-    assertEquals(AuthTestData.VAULT_REVIEW.getId(), argVaultReview.getValue().getId());
+    assertEquals(AuthTestData.VAULT_REVIEW_1.getId(), argVaultReview.getValue().getId());
   }
 
   /*
@@ -151,18 +151,18 @@ public class AdminReviewsControllerAuthTest extends BaseControllerAuthTest {
     //and as it's an @Entity class.
     when(controller.editDepositReview(
         argUserId.capture(),
-        argDepositReview.capture())).thenReturn(AuthTestData.DEPOSIT_REVIEW);
+        argDepositReview.capture())).thenReturn(AuthTestData.DEPOSIT_REVIEW_1);
 
     checkWorksWhenAuthenticatedFailsOtherwise(
         put("/admin/vaultreviews/depositreviews")
-            .content(mapper.writeValueAsString(AuthTestData.DEPOSIT_REVIEW))
+            .content(mapper.writeValueAsString(AuthTestData.DEPOSIT_REVIEW_1))
             .contentType(MediaType.APPLICATION_JSON),
-        AuthTestData.DEPOSIT_REVIEW, HttpStatus.OK,
+        AuthTestData.DEPOSIT_REVIEW_1, HttpStatus.OK,
         false,
         Permission.CAN_MANAGE_VAULTS);
 
     verify(controller).editDepositReview(USER_ID_1, argDepositReview.getValue());
-    assertEquals(AuthTestData.DEPOSIT_REVIEW.getId(), argDepositReview.getValue().getId());
+    assertEquals(AuthTestData.DEPOSIT_REVIEW_1.getId(), argDepositReview.getValue().getId());
   }
 
 }

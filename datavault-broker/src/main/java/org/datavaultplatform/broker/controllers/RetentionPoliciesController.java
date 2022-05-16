@@ -25,7 +25,7 @@ public class RetentionPoliciesController {
         this.adminService = adminService;
     }
 
-    @RequestMapping(value = "/retentionpolicies", method = RequestMethod.GET)
+    @GetMapping("/retentionpolicies")
     public List<RetentionPolicy> getPolicies(@RequestHeader(value = "X-UserID", required = true) String userID,
                                              @RequestHeader(value = "X-Client-Key", required = true) String clientKey) {
         return retentionPoliciesService.getRetentionPolicies();

@@ -14,7 +14,6 @@ import java.util.HashSet;
 import java.util.Set;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.datavaultplatform.broker.services.AdminService;
 import org.datavaultplatform.broker.services.ClientsService;
 import org.datavaultplatform.broker.services.RolesAndPermissionsService;
@@ -112,10 +111,10 @@ public abstract class BaseControllerAuthTest {
         .andDo(print())
         .andExpect(status().is(expectedSuccessStatus.value()));
 
-    if(expectedSuccessResponse == null){
+    if (expectedSuccessResponse == null) {
       resultActions
           .andExpect(content().string(""));
-    }else {
+    } else {
       //an expected response of type String means we should have 'text/plain' response
       if (expectedSuccessResponse instanceof String) {
         resultActions

@@ -5,6 +5,7 @@ import java.util.List;
 import org.datavaultplatform.common.model.Dataset;
 import org.datavaultplatform.broker.services.ExternalMetadataService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestHeader;
 
@@ -22,12 +23,12 @@ public class MetadataController {
         this.externalMetadataService = externalMetadataService;
     }
 
-    @RequestMapping(value = "/metadata/datasets", method = RequestMethod.GET)
+    @GetMapping(value = "/metadata/datasets")
     public List<Dataset> getDatasets(@RequestHeader(value = "X-UserID", required = true) String userID) {
         return externalMetadataService.getDatasets(userID);
     }
     
-    @RequestMapping(value = "/metadata/datasets/{datasetid}", method = RequestMethod.GET)
+    @GetMapping("/metadata/datasets/{datasetid}")
     public Dataset getDataset(@RequestHeader(value = "X-UserID", required = true) String userID,
                               @PathVariable("datasetid") String datasetID) {
         return externalMetadataService.getDataset(datasetID);
