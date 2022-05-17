@@ -209,7 +209,7 @@ public class DepositsController {
         return deposit.getJobs();
     }
 
-    //TODO - from DavidHay - the name of this method seems wrong
+    //TODO - from DavidHay - the name of this method seems wrong for a POST method
     @PostMapping( "/deposits/{depositid}/retrieve")
     public Boolean retrieveDeposit(@RequestHeader(value = "X-UserID", required = true) String userID,
                                   @PathVariable("depositid") String depositID,

@@ -13,7 +13,7 @@ import java.util.List;
  * Time: 14:29
  */
 
-@RestController("bob")
+@RestController
 public class RetentionPoliciesController {
     
     private final RetentionPoliciesService retentionPoliciesService;

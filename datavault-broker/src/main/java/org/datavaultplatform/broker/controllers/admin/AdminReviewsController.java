@@ -89,7 +89,7 @@ public class AdminReviewsController {
 
         User user = usersService.getUser(userID);
         Vault vault = vaultsService.getUserVault(user, vaultID);
-        //List<Deposit> deposits = vault.getDeposits();
+        List<Deposit> deposits = vault.getDeposits();
 
         VaultReview vaultReview = null;
         List <DepositReview> depositReviews = null;

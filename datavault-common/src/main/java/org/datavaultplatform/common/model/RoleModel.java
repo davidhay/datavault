@@ -77,16 +77,16 @@ public class RoleModel {
         this.type = type;
     }
 
-    public Collection<PermissionModel> getPermissions() {
+    public synchronized Collection<PermissionModel> getPermissions() {
         return Sets.newHashSet(permissions);
     }
 
-    public void setPermissions(Collection<PermissionModel> permissions) {
+    public synchronized void setPermissions(Collection<PermissionModel> permissions) {
         this.permissions.clear();
         this.permissions.addAll(permissions);
     }
 
-    public boolean addPermission(PermissionModel permissionModel) {
+    public synchronized boolean addPermission(PermissionModel permissionModel) {
         if (!hasPermission(permissionModel.getPermission())) {
             permissions.add(permissionModel);
             return true;
@@ -94,7 +94,7 @@ public class RoleModel {
         return false;
     }
 
-    public boolean hasPermission(Permission permission) {
+    public synchronized boolean hasPermission(Permission permission) {
         return permissions.stream()
                 .map(PermissionModel::getPermission)
                 .anyMatch(p -> p.equals(permission));
