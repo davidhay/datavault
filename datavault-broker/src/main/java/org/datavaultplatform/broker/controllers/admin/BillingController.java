@@ -1,5 +1,7 @@
 package org.datavaultplatform.broker.controllers.admin;
 
+import static org.datavaultplatform.common.util.Constants.HEADER_USER_ID;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -44,7 +46,7 @@ public class BillingController {
 	}
 
 	@GetMapping("/admin/billing/search")
-    public VaultsData searchAllBillingVaults(@RequestHeader(value = "X-UserID", required = true) String userID,
+    public VaultsData searchAllBillingVaults(@RequestHeader(HEADER_USER_ID) String userID,
                                                   @RequestParam String query,
                                                   @RequestParam(value = "sort", required = false) String sort,
                                                   @RequestParam(value = "order", required = false)
@@ -82,7 +84,7 @@ public class BillingController {
     }
     
     @GetMapping("/admin/billing/{vaultId}")
-    public BillingInformation getVaultBillingInfo(@RequestHeader(value = "X-UserID", required = true) String userID,
+    public BillingInformation getVaultBillingInfo(@RequestHeader(HEADER_USER_ID) String userID,
                                   @PathVariable("vaultId") String vaultId) {
 
     	BillingInformation vaultBillingInfo = vaultsService.getVault(vaultId).convertToBillingDetailsResponse();
@@ -90,7 +92,7 @@ public class BillingController {
         return vaultBillingInfo;
     }
     @PostMapping("/admin/billing/{vaultid}/updateBilling")
-    public BillingInformation updateBillingDetails(@RequestHeader(value = "X-UserID", required = true) String userID,
+    public BillingInformation updateBillingDetails(@RequestHeader(HEADER_USER_ID) String userID,
                                     @PathVariable("vaultid") String vaultID,
                                     @RequestBody BillingInformation billingDetails) {
     	Vault vault = vaultsService.getVault(vaultID);

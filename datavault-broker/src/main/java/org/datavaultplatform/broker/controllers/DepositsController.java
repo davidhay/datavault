@@ -1,5 +1,7 @@
 package org.datavaultplatform.broker.controllers;
 
+import static org.datavaultplatform.common.util.Constants.HEADER_USER_ID;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.datavaultplatform.broker.queue.Sender;
 import org.datavaultplatform.broker.services.*;
@@ -98,7 +100,7 @@ public class DepositsController {
 
 
     @GetMapping("/deposits/{depositid}")
-    public DepositInfo getDeposit(@RequestHeader(value = "X-UserID", required = true) String userID,
+    public DepositInfo getDeposit(@RequestHeader(HEADER_USER_ID) String userID,
                                   @PathVariable("depositid") String depositID) throws Exception {
 
         User user = usersService.getUser(userID);
@@ -107,7 +109,7 @@ public class DepositsController {
     }
 
     @PostMapping("/deposits")
-    public ResponseEntity<DepositInfo> addDeposit(@RequestHeader(value = "X-UserID", required = true) String userID,
+    public ResponseEntity<DepositInfo> addDeposit(@RequestHeader(HEADER_USER_ID) String userID,
                                              @RequestBody CreateDeposit createDeposit) throws Exception {
 
         Deposit deposit = new Deposit();
@@ -158,7 +160,7 @@ public class DepositsController {
     }
     
     @GetMapping("/deposits/{depositid}/manifest")
-    public List<FileFixity> getDepositManifest(@RequestHeader(value = "X-UserID", required = true) String userID,
+    public List<FileFixity> getDepositManifest(@RequestHeader(HEADER_USER_ID) String userID,
                                                @PathVariable("depositid") String depositID) throws Exception {
 
         User user = usersService.getUser(userID);
@@ -174,7 +176,7 @@ public class DepositsController {
     }
 
     @GetMapping("/deposits/{depositid}/events")
-    public List<EventInfo> getDepositEvents(@RequestHeader(value = "X-UserID", required = true) String userID,
+    public List<EventInfo> getDepositEvents(@RequestHeader(HEADER_USER_ID) String userID,
                                             @PathVariable("depositid") String depositID) throws Exception {
 
         User user = usersService.getUser(userID);
@@ -190,7 +192,7 @@ public class DepositsController {
     }
 
     @GetMapping("/deposits/{depositid}/retrieves")
-    public List<Retrieve> getDepositRetrieves(@RequestHeader(value = "X-UserID", required = true) String userID,
+    public List<Retrieve> getDepositRetrieves(@RequestHeader(HEADER_USER_ID) String userID,
                                             @PathVariable("depositid") String depositID) throws Exception {
 
         User user = usersService.getUser(userID);
@@ -200,7 +202,7 @@ public class DepositsController {
     }
 
     @GetMapping("/deposits/{depositid}/jobs")
-    public List<Job> getDepositJobs(@RequestHeader(value = "X-UserID", required = true) String userID,
+    public List<Job> getDepositJobs(@RequestHeader(HEADER_USER_ID) String userID,
                                     @PathVariable("depositid") String depositID) throws Exception {
 
         User user = usersService.getUser(userID);
@@ -211,7 +213,7 @@ public class DepositsController {
 
     //TODO - from DavidHay - the name of this method seems wrong for a POST method
     @PostMapping( "/deposits/{depositid}/retrieve")
-    public Boolean retrieveDeposit(@RequestHeader(value = "X-UserID", required = true) String userID,
+    public Boolean retrieveDeposit(@RequestHeader(HEADER_USER_ID) String userID,
                                   @PathVariable("depositid") String depositID,
                                   @RequestBody Retrieve retrieve) throws Exception {
         User user = usersService.getUser(userID);
@@ -410,7 +412,7 @@ public class DepositsController {
     }
 
     @PostMapping("/deposits/{depositid}/restart")
-    public Deposit restartDeposit(@RequestHeader(value = "X-UserID", required = true) String userID,
+    public Deposit restartDeposit(@RequestHeader(HEADER_USER_ID) String userID,
                                    @PathVariable("depositid") String depositID) throws Exception{
 
         User user = adminService.ensureAdminUser(userID);
@@ -521,7 +523,7 @@ public class DepositsController {
         depositProperties.put("bagId", deposit.getBagId());
         depositProperties.put("userId", user.getID());
         if (deposit.getNumOfChunks() != 0) {
-            logger.debug("Restart num of chunks: " + Integer.toString(deposit.getNumOfChunks()));
+            logger.debug("Restart num of chunks: " + deposit.getNumOfChunks());
             depositProperties.put("numOfChunks", Integer.toString(deposit.getNumOfChunks()));
         }
         if (deposit.getArchiveDigest() != null) {

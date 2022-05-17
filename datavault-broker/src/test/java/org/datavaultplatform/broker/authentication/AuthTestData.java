@@ -1,6 +1,8 @@
 package org.datavaultplatform.broker.authentication;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.Date;
 import org.datavaultplatform.common.model.ArchiveStore;
 import org.datavaultplatform.common.model.DataManager;
 import org.datavaultplatform.common.model.Dataset;
@@ -12,6 +14,7 @@ import org.datavaultplatform.common.model.FileStore;
 import org.datavaultplatform.common.model.Group;
 import org.datavaultplatform.common.model.Job;
 import org.datavaultplatform.common.model.PendingVault;
+import org.datavaultplatform.common.model.PendingVault.Billing_Type;
 import org.datavaultplatform.common.model.PermissionModel;
 import org.datavaultplatform.common.model.RetentionPolicy;
 import org.datavaultplatform.common.model.Retrieve;
@@ -22,10 +25,12 @@ import org.datavaultplatform.common.model.Vault;
 import org.datavaultplatform.common.model.VaultReview;
 import org.datavaultplatform.common.request.CreateClientEvent;
 import org.datavaultplatform.common.request.CreateDeposit;
+import org.datavaultplatform.common.request.CreateRetentionPolicy;
 import org.datavaultplatform.common.request.CreateVault;
 import org.datavaultplatform.common.request.TransferVault;
 import org.datavaultplatform.common.request.ValidateUser;
 import org.datavaultplatform.common.response.AuditInfo;
+import org.datavaultplatform.common.response.BillingInformation;
 import org.datavaultplatform.common.response.DepositInfo;
 import org.datavaultplatform.common.response.DepositSize;
 import org.datavaultplatform.common.response.DepositsData;
@@ -94,6 +99,8 @@ public class AuthTestData {
   public static final CreateClientEvent CREATE_CLIENT_EVENT;
   public static final RetentionPolicy RETENTION_1;
   public static final RetentionPolicy RETENTION_2;
+  public static final BillingInformation BILLING_INFO_1;
+  public static final CreateRetentionPolicy CREATE_RETENTION_POLICY;
 
   static {
     VaultInfo vaultInfo1 = new VaultInfo();
@@ -210,9 +217,16 @@ public class AuthTestData {
 
     USER_1 = new User();
     USER_1.setID("user-one");
+    USER_1.setLastname("last1");
+    USER_1.setFirstname("first1");
+    USER_1.setEmail("user.one@test.com");
 
     USER_2 = new User();
     USER_2.setID("user-two");
+    USER_2.setLastname("last2");
+    USER_2.setFirstname("first2");
+    USER_2.setEmail("user.two@test.com");
+    USER_2.setID("002");
 
     VALIDATE_USER = new ValidateUser();
     VALIDATE_USER.setUserid("validate-user-id-one");
@@ -278,5 +292,40 @@ public class AuthTestData {
     RETENTION_2 = new RetentionPolicy();
     RETENTION_2.setId(2);
     RETENTION_2.setName("retention-policy-2");
+
+    BILLING_INFO_1 = new BillingInformation();
+    BILLING_INFO_1.setAmountBilled(new BigDecimal("12.34"));
+    BILLING_INFO_1.setBillingType(Billing_Type.ORIG);
+    BILLING_INFO_1.setCreationTime(new Date());
+    BILLING_INFO_1.setBudgetCode(true);
+    BILLING_INFO_1.setId("123");
+    BILLING_INFO_1.setContactName("Joe Bloggs");
+    BILLING_INFO_1.setProjectId("project-123");
+    BILLING_INFO_1.setProjectSize(1234L);
+    BILLING_INFO_1.setProjectTitle("project-title");
+    BILLING_INFO_1.setReviewDate(new Date());
+    BILLING_INFO_1.setSchool("school of medicine");
+    BILLING_INFO_1.setSubUnit("ortho");
+    BILLING_INFO_1.setSliceID("slice1");
+    BILLING_INFO_1.setSpecialComments("special K");
+    BILLING_INFO_1.setUserName("user ABC");
+    BILLING_INFO_1.setVaultID("vault-id-1");
+    BILLING_INFO_1.setVaultName("vault-1-name");
+    BILLING_INFO_1.setVaultSize(9999L);
+
+    CREATE_RETENTION_POLICY = new CreateRetentionPolicy();
+    CREATE_RETENTION_POLICY.setDescription("desc");
+    CREATE_RETENTION_POLICY.setId(123);
+    CREATE_RETENTION_POLICY.setName("the-name");
+    CREATE_RETENTION_POLICY.setUrl("https://ed.ac.uk");
+    CREATE_RETENTION_POLICY.setMinRetentionPeriod(123);
+    CREATE_RETENTION_POLICY.setMinDataRetentionPeriod("min date retention period");
+    CREATE_RETENTION_POLICY.setEngine("V8");
+    CREATE_RETENTION_POLICY.setSort("bubble");
+    CREATE_RETENTION_POLICY.setExtendUponRetrieval(true);
+    CREATE_RETENTION_POLICY.setDateGuidanceReviewed("guidance reviewed date");
+    CREATE_RETENTION_POLICY.setEndDate("end date");
+    CREATE_RETENTION_POLICY.setInEffectDate("ineffect date");
+
   }
 }

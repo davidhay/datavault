@@ -1,5 +1,8 @@
 package org.datavaultplatform.broker.controllers.admin;
 
+import static org.datavaultplatform.common.util.Constants.HEADER_CLIENT_KEY;
+import static org.datavaultplatform.common.util.Constants.HEADER_USER_ID;
+
 import org.datavaultplatform.broker.services.RetentionPoliciesService;
 import org.datavaultplatform.common.model.RetentionPolicy;
 import org.datavaultplatform.common.request.CreateRetentionPolicy;
@@ -35,13 +38,13 @@ public class AdminRetentionPoliciesController {
             responsestatuscode = "200 - OK"
     )
     @ApiHeaders(headers={
-            @ApiHeader(name="X-UserID", description="DataVault Broker User ID"),
-            @ApiHeader(name="X-Client-Key", description="DataVault API Client Key")
+            @ApiHeader(name=HEADER_USER_ID, description="DataVault Broker User ID"),
+            @ApiHeader(name=HEADER_CLIENT_KEY, description="DataVault API Client Key")
     })
     @PostMapping("/admin/retentionpolicies")
-    public ResponseEntity<CreateRetentionPolicy> addRetentionPolicy(@RequestHeader(value = "X-UserID", required = true) String userID,
-                                                                    @RequestHeader(value = "X-Client-Key", required = true) String clientKey,
-                                                              @RequestBody CreateRetentionPolicy createRetentionPolicy) throws Exception {
+    public ResponseEntity<CreateRetentionPolicy> addRetentionPolicy(@RequestHeader(HEADER_USER_ID) String userID,
+                                                                    @RequestHeader(HEADER_CLIENT_KEY) String clientKey,
+                                                              @RequestBody CreateRetentionPolicy createRetentionPolicy) {
 
         logger.info("Adding new RetentionPolicy with name = " + createRetentionPolicy.getName());
 
@@ -67,12 +70,12 @@ public class AdminRetentionPoliciesController {
             responsestatuscode = "200 - OK"
     )
     @ApiHeaders(headers={
-            @ApiHeader(name="X-UserID", description="DataVault Broker User ID"),
-            @ApiHeader(name="X-Client-Key", description="DataVault API Client Key")
+            @ApiHeader(name=HEADER_USER_ID, description="DataVault Broker User ID"),
+            @ApiHeader(name=HEADER_CLIENT_KEY, description="DataVault API Client Key")
     })
     @GetMapping("/admin/retentionpolicies/{policyid}")
-    public ResponseEntity<CreateRetentionPolicy> getRetentionPolicy(@RequestHeader(value = "X-UserID", required = true) String userID,
-                                                                    @RequestHeader(value = "X-Client-Key", required = true) String clientKey,
+    public ResponseEntity<CreateRetentionPolicy> getRetentionPolicy(@RequestHeader(HEADER_USER_ID) String userID,
+                                                                    @RequestHeader(HEADER_CLIENT_KEY) String clientKey,
                                                                     @PathVariable("policyid") String policyid) {
 
         logger.info("Getting RetentionPolicy with id = " + policyid) ;
@@ -94,12 +97,12 @@ public class AdminRetentionPoliciesController {
             responsestatuscode = "200 - OK"
     )
     @ApiHeaders(headers={
-            @ApiHeader(name="X-UserID", description="DataVault Broker User ID"),
-            @ApiHeader(name="X-Client-Key", description="DataVault API Client Key")
+            @ApiHeader(name=HEADER_USER_ID, description="DataVault Broker User ID"),
+            @ApiHeader(name=HEADER_CLIENT_KEY, description="DataVault API Client Key")
     })
     @PutMapping("/admin/retentionpolicies")
-    public ResponseEntity<CreateRetentionPolicy> editRetentionPolicy(@RequestHeader(value = "X-UserID", required = true) String userID,
-                                                                     @RequestHeader(value = "X-Client-Key", required = true) String clientKey,
+    public ResponseEntity<CreateRetentionPolicy> editRetentionPolicy(@RequestHeader(HEADER_USER_ID) String userID,
+                                                                     @RequestHeader(HEADER_CLIENT_KEY) String clientKey,
                                                                     @RequestBody CreateRetentionPolicy crp) {
 
         RetentionPolicy rp = retentionPoliciesService.buildRetentionPolicy(crp);
@@ -109,7 +112,7 @@ public class AdminRetentionPoliciesController {
     }
 
     @DeleteMapping("/admin/retentionpolicies/delete/{id}")
-    public void deleteRetentionPolicy(@RequestHeader(value = "X-UserID", required = true) String userID,
+    public void deleteRetentionPolicy(@RequestHeader(HEADER_USER_ID) String userID,
                                       @PathVariable("id") String policyID) {
 
         retentionPoliciesService.delete(policyID);

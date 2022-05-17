@@ -1,5 +1,8 @@
 package org.datavaultplatform.broker.controllers.admin;
 
+import static org.datavaultplatform.common.util.Constants.HEADER_CLIENT_KEY;
+import static org.datavaultplatform.common.util.Constants.HEADER_USER_ID;
+
 import org.datavaultplatform.broker.services.UsersService;
 import org.datavaultplatform.common.model.User;
 import org.jsondoc.core.annotation.Api;
@@ -36,10 +39,10 @@ public class AdminUsersController {
             responsestatuscode = "200 - OK"
     )
     @ApiHeaders(headers={
-            @ApiHeader(name="X-UserID", description="DataVault Broker User ID")
+            @ApiHeader(name=HEADER_USER_ID, description="DataVault Broker User ID")
     })
     @GetMapping("/admin/users/search")
-    public List<User> getUsers(@RequestHeader(value = "X-UserID", required = true) String userID,
+    public List<User> getUsers(@RequestHeader(HEADER_USER_ID) String userID,
                                @RequestParam String query) {
         return usersService.search(query);
     }
@@ -52,10 +55,10 @@ public class AdminUsersController {
             responsestatuscode = "200 - OK"
     )
     @ApiHeaders(headers={
-            @ApiHeader(name="X-UserID", description="DataVault Broker User ID")
+            @ApiHeader(name=HEADER_USER_ID, description="DataVault Broker User ID")
     })
-    @RequestMapping(value = "/admin/users/count", method = RequestMethod.GET)
-    public int getUsersCount(@RequestHeader(value = "X-UserID", required = true) String userID) {
+    @GetMapping("/admin/users/count")
+    public int getUsersCount(@RequestHeader(HEADER_USER_ID) String userID) {
         return usersService.count();
     }
 
@@ -67,11 +70,11 @@ public class AdminUsersController {
             responsestatuscode = "200 - OK"
     )
     @ApiHeaders(headers={
-            @ApiHeader(name="X-UserID", description="DataVault Broker User ID"),
-            @ApiHeader(name="X-Client-Key", description="DataVault API Client Key")
+            @ApiHeader(name=HEADER_USER_ID, description="DataVault Broker User ID"),
+            @ApiHeader(name=HEADER_CLIENT_KEY, description="DataVault API Client Key")
     })
     @PostMapping("/admin/users")
-    public User addUser(@RequestHeader(value = "X-UserID", required = true) String userID,
+    public User addUser(@RequestHeader(HEADER_USER_ID) String userID,
                         @RequestBody User user) {
         usersService.addUser(user);
 
@@ -88,11 +91,11 @@ public class AdminUsersController {
             responsestatuscode = "200 - OK"
     )
     @ApiHeaders(headers={
-            @ApiHeader(name="X-UserID", description="DataVault Broker User ID"),
-            @ApiHeader(name="X-Client-Key", description="DataVault API Client Key")
+            @ApiHeader(name=HEADER_USER_ID, description="DataVault Broker User ID"),
+            @ApiHeader(name=HEADER_CLIENT_KEY, description="DataVault API Client Key")
     })
-    @RequestMapping(value = "/admin/users", method = RequestMethod.PUT)
-    public User editUser(@RequestHeader(value = "X-UserID", required = true) String userID,
+    @PutMapping("/admin/users")
+    public User editUser(@RequestHeader(HEADER_USER_ID) String userID,
                          @RequestBody User user) {
 
         usersService.updateUser(user);

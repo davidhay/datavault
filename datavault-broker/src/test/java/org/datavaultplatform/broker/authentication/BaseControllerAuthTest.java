@@ -14,16 +14,28 @@ import java.util.HashSet;
 import java.util.Set;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.datavaultplatform.broker.app.DataVaultBrokerApp;
+import org.datavaultplatform.broker.config.MockServicesConfig;
+import org.datavaultplatform.broker.queue.Sender;
 import org.datavaultplatform.broker.services.AdminService;
 import org.datavaultplatform.broker.services.ClientsService;
 import org.datavaultplatform.broker.services.RolesAndPermissionsService;
 import org.datavaultplatform.broker.services.UsersService;
+import org.datavaultplatform.broker.test.AddTestProperties;
 import org.datavaultplatform.common.model.Client;
 import org.datavaultplatform.common.model.Permission;
 import org.datavaultplatform.common.model.User;
+import org.datavaultplatform.common.util.Constants;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceTransactionManagerAutoConfiguration;
+import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.TestPropertySource;
@@ -31,10 +43,32 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
+@SpringBootTest(classes = DataVaultBrokerApp.class)
+@AddTestProperties
+@EnableAutoConfiguration(exclude = {
+    DataSourceAutoConfiguration.class,
+    DataSourceTransactionManagerAutoConfiguration.class,
+    HibernateJpaAutoConfiguration.class})
+@TestPropertySource(properties = {
+    "broker.controllers.enabled=true", //we have to pull in original controllers so we can override them
+    "broker.properties.enabled=true",
+    "broker.security.enabled=true",
+    "broker.scheduled.enabled=false",
+    "broker.initialise.enabled=false",
+    "broker.services.enabled=false",
+    "broker.rabbit.enabled=false",
+    "broker.database.enabled=false",
+    "broker.emailed.enabled=false",
+    "broker.ldap.enabled=false"})
+@Import(MockServicesConfig.class) //spring security relies on services
 @Slf4j
 @AutoConfigureMockMvc
 @TestPropertySource(properties = "logging.level.org.springframework.security=DEBUG")
 public abstract class BaseControllerAuthTest {
+
+  //one of the original controllers requires a Sender bean
+  @MockBean
+  Sender sender;
 
   public static final String USER_ID_1 = "test-user-01";
   public static final String API_KEY_1 = "api-key-01";
@@ -67,8 +101,13 @@ public abstract class BaseControllerAuthTest {
           req.setRemoteAddr(IP_ADDRESS);
           return req;
         })
-        .header("X-Client-Key", API_KEY_1)
-        .header("X-UserID", USER_ID_1);
+        .header(Constants.HEADER_CLIENT_KEY, API_KEY_1)
+        .header(Constants.HEADER_USER_ID, USER_ID_1);
+  }
+
+  protected final void checkWorksWhenAuthenticatedFailsOtherwise(
+      MockHttpServletRequestBuilder requestBuilder, Object expectedResponse, Permission... permissions) {
+    this.checkWorksWhenAuthenticatedFailsOtherwise(requestBuilder, expectedResponse, HttpStatus.OK, false, permissions);
   }
 
   /*
@@ -76,8 +115,6 @@ public abstract class BaseControllerAuthTest {
     Without authentication should fail, with authentication should succeed with expectedResponse as json
     NOTE : you still have to mock the controller method associated with endpoint to return expectedResponse
    */
-
-
   protected final void checkWorksWhenAuthenticatedFailsOtherwise(
       MockHttpServletRequestBuilder requestBuilder, Object expectedResponse,
       HttpStatus expectedSuccessStatus, boolean isAdminUser, Permission... permissions) {
@@ -99,7 +136,7 @@ public abstract class BaseControllerAuthTest {
   }
 
   private Set<Permission> getPermissions(Permission[] permissions) {
-    return new HashSet(Arrays.asList(permissions));
+    return new HashSet<>(Arrays.asList(permissions));
   }
 
   @SneakyThrows

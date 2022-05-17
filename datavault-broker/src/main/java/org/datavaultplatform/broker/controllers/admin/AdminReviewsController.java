@@ -1,5 +1,8 @@
 package org.datavaultplatform.broker.controllers.admin;
 
+import static org.datavaultplatform.common.util.Constants.HEADER_CLIENT_KEY;
+import static org.datavaultplatform.common.util.Constants.HEADER_USER_ID;
+
 import org.apache.commons.collections4.CollectionUtils;
 import org.datavaultplatform.broker.services.*;
 import org.datavaultplatform.common.event.vault.Review;
@@ -52,10 +55,10 @@ public class AdminReviewsController {
             responsestatuscode = "200 - OK"
     )
     @ApiHeaders(headers={
-            @ApiHeader(name="X-UserID", description="DataVault Broker User ID")
+            @ApiHeader(name=HEADER_USER_ID, description="DataVault Broker User ID")
     })
     @GetMapping("/admin/vaultsForReview")
-    public VaultsData getVaultsForReview(@RequestHeader(value = "X-UserID", required = true) String userID) {
+    public VaultsData getVaultsForReview(@RequestHeader(HEADER_USER_ID) String userID) {
 
         List<VaultInfo> vaultResponses = new ArrayList<>();
         List<Vault> vaults = vaultsService.getVaults();
@@ -81,10 +84,10 @@ public class AdminReviewsController {
             responsestatuscode = "200 - OK"
     )
     @ApiHeaders(headers={
-            @ApiHeader(name="X-UserID", description="DataVault Broker User ID")
+            @ApiHeader(name=HEADER_USER_ID, description="DataVault Broker User ID")
     })
     @GetMapping("/admin/vaults/{vaultid}/vaultreviews/current")
-    public ReviewInfo getCurrentReview(@RequestHeader(value = "X-UserID", required = true) String userID,
+    public ReviewInfo getCurrentReview(@RequestHeader(HEADER_USER_ID) String userID,
                                              @PathVariable("vaultid") String vaultID) throws Exception {
 
         User user = usersService.getUser(userID);
@@ -134,10 +137,10 @@ public class AdminReviewsController {
             responsestatuscode = "200 - OK"
     )
     @ApiHeaders(headers={
-            @ApiHeader(name="X-UserID", description="DataVault Broker User ID")
+            @ApiHeader(name=HEADER_USER_ID, description="DataVault Broker User ID")
     })
     @PostMapping("/admin/vaults/vaultreviews/current")
-    public ReviewInfo createCurrentReview(@RequestHeader(value = "X-UserID", required = true) String userID,
+    public ReviewInfo createCurrentReview(@RequestHeader(HEADER_USER_ID) String userID,
                                        @RequestBody String vaultID) throws Exception {
 
         User user = usersService.getUser(userID);
@@ -174,12 +177,12 @@ public class AdminReviewsController {
             responsestatuscode = "200 - OK"
     )
     @ApiHeaders(headers={
-            @ApiHeader(name="X-UserID", description="DataVault Broker User ID"),
-            @ApiHeader(name="X-Client-Key", description="DataVault API Client Key")
+            @ApiHeader(name=HEADER_USER_ID, description="DataVault Broker User ID"),
+            @ApiHeader(name=HEADER_CLIENT_KEY, description="DataVault API Client Key")
     })
     @PutMapping("/admin/vaults/vaultreviews")
-    public VaultReview editVaultReview(@RequestHeader(value = "X-UserID", required = true) String userID,
-                                       @RequestHeader(value = "X-Client-Key", required = true) String clientKey,
+    public VaultReview editVaultReview(@RequestHeader(HEADER_USER_ID) String userID,
+                                       @RequestHeader(HEADER_CLIENT_KEY) String clientKey,
                                        @RequestBody VaultReview vaultReview) {
 
 
@@ -208,11 +211,11 @@ public class AdminReviewsController {
             responsestatuscode = "200 - OK"
     )
     @ApiHeaders(headers={
-            @ApiHeader(name="X-UserID", description="DataVault Broker User ID"),
-            @ApiHeader(name="X-Client-Key", description="DataVault API Client Key")
+            @ApiHeader(name=HEADER_USER_ID, description="DataVault Broker User ID"),
+            @ApiHeader(name=HEADER_CLIENT_KEY, description="DataVault API Client Key")
     })
     @PutMapping("/admin/vaultreviews/depositreviews")
-    public DepositReview editDepositReview(@RequestHeader(value = "X-UserID", required = true) String userID,
+    public DepositReview editDepositReview(@RequestHeader(HEADER_USER_ID) String userID,
                                        @RequestBody DepositReview depositReview) {
 
 

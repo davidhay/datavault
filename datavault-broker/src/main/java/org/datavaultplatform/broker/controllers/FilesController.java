@@ -1,5 +1,7 @@
 package org.datavaultplatform.broker.controllers;
 
+import static org.datavaultplatform.common.util.Constants.HEADER_USER_ID;
+
 import org.apache.commons.codec.binary.Base64;
 import org.datavaultplatform.broker.services.AdminService;
 import org.datavaultplatform.broker.services.FilesService;
@@ -53,7 +55,7 @@ public class FilesController {
     }
 
     @GetMapping("/files")
-    public List<FileInfo> getStorageListing(@RequestHeader(value = "X-UserID", required = true) String userID,
+    public List<FileInfo> getStorageListing(@RequestHeader(HEADER_USER_ID) String userID,
                                             HttpServletRequest request) {
         
         User user = usersService.getUser(userID);
@@ -73,7 +75,7 @@ public class FilesController {
     }
     
     @GetMapping("/files/{storageid}/**")
-    public List<FileInfo> getFilesListing(@RequestHeader(value = "X-UserID", required = true) String userID,
+    public List<FileInfo> getFilesListing(@RequestHeader(HEADER_USER_ID) String userID,
                                           HttpServletRequest request,
                                           @PathVariable("storageid") String storageID) throws Exception {
         
@@ -116,7 +118,7 @@ public class FilesController {
     }
     
     @GetMapping("/filesize/{storageid}/**")
-    public String getFilesize(@RequestHeader(value = "X-UserID", required = true) String userID,
+    public String getFilesize(@RequestHeader(HEADER_USER_ID) String userID,
                                       HttpServletRequest request,
                                       @PathVariable("storageid") String storageID) throws Exception {
         
@@ -148,7 +150,7 @@ public class FilesController {
     }
 
     @GetMapping("/checkdepositsize")
-    public DepositSize checkDepositSize(@RequestHeader(value = "X-UserID", required = true) String userID,
+    public DepositSize checkDepositSize(@RequestHeader(HEADER_USER_ID) String userID,
                               HttpServletRequest request) throws Exception {
 
         User user = usersService.getUser(userID);
@@ -201,7 +203,7 @@ public class FilesController {
     }
     
     @PostMapping(value="/upload/{fileUploadHandle}/{filename:.+}")
-    public String postFileChunk(@RequestHeader(value = "X-UserID", required = true) String userID,
+    public String postFileChunk(@RequestHeader(HEADER_USER_ID) String userID,
                                 HttpServletRequest request,
                                 @PathVariable("fileUploadHandle") String fileUploadHandle,
                                 @PathVariable("filename") String filename) throws Exception {

@@ -1,5 +1,7 @@
 package org.datavaultplatform.broker.controllers.admin;
 
+import static org.datavaultplatform.common.util.Constants.HEADER_USER_ID;
+
 import org.datavaultplatform.broker.services.PendingVaultsService;
 import org.jsondoc.core.annotation.Api;
 import org.slf4j.Logger;
@@ -21,16 +23,9 @@ public class AdminPendingVaultsController {
 		this.pendingVaultsService = pendingVaultsService;
 	}
 
-	/*
-	@RequestMapping(value = "/admin/pendingVaults/addVault/{pendingVaultId}", method = RequestMethod.POST)
-	public boolean addVaultForPendingVault(@PathVariable("pendingVaultId") String pendingVaultId,
-			                               @RequestBody Date reviewDate) throws Exception {
-		return false;
-	}*/
-
 	@DeleteMapping("/admin/pendingVaults/{id}")
-	public void delete(@RequestHeader(value = "X-UserID", required = true) String userID,
-									  @PathVariable("id") String vaultID) throws Exception {
+	public void delete(@RequestHeader(HEADER_USER_ID) String userID,
+									  @PathVariable("id") String vaultID) {
 
 		pendingVaultsService.delete(vaultID);
 	}

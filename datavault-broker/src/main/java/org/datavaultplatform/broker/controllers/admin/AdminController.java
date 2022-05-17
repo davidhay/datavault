@@ -1,11 +1,12 @@
 package org.datavaultplatform.broker.controllers.admin;
 
+import static org.datavaultplatform.common.util.Constants.HEADER_USER_ID;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.datavaultplatform.broker.queue.Sender;
@@ -29,11 +30,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -104,7 +104,7 @@ public class AdminController {
 
 
     @GetMapping(value = "/admin/deposits/count")
-    public Integer getDepositsAll(@RequestHeader(value = "X-UserID", required = true) String userID,
+    public Integer getDepositsCount(@RequestHeader(HEADER_USER_ID) String userID,
                                   @RequestParam(value = "query", required = false)
                                   @ApiQueryParam(name = "query",
                                           description = "Deposit query field",
@@ -117,7 +117,7 @@ public class AdminController {
     }
 
     @GetMapping("/admin/deposits")
-    public List<DepositInfo> getDepositsAll(@RequestHeader(value = "X-UserID", required = true) String userID,
+    public List<DepositInfo> getDepositsAll(@RequestHeader(HEADER_USER_ID) String userID,
                                             @RequestParam(value = "query", required = false)
                                             @ApiQueryParam(name = "query",
                                                     description = "Deposit query field",
@@ -177,10 +177,10 @@ public class AdminController {
             responsestatuscode = "200 - OK"
     )
     @ApiHeaders(headers={
-            @ApiHeader(name="X-UserID", description="DataVault Broker User ID")
+            @ApiHeader(name=HEADER_USER_ID, description="DataVault Broker User ID")
     })
     @GetMapping("/admin/deposits/data")
-    public DepositsData getDepositsAllData(@RequestHeader(value = "X-UserID", required = true) String userID,
+    public DepositsData getDepositsAllData(@RequestHeader(HEADER_USER_ID) String userID,
                                            @RequestParam(value = "sort", required = false)
                                            @ApiQueryParam(name = "sort", description = "Vault sort field") String sort
     ) {
@@ -218,7 +218,7 @@ public class AdminController {
 
 
     @GetMapping("/admin/retrieves")
-    public List<Retrieve> getRetrievesAll(@RequestHeader(value = "X-UserID", required = true) String userID) {
+    public List<Retrieve> getRetrievesAll(@RequestHeader(HEADER_USER_ID) String userID) {
 
         return retrievesService.getRetrieves(userID);
     }
@@ -231,10 +231,10 @@ public class AdminController {
             responsestatuscode = "200 - OK"
     )
     @ApiHeaders(headers={
-            @ApiHeader(name="X-UserID", description="DataVault Broker User ID")
+            @ApiHeader(name=HEADER_USER_ID, description="DataVault Broker User ID")
     })
     @GetMapping(value = "/admin/vaults")
-    public VaultsData getVaultsAll(@RequestHeader(value = "X-UserID", required = true) String userID,
+    public VaultsData getVaultsAll(@RequestHeader(HEADER_USER_ID) String userID,
                                    @RequestParam(value = "sort", required = false)
                                    @ApiQueryParam(name = "sort", description = "Vault sort field", allowedvalues = {"id", "name", "description", "vaultSize", "user", "policy", "creationTime", "groupID", "reviewDate"}, defaultvalue = "creationTime", required = false) String sort,
                                    @RequestParam(value = "order", required = false)
@@ -270,7 +270,7 @@ public class AdminController {
     }
 
     @GetMapping(value = "/admin/events")
-    public List<EventInfo> getEventsAll(@RequestHeader(value = "X-UserID", required = true) String userID,
+    public List<EventInfo> getEventsAll(@RequestHeader(HEADER_USER_ID) String userID,
                                         @RequestParam(value = "sort", required = false) String sort) {
 
         List<EventInfo> events = new ArrayList<>();
@@ -281,14 +281,14 @@ public class AdminController {
     }
 
     @GetMapping("/admin/audits")
-    public List<AuditInfo> getAuditsAll(@RequestHeader(value = "X-UserID", required = true) String userID) {
+    public List<AuditInfo> getAuditsAll(@RequestHeader(HEADER_USER_ID) String userID) {
 	    List<AuditInfo> audits = new ArrayList<>();
 
 	    for (Audit audit : auditsService.getAudits()){
             AuditInfo auditInfo = audit.convertToResponse();
 
             List<AuditChunkStatus> auditChunks = auditsService.getAuditChunkStatus(audit);
-            ArrayList<AuditChunkStatusInfo> auditChunksInfo = new ArrayList<AuditChunkStatusInfo>();
+            ArrayList<AuditChunkStatusInfo> auditChunksInfo = new ArrayList<>();
             for (AuditChunkStatus auditChunk : auditChunks){
                 auditChunksInfo.add(auditChunk.convertToResponse());
             }
@@ -302,7 +302,7 @@ public class AdminController {
 
     //TODO - looks like this method could do with TLC
     @GetMapping("/admin/deposits/audit")
-    public String runDepositAudit(@RequestHeader(value = "X-UserID", required = true) String userID,
+    public String runDepositAudit(@RequestHeader(HEADER_USER_ID) String userID,
                                 HttpServletRequest request) {
         // Make sure it's admin or localhost
         String remoteAddr = request.getRemoteAddr();
@@ -316,8 +316,8 @@ public class AdminController {
         return "Success";
     }
     
-    @RequestMapping(value = "/admin/deposits/{depositID}", method = RequestMethod.DELETE)
-    public ResponseEntity<Object> deleteDeposit(@RequestHeader(value = "X-UserID", required = true) String userID,
+    @DeleteMapping("/admin/deposits/{depositID}")
+    public ResponseEntity<Object> deleteDeposit(@RequestHeader(HEADER_USER_ID) String userID,
                                                 @PathVariable("depositID") String depositID) throws Exception {
 
         LOGGER.info("Delete deposit with ID : {}", depositID);

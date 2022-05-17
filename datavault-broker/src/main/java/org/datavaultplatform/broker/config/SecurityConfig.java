@@ -1,5 +1,7 @@
 package org.datavaultplatform.broker.config;
 
+import static org.datavaultplatform.common.util.Constants.HEADER_USER_ID;
+
 import lombok.extern.slf4j.Slf4j;
 import org.datavaultplatform.broker.authentication.RestAuthenticationFailureHandler;
 import org.datavaultplatform.broker.authentication.RestAuthenticationFilter;
@@ -10,7 +12,9 @@ import org.datavaultplatform.broker.services.AdminService;
 import org.datavaultplatform.broker.services.ClientsService;
 import org.datavaultplatform.broker.services.RolesAndPermissionsService;
 import org.datavaultplatform.broker.services.UsersService;
+import org.datavaultplatform.common.util.Constants;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -23,6 +27,7 @@ import org.springframework.security.web.authentication.preauth.AbstractPreAuthen
 
 @EnableWebSecurity
 @Slf4j
+@ConditionalOnExpression("${broker.security.enabled:true}")
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
@@ -30,7 +35,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
   boolean securityDebug;
 
   @Override
-  public void configure(WebSecurity web) throws Exception {
+  public void configure(WebSecurity web) {
     web.debug(securityDebug);
   }
 
@@ -95,7 +100,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
   RestAuthenticationFilter restFilter() throws Exception {
     RestAuthenticationFilter result = new RestAuthenticationFilter();
-    result.setPrincipalRequestHeader("X-UserID");
+    result.setPrincipalRequestHeader(HEADER_USER_ID);
     result.setAuthenticationManager(authenticationManager());
     result.setAuthenticationDetailsSource(restWebAuthenticationDetailsSource());
     result.setAuthenticationSuccessHandler(authenticationSuccessHandler());
@@ -137,7 +142,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
   @Bean
   RestWebAuthenticationDetailsSource restWebAuthenticationDetailsSource(){
     RestWebAuthenticationDetailsSource result = new RestWebAuthenticationDetailsSource();
-    result.setClientKeyRequestHeader("X-Client-Key");
+    result.setClientKeyRequestHeader(Constants.HEADER_CLIENT_KEY);
     return result;
   }
 

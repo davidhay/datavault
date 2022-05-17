@@ -7,49 +7,20 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 
-import org.datavaultplatform.broker.app.DataVaultBrokerApp;
-import org.datavaultplatform.broker.config.MockServicesConfig;
 import org.datavaultplatform.broker.controllers.admin.AdminReviewsController;
-import org.datavaultplatform.broker.queue.Sender;
-import org.datavaultplatform.broker.test.AddTestProperties;
 import org.datavaultplatform.common.model.DepositReview;
 import org.datavaultplatform.common.model.Permission;
 import org.datavaultplatform.common.model.VaultReview;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceTransactionManagerAutoConfiguration;
-import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Import;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.TestPropertySource;
 
-@SpringBootTest(classes = DataVaultBrokerApp.class)
-@AddTestProperties
-@EnableAutoConfiguration(exclude = {
-    DataSourceAutoConfiguration.class,
-    DataSourceTransactionManagerAutoConfiguration.class,
-    HibernateJpaAutoConfiguration.class})
-@TestPropertySource(properties = {
-    "broker.controllers.enabled=true",
-    "broker.services.enabled=false",
-    "broker.scheduled.enabled=false",
-    "broker.initialise.enabled=false",
-    "broker.rabbit.enabled=false",
-    "broker.database.enabled=false"})
-@Import(MockServicesConfig.class) //spring security relies on services
 public class AdminReviewsControllerAuthTest extends BaseControllerAuthTest {
 
   @MockBean
   AdminReviewsController controller;
-
-  @MockBean
-  Sender sender;
 
   @Captor
   ArgumentCaptor<VaultReview> argVaultReview;
@@ -68,33 +39,27 @@ public class AdminReviewsControllerAuthTest extends BaseControllerAuthTest {
     when(controller.getCurrentReview(
         USER_ID_1, "2112")).thenReturn(AuthTestData.REVIEW_INFO_1);
 
-    checkWorksWhenAuthenticatedFailsOtherwise(get("/admin/vaults/2112/vaultreviews/current"),
-        AuthTestData.REVIEW_INFO_1, HttpStatus.OK,
-        false,
+    checkWorksWhenAuthenticatedFailsOtherwise(
+        get("/admin/vaults/{vaultid}/vaultreviews/current","2112"),
+        AuthTestData.REVIEW_INFO_1,
         Permission.CAN_MANAGE_VAULTS);
 
     verify(controller).getCurrentReview(USER_ID_1, "2112");
   }
 
   @Test
-  void testGetVaultsForReview() throws Exception {
+  void testGetVaultsForReview() {
     when(controller.getVaultsForReview(
         USER_ID_1)).thenReturn(AuthTestData.VAULTS_DATA);
 
-    checkWorksWhenAuthenticatedFailsOtherwise(get("/admin/vaultsForReview"),
-        AuthTestData.VAULTS_DATA, HttpStatus.OK,
-        false,
+    checkWorksWhenAuthenticatedFailsOtherwise(
+        get("/admin/vaultsForReview"),
+        AuthTestData.VAULTS_DATA,
         Permission.CAN_MANAGE_VAULTS);
 
     verify(controller).getVaultsForReview(USER_ID_1);
   }
 
-  /*
-      @PostMapping("/admin/vaults/vaultreviews/current")
-    public ReviewInfo createCurrentReview(@RequestHeader(value = "X-UserID", required = true) String userID,
-                                       @RequestBody String vaultID) throws Exception {
-
-   */
   @Test
   void testPostCreateCurrentReview() throws Exception {
     when(controller.createCurrentReview(
@@ -104,19 +69,12 @@ public class AdminReviewsControllerAuthTest extends BaseControllerAuthTest {
         post("/admin/vaults/vaultreviews/current")
             .content("vaultID1")
             .contentType(MediaType.APPLICATION_JSON),
-        AuthTestData.REVIEW_INFO_1, HttpStatus.OK,
-        false,
+        AuthTestData.REVIEW_INFO_1,
         Permission.CAN_MANAGE_VAULTS);
 
     verify(controller).createCurrentReview(USER_ID_1, "vaultID1");
   }
 
-  /*
-      @PutMapping("/admin/vaults/vaultreviews")
-    public VaultReview editVaultReview(@RequestHeader(value = "X-UserID", required = true) String userID,
-                                       @RequestHeader(value = "X-Client-Key", required = true) String clientKey,
-                                       @RequestBody VaultReview vaultReview) {
-   */
   @Test
   void testPutEditCurrentReview() throws Exception {
 
@@ -131,19 +89,13 @@ public class AdminReviewsControllerAuthTest extends BaseControllerAuthTest {
         put("/admin/vaults/vaultreviews")
             .content(mapper.writeValueAsString(AuthTestData.VAULT_REVIEW_1))
             .contentType(MediaType.APPLICATION_JSON),
-        AuthTestData.VAULT_REVIEW_1, HttpStatus.OK,
-        false,
+        AuthTestData.VAULT_REVIEW_1,
         Permission.CAN_MANAGE_VAULTS);
 
     verify(controller).editVaultReview(USER_ID_1, API_KEY_1, argVaultReview.getValue());
     assertEquals(AuthTestData.VAULT_REVIEW_1.getId(), argVaultReview.getValue().getId());
   }
 
-  /*
-    @PutMapping("/admin/vaultreviews/depositreviews")
-    public DepositReview editDepositReview(@RequestHeader(value = "X-UserID", required = true) String userID,
-                                       @RequestBody DepositReview depositReview) {
-   */
   @Test
   void testPutEditDepositReview() throws Exception {
 
@@ -157,8 +109,7 @@ public class AdminReviewsControllerAuthTest extends BaseControllerAuthTest {
         put("/admin/vaultreviews/depositreviews")
             .content(mapper.writeValueAsString(AuthTestData.DEPOSIT_REVIEW_1))
             .contentType(MediaType.APPLICATION_JSON),
-        AuthTestData.DEPOSIT_REVIEW_1, HttpStatus.OK,
-        false,
+        AuthTestData.DEPOSIT_REVIEW_1,
         Permission.CAN_MANAGE_VAULTS);
 
     verify(controller).editDepositReview(USER_ID_1, argDepositReview.getValue());

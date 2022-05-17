@@ -1,5 +1,6 @@
 package org.datavaultplatform.broker.controllers.admin;
 
+import static org.datavaultplatform.common.util.Constants.HEADER_USER_ID;
 import org.datavaultplatform.broker.services.ArchiveStoreService;
 import org.datavaultplatform.common.model.ArchiveStore;
 import org.slf4j.Logger;
@@ -24,20 +25,20 @@ public class AdminArchiveStoreController {
     }
 
     @GetMapping("/admin/archivestores")
-    public ResponseEntity<List<ArchiveStore>> getArchiveStores(@RequestHeader(value = "X-UserID", required = true) String userID) {
+    public ResponseEntity<List<ArchiveStore>> getArchiveStores(@RequestHeader(HEADER_USER_ID) String userID) {
 
         List<ArchiveStore> archiveStores = archiveStoreService.getArchiveStores();
         return new ResponseEntity<>(archiveStores, HttpStatus.OK);
     }
 
     @GetMapping("/admin/archivestores/{archivestoreid}")
-    public ResponseEntity<ArchiveStore> getArchiveStore(@RequestHeader(value = "X-UserID", required = true) String userID, @PathVariable("archivestoreid") String archivestoreid) {
+    public ResponseEntity<ArchiveStore> getArchiveStore(@RequestHeader(HEADER_USER_ID) String userID, @PathVariable("archivestoreid") String archivestoreid) {
 
         return new ResponseEntity<>(archiveStoreService.getArchiveStore(archivestoreid), HttpStatus.OK);
     }
 
     @PostMapping("/admin/archivestores")
-    public ResponseEntity<ArchiveStore> addArchiveStore(@RequestHeader(value = "X-UserID", required = true) String userID,
+    public ResponseEntity<ArchiveStore> addArchiveStore(@RequestHeader(HEADER_USER_ID) String userID,
                                                         @RequestBody ArchiveStore store) {
         try{
             archiveStoreService.addArchiveStore(store);
@@ -50,7 +51,7 @@ public class AdminArchiveStoreController {
     }
 
     @PutMapping("/admin/archivestores")
-    public ResponseEntity<ArchiveStore> editArchiveStore(@RequestHeader(value = "X-UserID", required = true) String userID,
+    public ResponseEntity<ArchiveStore> editArchiveStore(@RequestHeader(HEADER_USER_ID) String userID,
                                                          @RequestBody ArchiveStore store) {
 
         archiveStoreService.updateArchiveStore(store);
@@ -58,7 +59,7 @@ public class AdminArchiveStoreController {
     }
 
     @DeleteMapping("/admin/archivestores/{archivestoreid}")
-    public ResponseEntity<Void>  deleteArchiveStore(@RequestHeader(value = "X-UserID", required = true) String userID,
+    public ResponseEntity<Void>  deleteArchiveStore(@RequestHeader(HEADER_USER_ID) String userID,
                                                       @PathVariable("archivestoreid") String archivestoreid) {
 
         archiveStoreService.deleteArchiveStore(archivestoreid);

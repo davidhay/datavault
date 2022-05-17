@@ -1,5 +1,8 @@
 package org.datavaultplatform.broker.controllers;
 
+import static org.datavaultplatform.common.util.Constants.HEADER_CLIENT_KEY;
+import static org.datavaultplatform.common.util.Constants.HEADER_USER_ID;
+
 import org.apache.commons.collections4.CollectionUtils;
 import org.datavaultplatform.broker.services.*;
 import org.datavaultplatform.common.email.EmailTemplate;
@@ -101,10 +104,10 @@ public class VaultsController {
             responsestatuscode = "200 - OK"
     )
     @ApiHeaders(headers={
-            @ApiHeader(name="X-UserID", description="DataVault Broker User ID")
+            @ApiHeader(name=HEADER_USER_ID, description="DataVault Broker User ID")
     })
     @GetMapping("/vaults")
-    public List<VaultInfo> getVaults(@RequestHeader(value = "X-UserID", required = true) String userID) {
+    public List<VaultInfo> getVaults(@RequestHeader(HEADER_USER_ID) String userID) {
 
         List<VaultInfo> vaultResponses = permissionsService.getRoleAssignmentsForUser(userID).stream()
                 .filter(roleAssignment -> (RoleType.VAULT == roleAssignment.getRole().getType() ||
@@ -132,10 +135,10 @@ public class VaultsController {
             responsestatuscode = "200 - OK"
     )
     @ApiHeaders(headers={
-            @ApiHeader(name="X-UserID", description="DataVault Broker User ID")
+            @ApiHeader(name=HEADER_USER_ID, description="DataVault Broker User ID")
     })
     @GetMapping("/pendingVaults")
-    public List<VaultInfo> getPendingVaults(@RequestHeader(value = "X-UserID", required = true) String userID) {
+    public List<VaultInfo> getPendingVaults(@RequestHeader(HEADER_USER_ID) String userID) {
 
         List<VaultInfo> vaultResponses = permissionsService.getRoleAssignmentsForUser(userID).stream()
                 .filter(roleAssignment -> (RoleUtils.isVaultCreator(roleAssignment)) && (roleAssignment.getPendingVaultId() != null))
@@ -175,8 +178,8 @@ public class VaultsController {
 
 
     @PostMapping("/vaults/{vaultId}/transfer")
-    public ResponseEntity<Void> transferVault(@RequestHeader(value = "X-UserID", required = true) String userID,
-                                        @RequestHeader(value = "X-Client-Key", required = true) String clientKey,
+    public ResponseEntity<Void> transferVault(@RequestHeader(HEADER_USER_ID) String userID,
+                                        @RequestHeader(HEADER_CLIENT_KEY) String clientKey,
                                         @PathVariable("vaultId") String vaultId,
                                         @RequestBody TransferVault transfer) {
 
@@ -245,7 +248,7 @@ public class VaultsController {
             roleAssignmentEvent.setAgentType(Agent.AgentType.BROKER);
             roleAssignmentEvent.setAgent(clientsService.getClientByApiKey(clientKey).getName());
             roleAssignmentEvent.setAssignee(usersService.getUser(assignment.getUserId()));
-            roleAssignmentEvent.setRole(assignment.getRole());;
+            roleAssignmentEvent.setRole(assignment.getRole());
 
             eventService.addEvent(roleAssignmentEvent);
         }
@@ -253,7 +256,7 @@ public class VaultsController {
     }
 
     @GetMapping("/vaults/search")
-    public VaultsData searchAllVaults(@RequestHeader(value = "X-UserID", required = true) String userID,
+    public VaultsData searchAllVaults(@RequestHeader(HEADER_USER_ID) String userID,
                                       @RequestParam String query,
                                       @RequestParam(value = "sort", required = false) String sort,
                                       @RequestParam(value = "order", required = false)
@@ -297,7 +300,7 @@ public class VaultsController {
     }
 
     @GetMapping("/pendingVaults/search")
-    public VaultsData searchAllPendingVaults(@RequestHeader(value = "X-UserID", required = true) String userID,
+    public VaultsData searchAllPendingVaults(@RequestHeader(HEADER_USER_ID) String userID,
                                       @RequestParam String query,
                                       @RequestParam(value = "sort", required = false) String sort,
                                       @RequestParam(value = "order", required = false)
@@ -341,7 +344,7 @@ public class VaultsController {
     }
 
     @GetMapping(value = "/vaults/deposits/search")
-    public List<DepositInfo> searchAllDeposits(@RequestHeader(value = "X-UserID", required = true) String userID,
+    public List<DepositInfo> searchAllDeposits(@RequestHeader(HEADER_USER_ID) String userID,
                                                @RequestParam(value = "query", required = false, defaultValue = "") String query,
                                                @RequestParam(value = "sort", required = false, defaultValue = "creationTime") String sort,
                                                @RequestParam(value = "order", required = false, defaultValue = "desc") String order) {
@@ -372,7 +375,7 @@ public class VaultsController {
 
 
     @GetMapping("/vaults/deposits/data/search")
-    public DepositsData searchAllDepositsData(@RequestHeader(value = "X-UserID", required = true) String userID,
+    public DepositsData searchAllDepositsData(@RequestHeader(HEADER_USER_ID) String userID,
                                               @RequestParam(value = "query", required = false, defaultValue = "") String query,
                                               @RequestParam(value = "sort", required = false, defaultValue = "creationTime") String sort,
                                               @RequestParam(value = "order", required = false, defaultValue = "desc") String order) {
@@ -410,8 +413,8 @@ public class VaultsController {
     }
 
     @PostMapping("/pendingVaults/update")
-    public VaultInfo updatePendingVault(@RequestHeader(value = "X-UserID", required=true) String userID,
-                                        @RequestHeader(value = "X-Client-Key", required = true) String clientKey,
+    public VaultInfo updatePendingVault(@RequestHeader(HEADER_USER_ID) String userID,
+                                        @RequestHeader(HEADER_CLIENT_KEY) String clientKey,
                                         @RequestBody CreateVault createVault) throws Exception {
         PendingVault vault = pendingVaultsService.getPendingVault(createVault.getPendingID());
         vault = pendingVaultsService.processVaultParams(vault, createVault, userID);
@@ -462,8 +465,8 @@ public class VaultsController {
         return vault.convertToResponse();
     }
     @PostMapping(value = "/pendingVaults")
-    public VaultInfo addPendingVault(@RequestHeader(value = "X-UserID", required = true) String userID,
-                              @RequestHeader(value = "X-Client-Key", required = true) String clientKey,
+    public VaultInfo addPendingVault(@RequestHeader(HEADER_USER_ID) String userID,
+                              @RequestHeader(HEADER_CLIENT_KEY) String clientKey,
                               @RequestBody CreateVault createVault) throws Exception {
         PendingVault vault = new PendingVault();
         vault = pendingVaultsService.processVaultParams(vault, createVault, userID);
@@ -492,8 +495,8 @@ public class VaultsController {
     }
 
     @PostMapping("/vaults")
-    public VaultInfo addVault(@RequestHeader(value = "X-UserID", required = true) String userID,
-                              @RequestHeader(value = "X-Client-Key", required = true) String clientKey,
+    public VaultInfo addVault(@RequestHeader(HEADER_USER_ID) String userID,
+                              @RequestHeader(HEADER_CLIENT_KEY) String clientKey,
                               @RequestBody CreateVault createVault) throws Exception {
 
         Vault vault = new Vault();
@@ -576,7 +579,7 @@ public class VaultsController {
     }
 
     @GetMapping("/vaults/{vaultid}")
-    public VaultInfo getVault(@RequestHeader(value = "X-UserID", required = true) String userID,
+    public VaultInfo getVault(@RequestHeader(HEADER_USER_ID) String userID,
                               @PathVariable("vaultid") String vaultID) throws Exception {
 
         User user = usersService.getUser(userID);
@@ -589,7 +592,7 @@ public class VaultsController {
     }
 
     @GetMapping("/pendingVaults/{vaultid}")
-    public VaultInfo getPendingVault(@RequestHeader(value = "X-UserID", required = true) String userID,
+    public VaultInfo getPendingVault(@RequestHeader(HEADER_USER_ID) String userID,
                               @PathVariable("vaultid") String vaultID) throws Exception {
 
         User user = usersService.getUser(userID);
@@ -620,28 +623,28 @@ public class VaultsController {
     
 
     @GetMapping("/vaults/{vaultid}/checkretentionpolicy")
-    public Vault checkVaultRetentionPolicy(@RequestHeader(value = "X-UserID", required = true) String userID,
+    public Vault checkVaultRetentionPolicy(@RequestHeader(HEADER_USER_ID) String userID,
                                            @PathVariable("vaultid") String vaultID) {
 
         return vaultsService.checkRetentionPolicy(vaultID);
     }
 
     @GetMapping("/vaults/{vaultid}/record")
-    public Vault getVaultRecord(@RequestHeader(value = "X-UserID", required = true) String userID,
+    public Vault getVaultRecord(@RequestHeader(HEADER_USER_ID) String userID,
                                 @PathVariable("vaultid") String vaultID) {
 
         return vaultsService.getVault(vaultID);
     }
     
     @GetMapping("/pendingVaults/{vaultid}/record")
-    public PendingVault getPendingVaultRecord(@RequestHeader(value = "X-UserID", required = true) String userID,
+    public PendingVault getPendingVaultRecord(@RequestHeader(HEADER_USER_ID) String userID,
                                 @PathVariable("vaultid") String vaultID) {
 
         return pendingVaultsService.getPendingVault(vaultID);
     }
 
     @GetMapping("/vaults/{vaultid}/deposits")
-    public List<DepositInfo> getDeposits(@RequestHeader(value = "X-UserID", required = true) String userID,
+    public List<DepositInfo> getDeposits(@RequestHeader(HEADER_USER_ID) String userID,
                                          @PathVariable("vaultid") String vaultID) throws Exception {
 
         User user = usersService.getUser(userID);
@@ -655,7 +658,7 @@ public class VaultsController {
     }
 
     @GetMapping("/vaults/{vaultid}/roleEvents")
-    public List<EventInfo> getRoleEvents(@RequestHeader(value = "X-UserID", required = true) String userID,
+    public List<EventInfo> getRoleEvents(@RequestHeader(HEADER_USER_ID) String userID,
                                          @PathVariable("vaultid") String vaultID) throws Exception {
 
         User user = usersService.getUser(userID);
@@ -670,7 +673,7 @@ public class VaultsController {
     }
 
     @PostMapping("/vaults/{vaultid}/addDataManager")
-    public VaultInfo addDataManager(@RequestHeader(value = "X-UserID", required = true) String userID,
+    public VaultInfo addDataManager(@RequestHeader(HEADER_USER_ID) String userID,
                                     @PathVariable("vaultid") String vaultID,
                                     @RequestBody String unn) throws Exception {
         User user = usersService.getUser(userID);
@@ -684,7 +687,7 @@ public class VaultsController {
     }
 
     @GetMapping("/vaults/{vaultid}/dataManagers")
-    public List<DataManager> getDataManagers(@RequestHeader(value = "X-UserID", required = true) String userID,
+    public List<DataManager> getDataManagers(@RequestHeader(HEADER_USER_ID) String userID,
                                              @PathVariable("vaultid") String vaultID) throws Exception {
         User user = usersService.getUser(userID);
         Vault vault = vaultsService.getUserVault(user, vaultID);
@@ -694,7 +697,7 @@ public class VaultsController {
     }
 
     @GetMapping("/vaults/{vaultid}/dataManager/{uun}")
-    public DataManager getDataManager(@RequestHeader(value = "X-UserID", required = true) String userID,
+    public DataManager getDataManager(@RequestHeader(HEADER_USER_ID) String userID,
                                       @PathVariable("vaultid") String vaultID,
                                       @PathVariable("uun") String uun) throws Exception {
         User user = usersService.getUser(userID);
@@ -704,7 +707,7 @@ public class VaultsController {
     }
 
     @DeleteMapping( "/vaults/{vaultid}/deleteDataManager/{dataManagerID}")
-    public VaultInfo deleteDataManager(@RequestHeader(value = "X-UserID", required = true) String userID,
+    public VaultInfo deleteDataManager(@RequestHeader(HEADER_USER_ID) String userID,
                                        @PathVariable("vaultid") String vaultID,
                                        @PathVariable("dataManagerID") String dataManagerID) throws Exception {
         User user = usersService.getUser(userID);
@@ -716,8 +719,8 @@ public class VaultsController {
     }
 
     @PostMapping("/vaults/{vaultid}/updateVaultDescription")
-    public VaultInfo updateVaultDescription(@RequestHeader(value = "X-UserID", required = true) String userID,
-                                            @RequestHeader(value = "X-Client-Key", required = true) String clientKey,
+    public VaultInfo updateVaultDescription(@RequestHeader(HEADER_USER_ID) String userID,
+                                            @RequestHeader(HEADER_CLIENT_KEY) String clientKey,
                                             @PathVariable("vaultid") String vaultID,
                                             @RequestBody() String description) throws Exception {
         User user = usersService.getUser(userID);
@@ -738,8 +741,8 @@ public class VaultsController {
     }
 
     @PostMapping(value = "/vaults/{vaultid}/updateVaultName")
-    public VaultInfo updateVaultName(@RequestHeader(value = "X-UserID", required = true) String userID,
-                                     @RequestHeader(value = "X-Client-Key", required = true) String clientKey,
+    public VaultInfo updateVaultName(@RequestHeader(HEADER_USER_ID) String userID,
+                                     @RequestHeader(HEADER_CLIENT_KEY) String clientKey,
                                      @PathVariable("vaultid") String vaultID,
                                      @RequestBody String name) throws Exception {
         User user = usersService.getUser(userID);
@@ -760,7 +763,7 @@ public class VaultsController {
     }
 
     @PostMapping("/vaults/{vaultid}/updatereviewdate")
-    public VaultInfo updateVaultReviewDate(@RequestHeader(value = "X-UserID", required = true) String userID,
+    public VaultInfo updateVaultReviewDate(@RequestHeader(HEADER_USER_ID) String userID,
                                             @PathVariable("vaultid") String vaultID,
                                             @RequestBody String reviewDate) throws Exception {
         User user = usersService.getUser(userID);
@@ -785,7 +788,7 @@ public class VaultsController {
         }
         User newOwner = this.usersService.getUser(newOwnerId);
 
-        HashMap<String, Object> model = new HashMap<String, Object>();
+        HashMap<String, Object> model = new HashMap<>();
         model.put("homepage", this.homePage);
         model.put("helppage", this.helpPage);
         model.put("vault", vault.getName());
