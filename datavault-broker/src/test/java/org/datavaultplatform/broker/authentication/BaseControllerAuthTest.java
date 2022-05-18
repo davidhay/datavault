@@ -30,6 +30,7 @@ import org.datavaultplatform.broker.services.UsersService;
 import org.datavaultplatform.broker.test.AddTestProperties;
 import org.datavaultplatform.common.model.Client;
 import org.datavaultplatform.common.model.Permission;
+import org.datavaultplatform.common.model.RoleName;
 import org.datavaultplatform.common.model.User;
 import org.datavaultplatform.common.util.Constants;
 import org.junit.jupiter.api.BeforeEach;
@@ -222,8 +223,7 @@ public abstract class BaseControllerAuthTest {
   }
 
   private Set<String> getExpectedRoles(String... roles){
-    return Arrays.stream(roles).map(name -> "ROLE_" + name)
-        .collect(Collectors.toSet());
+    return Arrays.stream(roles).collect(Collectors.toSet());
   }
 
   private Set<String> getActualRoles(){
@@ -239,45 +239,45 @@ public abstract class BaseControllerAuthTest {
   }
 
   public void checkHasSecurityUserAndClientUserRolesOnly() {
-    checkSecurityRoles("USER", "CLIENT_USER");
+    checkSecurityRoles(RoleName.ROLE_USER, RoleName.ROLE_CLIENT_USER);
   }
 
   private void checkHasSecurityUserAndClientUserRoles() {
-    checkHasSecurityRoles("USER", "CLIENT_USER");
+    checkHasSecurityRoles(RoleName.ROLE_USER, RoleName.ROLE_CLIENT_USER);
   }
 
   public void checkHasSecurityAdminRole() {
-    checkHasSecurityRoles("ADMIN", "CLIENT_USER");
+    checkHasSecurityRoles(RoleName.ROLE_ADMIN, RoleName.ROLE_CLIENT_USER);
   }
 
   public void checkHasSecurityAdminArchiveStoresRole() {
     checkHasSecurityUserAndClientUserRoles();
-    checkHasSecurityRoles("ADMIN_ARCHIVESTORES");
+    checkHasSecurityRoles(RoleName.ROLE_ADMIN_ARCHIVESTORES);
   }
 
   public void checkHasSecurityAdminDepositsRole() {
     checkHasSecurityUserAndClientUserRoles();
-    checkHasSecurityRoles("ADMIN_DEPOSITS");
+    checkHasSecurityRoles(RoleName.ROLE_ADMIN_DEPOSITS);
   }
 
   public void checkHasSecurityAdminRetrievesRole() {
     checkHasSecurityUserAndClientUserRoles();
-    checkHasSecurityRoles("ADMIN_RETRIEVES");
+    checkHasSecurityRoles(RoleName.ROLE_ADMIN_RETRIEVES);
   }
 
   public void checkHasSecurityAdminVaultsRole() {
     checkHasSecurityUserAndClientUserRoles();
-    checkHasSecurityRoles("ADMIN_VAULTS");
+    checkHasSecurityRoles(RoleName.ROLE_ADMIN_VAULTS);
   }
 
   public void checkHasSecurityAdminEventsRole() {
     checkHasSecurityUserAndClientUserRoles();
-    checkHasSecurityRoles("ADMIN_EVENTS");
+    checkHasSecurityRoles(RoleName.ROLE_ADMIN_EVENTS);
   }
 
   public void checkHasSecurityAdminBillingRole() {
     checkHasSecurityUserAndClientUserRoles();
-    checkHasSecurityRoles("ADMIN_BILLING");
+    checkHasSecurityRoles(RoleName.ROLE_ADMIN_BILLING);
   }
 
   @BeforeEach
