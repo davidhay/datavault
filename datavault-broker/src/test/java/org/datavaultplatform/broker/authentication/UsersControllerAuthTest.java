@@ -7,11 +7,14 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import java.util.Arrays;
+import lombok.extern.slf4j.Slf4j;
 import org.datavaultplatform.broker.controllers.UsersController;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 
+@Slf4j
 public class UsersControllerAuthTest extends BaseControllerAuthTest {
 
   @MockBean
@@ -34,7 +37,7 @@ public class UsersControllerAuthTest extends BaseControllerAuthTest {
     when(controller.getUser("query-user-id")).thenReturn(AuthTestData.USER_1);
 
     checkWorksWhenAuthenticatedFailsOtherwise(
-        get("/users/{userid}","query-user-id"),
+        get("/users/{userid}", "query-user-id"),
         AuthTestData.USER_1);
 
     verify(controller).getUser("query-user-id");
@@ -91,5 +94,10 @@ public class UsersControllerAuthTest extends BaseControllerAuthTest {
         true);
 
     verify(controller).validateUser(AuthTestData.VALIDATE_USER);
+  }
+
+  @AfterEach
+  void securityCheck() {
+    checkHasSecurityUserAndClientUserRolesOnly();
   }
 }

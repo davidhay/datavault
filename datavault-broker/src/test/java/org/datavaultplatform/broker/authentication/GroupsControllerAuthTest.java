@@ -55,7 +55,7 @@ public class GroupsControllerAuthTest extends BaseControllerAuthTest {
     doNothing().when(controller).addGroupOwner(USER_ID_1, "group-id-one", "owner-user-id-xxx");
 
     checkWorksWhenAuthenticatedFailsOtherwise(
-        put("/groups/{groupid}/users/{owneruserid}","group-id-one", "owner-user-id-xxx"),
+        put("/groups/{groupid}/users/{owneruserid}", "group-id-one", "owner-user-id-xxx"),
         null);
 
     verify(controller).addGroupOwner(USER_ID_1, "group-id-one", "owner-user-id-xxx");
@@ -66,7 +66,7 @@ public class GroupsControllerAuthTest extends BaseControllerAuthTest {
     when(controller.deleteGroup(USER_ID_1, "group-id-xxx")).thenReturn(true);
 
     checkWorksWhenAuthenticatedFailsOtherwise(
-        delete("/groups/{groupid}","group-id-xxx"),
+        delete("/groups/{groupid}", "group-id-xxx"),
         true);
 
     verify(controller).deleteGroup(USER_ID_1, "group-id-xxx");
@@ -77,7 +77,7 @@ public class GroupsControllerAuthTest extends BaseControllerAuthTest {
     doNothing().when(controller).disableGroup(USER_ID_1, "group-id-yyy");
 
     checkWorksWhenAuthenticatedFailsOtherwise(
-        put("/groups/{groupid}/disable","group-id-yyy"),
+        put("/groups/{groupid}/disable", "group-id-yyy"),
         null);
 
     verify(controller).disableGroup(USER_ID_1, "group-id-yyy");
@@ -88,7 +88,7 @@ public class GroupsControllerAuthTest extends BaseControllerAuthTest {
     doNothing().when(controller).enableGroup(USER_ID_1, "group-id-zzz");
 
     checkWorksWhenAuthenticatedFailsOtherwise(
-        put("/groups/{groupid}/enable","group-id-zzz"),
+        put("/groups/{groupid}/enable", "group-id-zzz"),
         null);
 
     verify(controller).enableGroup(USER_ID_1, "group-id-zzz");
@@ -99,7 +99,7 @@ public class GroupsControllerAuthTest extends BaseControllerAuthTest {
     when(controller.getGroup(USER_ID_1, "group-id-zzz")).thenReturn(AuthTestData.GROUP_1);
 
     checkWorksWhenAuthenticatedFailsOtherwise(
-        get("/groups/{groupid}","group-id-zzz"),
+        get("/groups/{groupid}", "group-id-zzz"),
         AuthTestData.GROUP_1);
 
     verify(controller).getGroup(USER_ID_1, "group-id-zzz");
@@ -110,7 +110,7 @@ public class GroupsControllerAuthTest extends BaseControllerAuthTest {
     when(controller.getGroupVaultCount(USER_ID_1, "group-id-abcde")).thenReturn(123);
 
     checkWorksWhenAuthenticatedFailsOtherwise(
-        get("/groups/{groupid}/count","group-id-abcde"),
+        get("/groups/{groupid}/count", "group-id-abcde"),
         123);
 
     verify(controller).getGroupVaultCount(USER_ID_1, "group-id-abcde");
@@ -122,7 +122,7 @@ public class GroupsControllerAuthTest extends BaseControllerAuthTest {
         Arrays.asList(VAULT_INFO_1, VAULT_INFO_2));
 
     checkWorksWhenAuthenticatedFailsOtherwise(
-        get("/groups/{groupid}/vaults","group-id-abc"),
+        get("/groups/{groupid}/vaults", "group-id-abc"),
         Arrays.asList(VAULT_INFO_1, VAULT_INFO_2));
 
     verify(controller).getGroupVaults(USER_ID_1, "group-id-abc");
@@ -168,7 +168,7 @@ public class GroupsControllerAuthTest extends BaseControllerAuthTest {
     doNothing().when(controller).removeGroupOwner(USER_ID_1, "group1", "ownerUserId1");
 
     checkWorksWhenAuthenticatedFailsOtherwise(
-        delete("/groups/{groupid}/users/{owneruserid}","group1", "ownerUserId1"),
+        delete("/groups/{groupid}/users/{owneruserid}", "group1", "ownerUserId1"),
         null);
 
     verify(controller).removeGroupOwner(USER_ID_1, "group1", "ownerUserId1");

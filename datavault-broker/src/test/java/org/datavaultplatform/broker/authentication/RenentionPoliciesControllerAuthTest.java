@@ -6,6 +6,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 
 import java.util.Arrays;
 import org.datavaultplatform.broker.controllers.RetentionPoliciesController;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
@@ -25,4 +26,10 @@ public class RenentionPoliciesControllerAuthTest extends BaseControllerAuthTest 
 
     verify(controller).getPolicies(USER_ID_1, API_KEY_1);
   }
+
+  @AfterEach
+  void securityCheck() {
+    checkHasSecurityUserAndClientUserRolesOnly();
+  }
+
 }

@@ -9,6 +9,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import java.util.Arrays;
 import org.datavaultplatform.broker.controllers.DepositsController;
 import org.datavaultplatform.common.model.Retrieve;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
@@ -50,7 +51,7 @@ public class DepositsControllerAuthTest extends BaseControllerAuthTest {
     when(controller.getDeposit(USER_ID_1, "deposit-id-1")).thenReturn(AuthTestData.DEPOSIT_INFO_1);
 
     checkWorksWhenAuthenticatedFailsOtherwise(
-        get("/deposits/{depositid}","deposit-id-1"),
+        get("/deposits/{depositid}", "deposit-id-1"),
         AuthTestData.DEPOSIT_INFO_1);
 
     verify(controller).getDeposit(USER_ID_1, "deposit-id-1");
@@ -62,7 +63,7 @@ public class DepositsControllerAuthTest extends BaseControllerAuthTest {
         Arrays.asList(AuthTestData.EVENT_INFO_1, AuthTestData.EVENT_INFO_2));
 
     checkWorksWhenAuthenticatedFailsOtherwise(
-        get("/deposits/{depositid}/events","deposit-id-1"),
+        get("/deposits/{depositid}/events", "deposit-id-1"),
         Arrays.asList(AuthTestData.EVENT_INFO_1, AuthTestData.EVENT_INFO_2));
 
     verify(controller).getDepositEvents(USER_ID_1, "deposit-id-1");
@@ -74,7 +75,7 @@ public class DepositsControllerAuthTest extends BaseControllerAuthTest {
         Arrays.asList(AuthTestData.JOB_1, AuthTestData.JOB_2));
 
     checkWorksWhenAuthenticatedFailsOtherwise(
-        get("/deposits/{depositid}/jobs","deposit-id-1"),
+        get("/deposits/{depositid}/jobs", "deposit-id-1"),
         Arrays.asList(AuthTestData.JOB_1, AuthTestData.JOB_2));
 
     verify(controller).getDepositJobs(USER_ID_1, "deposit-id-1");
@@ -87,7 +88,7 @@ public class DepositsControllerAuthTest extends BaseControllerAuthTest {
             AuthTestData.FILE_FIXITY_2));
 
     checkWorksWhenAuthenticatedFailsOtherwise(
-        get("/deposits/{depositid}/manifest","deposit-id-1"),
+        get("/deposits/{depositid}/manifest", "deposit-id-1"),
         Arrays.asList(AuthTestData.FILE_FIXITY_1, AuthTestData.FILE_FIXITY_2));
 
     verify(controller).getDepositManifest(USER_ID_1, "deposit-id-1");
@@ -100,7 +101,7 @@ public class DepositsControllerAuthTest extends BaseControllerAuthTest {
             AuthTestData.RETRIEVE_2));
 
     checkWorksWhenAuthenticatedFailsOtherwise(
-        get("/deposits/{depositid}/retrieves","deposit-id-1"),
+        get("/deposits/{depositid}/retrieves", "deposit-id-1"),
         Arrays.asList(AuthTestData.RETRIEVE_1, AuthTestData.RETRIEVE_2));
 
     verify(controller).getDepositRetrieves(USER_ID_1, "deposit-id-1");
@@ -111,7 +112,7 @@ public class DepositsControllerAuthTest extends BaseControllerAuthTest {
     when(controller.restartDeposit(USER_ID_1, "deposit-id-1")).thenReturn(AuthTestData.DEPOSIT_1);
 
     checkWorksWhenAuthenticatedFailsOtherwise(
-        post("/deposits/{depositid}/restart","deposit-id-1"),
+        post("/deposits/{depositid}/restart", "deposit-id-1"),
         AuthTestData.DEPOSIT_1);
 
     verify(controller).restartDeposit(USER_ID_1, "deposit-id-1");
@@ -123,7 +124,7 @@ public class DepositsControllerAuthTest extends BaseControllerAuthTest {
         argRetrieve.capture())).thenReturn(false);
 
     checkWorksWhenAuthenticatedFailsOtherwise(
-        post("/deposits/{depositid}/retrieve","deposit-id-1")
+        post("/deposits/{depositid}/retrieve", "deposit-id-1")
             .content(mapper.writeValueAsString(AuthTestData.RETRIEVE_1))
             .contentType(MediaType.APPLICATION_JSON),
         false);
@@ -135,4 +136,9 @@ public class DepositsControllerAuthTest extends BaseControllerAuthTest {
     assertEquals(AuthTestData.RETRIEVE_1.getID(), argRetrieve.getValue().getID());
   }
 
+
+  @AfterEach
+  void securityCheck() {
+    checkHasSecurityUserAndClientUserRolesOnly();
+  }
 }

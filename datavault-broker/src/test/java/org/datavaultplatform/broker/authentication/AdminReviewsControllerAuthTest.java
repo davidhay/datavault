@@ -11,6 +11,7 @@ import org.datavaultplatform.broker.controllers.admin.AdminReviewsController;
 import org.datavaultplatform.common.model.DepositReview;
 import org.datavaultplatform.common.model.Permission;
 import org.datavaultplatform.common.model.VaultReview;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
@@ -40,7 +41,7 @@ public class AdminReviewsControllerAuthTest extends BaseControllerAuthTest {
         USER_ID_1, "2112")).thenReturn(AuthTestData.REVIEW_INFO_1);
 
     checkWorksWhenAuthenticatedFailsOtherwise(
-        get("/admin/vaults/{vaultid}/vaultreviews/current","2112"),
+        get("/admin/vaults/{vaultid}/vaultreviews/current", "2112"),
         AuthTestData.REVIEW_INFO_1,
         Permission.CAN_MANAGE_VAULTS);
 
@@ -116,4 +117,8 @@ public class AdminReviewsControllerAuthTest extends BaseControllerAuthTest {
     assertEquals(AuthTestData.DEPOSIT_REVIEW_1.getId(), argDepositReview.getValue().getId());
   }
 
+  @AfterEach
+  void securityCheck() {
+    checkHasSecurityAdminVaultsRole();
+  }
 }

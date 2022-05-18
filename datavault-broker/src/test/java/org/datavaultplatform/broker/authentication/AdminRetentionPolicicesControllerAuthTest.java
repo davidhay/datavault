@@ -12,6 +12,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import lombok.SneakyThrows;
 import org.datavaultplatform.broker.controllers.admin.AdminRetentionPoliciesController;
 import org.datavaultplatform.common.request.CreateRetentionPolicy;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
@@ -46,7 +47,7 @@ public class AdminRetentionPolicicesControllerAuthTest extends BaseControllerAut
         CREATE_RETENTION_POLICY));
 
     checkWorksWhenAuthenticatedFailsOtherwise(
-        get("/admin/retentionpolicies/{id}","123"),
+        get("/admin/retentionpolicies/{id}", "123"),
         CREATE_RETENTION_POLICY);
 
     verify(controller).getRetentionPolicy(USER_ID_1, API_KEY_1, "123");
@@ -78,7 +79,8 @@ public class AdminRetentionPolicicesControllerAuthTest extends BaseControllerAut
     when(controller.addRetentionPolicy(
         argUserId.capture(),
         argClientKey.capture(),
-        argPolicy.capture())).thenReturn(ResponseEntity.status(HttpStatus.CREATED).body(CREATE_RETENTION_POLICY));
+        argPolicy.capture())).thenReturn(
+        ResponseEntity.status(HttpStatus.CREATED).body(CREATE_RETENTION_POLICY));
 
     checkWorksWhenAuthenticatedFailsOtherwise(
         post("/admin/retentionpolicies")
@@ -99,10 +101,14 @@ public class AdminRetentionPolicicesControllerAuthTest extends BaseControllerAut
         argPolicyId.capture());
 
     checkWorksWhenAuthenticatedFailsOtherwise(
-        delete("/admin/retentionpolicies/delete/{id}","123"),
+        delete("/admin/retentionpolicies/delete/{id}", "123"),
         null);
 
     verify(controller).deleteRetentionPolicy(USER_ID_1, "123");
   }
 
+  @AfterEach
+  void securityCheck() {
+    checkHasSecurityUserAndClientUserRolesOnly();
+  }
 }

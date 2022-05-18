@@ -6,6 +6,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 
 import java.util.Arrays;
 import org.datavaultplatform.broker.controllers.StatisticsController;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
@@ -76,7 +77,7 @@ public class StatisticsControllerAuthTest extends BaseControllerAuthTest {
     when(controller.getPolicyStatusCount(USER_ID_1, 111)).thenReturn(1234);
 
     checkWorksWhenAuthenticatedFailsOtherwise(
-        get("/vaults/retentionpolicycount/{status}","111"),
+        get("/vaults/retentionpolicycount/{status}", "111"),
         1234);
 
     verify(controller).getPolicyStatusCount(USER_ID_1, 111);
@@ -158,5 +159,10 @@ public class StatisticsControllerAuthTest extends BaseControllerAuthTest {
         1234);
 
     verify(controller).getVaultsSize(USER_ID_1);
+  }
+
+  @AfterEach
+  void securityCheck() {
+    checkHasSecurityUserAndClientUserRolesOnly();
   }
 }

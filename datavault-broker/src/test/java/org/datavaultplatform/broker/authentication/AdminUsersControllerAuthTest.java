@@ -9,6 +9,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import com.fasterxml.jackson.core.JsonProcessingException;
 import java.util.Arrays;
 import org.datavaultplatform.broker.controllers.admin.AdminUsersController;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
@@ -84,4 +85,9 @@ public class AdminUsersControllerAuthTest extends BaseControllerAuthTest {
     verify(controller).editUser(USER_ID_1, AuthTestData.USER_1);
   }
 
+
+  @AfterEach
+  void securityCheck() {
+    checkHasSecurityAdminRole();
+  }
 }

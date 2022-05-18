@@ -6,6 +6,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.datavaultplatform.broker.controllers.NotifyController;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
@@ -42,4 +43,10 @@ public class NotifyControllerAuthTest extends BaseControllerAuthTest {
 
     verify(controller).logout(USER_ID_1, API_KEY_1, AuthTestData.CREATE_CLIENT_EVENT);
   }
+
+  @AfterEach
+  void securityCheck() {
+    checkHasSecurityUserAndClientUserRolesOnly();
+  }
+
 }

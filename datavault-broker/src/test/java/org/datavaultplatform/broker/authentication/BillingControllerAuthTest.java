@@ -8,6 +8,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.datavaultplatform.broker.controllers.admin.BillingController;
 import org.datavaultplatform.common.model.Permission;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
@@ -23,7 +24,7 @@ public class BillingControllerAuthTest extends BaseControllerAuthTest {
         USER_ID_1, "2112")).thenReturn(AuthTestData.BILLING_INFO_1);
 
     checkWorksWhenAuthenticatedFailsOtherwise(
-        get("/admin/billing/{vaultId}","2112"),
+        get("/admin/billing/{vaultId}", "2112"),
         AuthTestData.BILLING_INFO_1,
         Permission.CAN_MANAGE_BILLING_DETAILS);
 
@@ -57,12 +58,17 @@ public class BillingControllerAuthTest extends BaseControllerAuthTest {
         USER_ID_1, "2112", AuthTestData.BILLING_INFO_1)).thenReturn(AuthTestData.BILLING_INFO_1);
 
     checkWorksWhenAuthenticatedFailsOtherwise(
-        post("/admin/billing/{vaultid}/updateBilling","2112")
+        post("/admin/billing/{vaultid}/updateBilling", "2112")
             .content(mapper.writeValueAsString(AuthTestData.BILLING_INFO_1))
             .contentType(MediaType.APPLICATION_JSON),
         AuthTestData.BILLING_INFO_1,
         Permission.CAN_MANAGE_BILLING_DETAILS);
 
     verify(controller).updateBillingDetails(USER_ID_1, "2112", AuthTestData.BILLING_INFO_1);
+  }
+
+  @AfterEach
+  void securityCheck() {
+    checkHasSecurityAdminBillingRole();
   }
 }

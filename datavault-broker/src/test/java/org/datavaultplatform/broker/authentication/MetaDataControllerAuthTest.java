@@ -6,6 +6,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 
 import java.util.Arrays;
 import org.datavaultplatform.broker.controllers.MetadataController;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
@@ -20,7 +21,7 @@ public class MetaDataControllerAuthTest extends BaseControllerAuthTest {
     when(controller.getDataset(USER_ID_1, "dataset-id-1")).thenReturn(AuthTestData.DATASET_1);
 
     checkWorksWhenAuthenticatedFailsOtherwise(
-        get("/metadata/datasets/{datasetid}","dataset-id-1"),
+        get("/metadata/datasets/{datasetid}", "dataset-id-1"),
         AuthTestData.DATASET_1);
 
     verify(controller).getDataset(USER_ID_1, "dataset-id-1");
@@ -37,6 +38,11 @@ public class MetaDataControllerAuthTest extends BaseControllerAuthTest {
         Arrays.asList(AuthTestData.DATASET_1, AuthTestData.DATASET_2));
 
     verify(controller).getDatasets(USER_ID_1);
+  }
+
+  @AfterEach
+  void securityCheck() {
+    checkHasSecurityUserAndClientUserRolesOnly();
   }
 
 }

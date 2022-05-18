@@ -12,6 +12,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import java.util.Arrays;
 import javax.servlet.http.HttpServletRequest;
 import org.datavaultplatform.broker.controllers.FilesController;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
@@ -59,7 +60,7 @@ public class FilesControllerAuthTest extends BaseControllerAuthTest {
         Arrays.asList(AuthTestData.FILE_INFO_1, AuthTestData.FILE_INFO_2));
 
     checkWorksWhenAuthenticatedFailsOtherwise(
-        get("/files/{storageid}","storage-id-xxx"),
+        get("/files/{storageid}", "storage-id-xxx"),
         Arrays.asList(AuthTestData.FILE_INFO_1, AuthTestData.FILE_INFO_2));
 
     verify(controller).getFilesListing(argUserId.getValue(), argRequest.getValue(),
@@ -75,7 +76,7 @@ public class FilesControllerAuthTest extends BaseControllerAuthTest {
         argStorageId.capture())).thenReturn("file-size");
 
     checkWorksWhenAuthenticatedFailsOtherwise(
-        get("/filesize/{storageid}/**","storage-id-xxx"),
+        get("/filesize/{storageid}/**", "storage-id-xxx"),
         "file-size");
 
     verify(controller).getFilesize(argUserId.getValue(), argRequest.getValue(),
@@ -106,16 +107,20 @@ public class FilesControllerAuthTest extends BaseControllerAuthTest {
         .thenReturn("some-result-string");
 
     checkWorksWhenAuthenticatedFailsOtherwise(
-        post("/upload/{fileUploadHandle}/{filename}","fuh-one","filename1"),
+        post("/upload/{fileUploadHandle}/{filename}", "fuh-one", "filename1"),
         "some-result-string");
 
     verify(controller).postFileChunk(argUserId.capture(), argRequest.capture(),
         argFileUploadHandle.capture(), argFilename.capture());
 
-    assertEquals(USER_ID_1,argUserId.getValue());
+    assertEquals(USER_ID_1, argUserId.getValue());
     assertEquals("filename1", argFilename.getValue());
     assertEquals("fuh-one", argFileUploadHandle.getValue());
   }
 
+  @AfterEach
+  void securityCheck() {
+    checkHasSecurityUserAndClientUserRolesOnly();
+  }
 
 }

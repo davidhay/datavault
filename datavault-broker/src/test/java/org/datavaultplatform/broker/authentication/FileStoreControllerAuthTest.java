@@ -12,6 +12,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import java.util.Arrays;
 import org.datavaultplatform.broker.controllers.FileStoreController;
 import org.datavaultplatform.common.model.FileStore;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
@@ -75,7 +76,7 @@ public class FileStoreControllerAuthTest extends BaseControllerAuthTest {
         ResponseEntity.noContent().build());
 
     checkWorksWhenAuthenticatedFailsOtherwise(
-        delete("/filestores/{filestoreid}","file-store-id-xxx"),
+        delete("/filestores/{filestoreid}", "file-store-id-xxx"),
         null,
         HttpStatus.NO_CONTENT,
         false);
@@ -89,7 +90,7 @@ public class FileStoreControllerAuthTest extends BaseControllerAuthTest {
         ResponseEntity.ok(AuthTestData.FILESTORE_1));
 
     checkWorksWhenAuthenticatedFailsOtherwise(
-        get("/filestores/{filestoreid}","file-store-id-xxx"),
+        get("/filestores/{filestoreid}", "file-store-id-xxx"),
         AuthTestData.FILESTORE_1);
 
     verify(controller).getFileStore(USER_ID_1, "file-store-id-xxx");
@@ -137,9 +138,15 @@ public class FileStoreControllerAuthTest extends BaseControllerAuthTest {
         ResponseEntity.ok(AuthTestData.FILESTORE_1));
 
     checkWorksWhenAuthenticatedFailsOtherwise(
-        get("/filestores/sftp/{filestoreid}","file-store-id"),
+        get("/filestores/sftp/{filestoreid}", "file-store-id"),
         AuthTestData.FILESTORE_1);
 
     verify(controller).getFilestoreSFTP(USER_ID_1, "file-store-id");
   }
+
+  @AfterEach
+  void securityCheck() {
+    checkHasSecurityUserAndClientUserRolesOnly();
+  }
+
 }

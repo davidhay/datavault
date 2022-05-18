@@ -25,9 +25,9 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.authentication.Http403ForbiddenEntryPoint;
 import org.springframework.security.web.authentication.preauth.AbstractPreAuthenticatedProcessingFilter;
 
+@ConditionalOnExpression("${broker.security.enabled:true}")
 @EnableWebSecurity
 @Slf4j
-@ConditionalOnExpression("${broker.security.enabled:true}")
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
@@ -83,6 +83,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         .antMatchers("/admin/pendingVaults/**").access("hasRole('ROLE_ADMIN_VAULTS')")
         .antMatchers("/admin/events/**").access("hasRole('ROLE_ADMIN_EVENTS')")
         .antMatchers("/admin/billing/**").access("hasRole('ROLE_ADMIN_BILLING')")
+        /* TODO : DavidHay : no controller mapped to /admin/reviews ! */
         .antMatchers("/admin/reviews/**").access("hasRole('ROLE_ADMIN_REVIEWS')");
 
   }

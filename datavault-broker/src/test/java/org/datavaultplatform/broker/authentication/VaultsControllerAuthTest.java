@@ -9,6 +9,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import com.fasterxml.jackson.core.JsonProcessingException;
 import java.util.Arrays;
 import org.datavaultplatform.broker.controllers.VaultsController;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
@@ -26,7 +27,7 @@ public class VaultsControllerAuthTest extends BaseControllerAuthTest {
         Arrays.asList(AuthTestData.DATA_MANAGER_1, AuthTestData.DATA_MANAGER_2));
 
     checkWorksWhenAuthenticatedFailsOtherwise(
-        get("/vaults/{vaultid}/dataManagers","vault-id-1"),
+        get("/vaults/{vaultid}/dataManagers", "vault-id-1"),
         Arrays.asList(AuthTestData.DATA_MANAGER_1, AuthTestData.DATA_MANAGER_2));
 
     verify(controller).getDataManagers(USER_ID_1, "vault-id-1");
@@ -38,7 +39,7 @@ public class VaultsControllerAuthTest extends BaseControllerAuthTest {
         Arrays.asList(AuthTestData.DEPOSIT_INFO_1, AuthTestData.DEPOSIT_INFO_2));
 
     checkWorksWhenAuthenticatedFailsOtherwise(
-        get("/vaults/{vaultid}/deposits","vault-id-2"),
+        get("/vaults/{vaultid}/deposits", "vault-id-2"),
         Arrays.asList(AuthTestData.DEPOSIT_INFO_1, AuthTestData.DEPOSIT_INFO_2));
 
     verify(controller).getDeposits(USER_ID_1, "vault-id-2");
@@ -50,7 +51,7 @@ public class VaultsControllerAuthTest extends BaseControllerAuthTest {
         Arrays.asList(AuthTestData.EVENT_INFO_1, AuthTestData.EVENT_INFO_2));
 
     checkWorksWhenAuthenticatedFailsOtherwise(
-        get("/vaults/{vaultid}/roleEvents","vault-id-3"),
+        get("/vaults/{vaultid}/roleEvents", "vault-id-3"),
         Arrays.asList(AuthTestData.EVENT_INFO_1, AuthTestData.EVENT_INFO_2));
 
     verify(controller).getRoleEvents(USER_ID_1, "vault-id-3");
@@ -153,7 +154,7 @@ public class VaultsControllerAuthTest extends BaseControllerAuthTest {
         AuthTestData.VAULT_1);
 
     checkWorksWhenAuthenticatedFailsOtherwise(
-        get("/vaults/{vaultid}/checkretentionpolicy","vault-id-1"),
+        get("/vaults/{vaultid}/checkretentionpolicy", "vault-id-1"),
         AuthTestData.VAULT_1);
 
     verify(controller).checkVaultRetentionPolicy(USER_ID_1, "vault-id-1");
@@ -165,7 +166,7 @@ public class VaultsControllerAuthTest extends BaseControllerAuthTest {
         AuthTestData.DATA_MANAGER_1);
 
     checkWorksWhenAuthenticatedFailsOtherwise(
-        get("/vaults/{vaultid}/dataManager/{uun}","vault-id-1","uun-123"),
+        get("/vaults/{vaultid}/dataManager/{uun}", "vault-id-1", "uun-123"),
         AuthTestData.DATA_MANAGER_1);
 
     verify(controller).getDataManager(USER_ID_1, "vault-id-1", "uun-123");
@@ -347,4 +348,10 @@ public class VaultsControllerAuthTest extends BaseControllerAuthTest {
 
     verify(controller).updateVaultReviewDate(USER_ID_1, "vault-id-1", "review-date-1");
   }
+
+  @AfterEach
+  void securityCheck() {
+    checkHasSecurityUserAndClientUserRolesOnly();
+  }
+
 }

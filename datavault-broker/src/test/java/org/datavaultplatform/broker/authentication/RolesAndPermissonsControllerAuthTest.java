@@ -12,6 +12,7 @@ import org.datavaultplatform.broker.controllers.RolesAndPermissionsController;
 import org.datavaultplatform.common.model.PermissionModel;
 import org.datavaultplatform.common.model.RoleAssignment;
 import org.datavaultplatform.common.model.RoleModel;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
@@ -60,7 +61,7 @@ public class RolesAndPermissonsControllerAuthTest extends BaseControllerAuthTest
     when(controller.deleteRole(1234L)).thenReturn(ResponseEntity.ok().build());
 
     checkWorksWhenAuthenticatedFailsOtherwise(
-        delete("/permissions/role/{roleId}","1234"),
+        delete("/permissions/role/{roleId}", "1234"),
         null);
     verify(controller).deleteRole(1234L);
   }
@@ -71,7 +72,7 @@ public class RolesAndPermissonsControllerAuthTest extends BaseControllerAuthTest
         ResponseEntity.ok().build());
 
     checkWorksWhenAuthenticatedFailsOtherwise(
-        delete("/permissions/roleAssignment/{roleAssignmentId}","1234"),
+        delete("/permissions/roleAssignment/{roleAssignmentId}", "1234"),
         null);
 
     verify(controller).deleteRoleAssignment(USER_ID_1, API_KEY_1, 1234L);
@@ -127,7 +128,7 @@ public class RolesAndPermissonsControllerAuthTest extends BaseControllerAuthTest
     when(controller.getRole(1234L)).thenReturn(AuthTestData.ROLE_MODEL);
 
     checkWorksWhenAuthenticatedFailsOtherwise(
-        get("/permissions/role/{roleId}","1234"),
+        get("/permissions/role/{roleId}", "1234"),
         AuthTestData.ROLE_MODEL);
 
     verify(controller).getRole(1234L);
@@ -138,7 +139,7 @@ public class RolesAndPermissonsControllerAuthTest extends BaseControllerAuthTest
     when(controller.getRoleAssignment(1234L)).thenReturn(AuthTestData.ROLE_ASSIGNMENT);
 
     checkWorksWhenAuthenticatedFailsOtherwise(
-        get("/permissions/roleAssignment/{roleAssignmentId}","1234"),
+        get("/permissions/roleAssignment/{roleAssignmentId}", "1234"),
         AuthTestData.ROLE_ASSIGNMENT);
 
     verify(controller).getRoleAssignment(1234L);
@@ -149,7 +150,7 @@ public class RolesAndPermissonsControllerAuthTest extends BaseControllerAuthTest
     when(controller.getRoleAssignmentsForRole(1234L)).thenReturn(ROLE_ASSIGNMENT_ARR);
 
     checkWorksWhenAuthenticatedFailsOtherwise(
-        get("/permissions/roleAssignments/role/{roleId}","1234"),
+        get("/permissions/roleAssignments/role/{roleId}", "1234"),
         ROLE_ASSIGNMENT_ARR);
 
     verify(controller).getRoleAssignmentsForRole(1234L);
@@ -160,7 +161,7 @@ public class RolesAndPermissonsControllerAuthTest extends BaseControllerAuthTest
     when(controller.getRoleAssignmentsForSchool("school-id-1")).thenReturn(ROLE_ASSIGNMENT_ARR);
 
     checkWorksWhenAuthenticatedFailsOtherwise(
-        get("/permissions/roleAssignments/school/{schoolId}","school-id-1"),
+        get("/permissions/roleAssignments/school/{schoolId}", "school-id-1"),
         ROLE_ASSIGNMENT_ARR);
 
     verify(controller).getRoleAssignmentsForSchool("school-id-1");
@@ -171,7 +172,7 @@ public class RolesAndPermissonsControllerAuthTest extends BaseControllerAuthTest
     when(controller.getRoleAssignmentsForUser("user-id-1")).thenReturn(ROLE_ASSIGNMENT_ARR);
 
     checkWorksWhenAuthenticatedFailsOtherwise(
-        get("/permissions/roleAssignments/user/{userId}","user-id-1"),
+        get("/permissions/roleAssignments/user/{userId}", "user-id-1"),
         ROLE_ASSIGNMENT_ARR);
 
     verify(controller).getRoleAssignmentsForUser("user-id-1");
@@ -183,7 +184,7 @@ public class RolesAndPermissonsControllerAuthTest extends BaseControllerAuthTest
         ROLE_ASSIGNMENT_ARR);
 
     checkWorksWhenAuthenticatedFailsOtherwise(
-        get("/permissions/roleAssignments/vault/{vaultId}","vault-id-1"),
+        get("/permissions/roleAssignments/vault/{vaultId}", "vault-id-1"),
         ROLE_ASSIGNMENT_ARR);
 
     verify(controller).getRoleAssignmentsForVault("vault-id-1");
@@ -247,5 +248,10 @@ public class RolesAndPermissonsControllerAuthTest extends BaseControllerAuthTest
         AuthTestData.ROLE_ASSIGNMENT);
 
     verify(controller).updateRoleAssignment(USER_ID_1, API_KEY_1, AuthTestData.ROLE_ASSIGNMENT);
+  }
+
+  @AfterEach
+  void securityCheck() {
+    checkHasSecurityUserAndClientUserRolesOnly();
   }
 }

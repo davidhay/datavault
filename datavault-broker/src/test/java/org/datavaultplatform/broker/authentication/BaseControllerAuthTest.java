@@ -1,5 +1,7 @@
 package org.datavaultplatform.broker.authentication;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -12,9 +14,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.datavaultplatform.broker.app.DataVaultBrokerApp;
+import org.datavaultplatform.broker.authentication.BaseControllerAuthTest.MyMvcConfigurer;
 import org.datavaultplatform.broker.config.MockServicesConfig;
 import org.datavaultplatform.broker.queue.Sender;
 import org.datavaultplatform.broker.services.AdminService;
@@ -26,6 +32,7 @@ import org.datavaultplatform.common.model.Client;
 import org.datavaultplatform.common.model.Permission;
 import org.datavaultplatform.common.model.User;
 import org.datavaultplatform.common.util.Constants;
+import org.junit.jupiter.api.BeforeEach;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -35,13 +42,20 @@ import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfigurat
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
+import org.springframework.web.servlet.HandlerInterceptor;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @SpringBootTest(classes = DataVaultBrokerApp.class)
 @AddTestProperties
@@ -50,7 +64,8 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
     DataSourceTransactionManagerAutoConfiguration.class,
     HibernateJpaAutoConfiguration.class})
 @TestPropertySource(properties = {
-    "broker.controllers.enabled=true", //we have to pull in original controllers so we can override them
+    "broker.controllers.enabled=true",
+    //we have to pull in original controllers so we can override them
     "broker.properties.enabled=true",
     "broker.security.enabled=true",
     "broker.scheduled.enabled=false",
@@ -60,7 +75,7 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
     "broker.database.enabled=false",
     "broker.emailed.enabled=false",
     "broker.ldap.enabled=false"})
-@Import(MockServicesConfig.class) //spring security relies on services
+@Import({MockServicesConfig.class, MyMvcConfigurer.class}) //spring security relies on services
 @Slf4j
 @AutoConfigureMockMvc
 @TestPropertySource(properties = "logging.level.org.springframework.security=DEBUG")
@@ -106,8 +121,10 @@ public abstract class BaseControllerAuthTest {
   }
 
   protected final void checkWorksWhenAuthenticatedFailsOtherwise(
-      MockHttpServletRequestBuilder requestBuilder, Object expectedResponse, Permission... permissions) {
-    this.checkWorksWhenAuthenticatedFailsOtherwise(requestBuilder, expectedResponse, HttpStatus.OK, false, permissions);
+      MockHttpServletRequestBuilder requestBuilder, Object expectedResponse,
+      Permission... permissions) {
+    this.checkWorksWhenAuthenticatedFailsOtherwise(requestBuilder, expectedResponse, HttpStatus.OK,
+        false, permissions);
   }
 
   /*
@@ -122,16 +139,9 @@ public abstract class BaseControllerAuthTest {
     //CHECK UNAUTHENTICATED
     checkUnauthorizedWhenNotAuthenticated(requestBuilder);
 
-    when(mLoginUser.getID()).thenReturn(USER_ID_1);
-
-    when(mRolesAndPermissionService.getUserPermissions(USER_ID_1)).thenReturn(
-        getPermissions(permissions));
-    when(mUserService.getUser(USER_ID_1)).thenReturn(mLoginUser);
-    when(mAdminService.isAdminUser(mLoginUser)).thenReturn(isAdminUser);
-    when(mClientService.getClientByApiKey(API_KEY_1)).thenReturn(clientForIp(IP_ADDRESS));
-
     //CHECK AUTHENTICATED
-    checkSuccessWhenAuthenticated(requestBuilder, expectedResponse, expectedSuccessStatus);
+    checkSuccessWhenAuthenticated(requestBuilder, expectedResponse, expectedSuccessStatus,
+        isAdminUser, permissions);
 
   }
 
@@ -141,26 +151,32 @@ public abstract class BaseControllerAuthTest {
 
   @SneakyThrows
   private void checkSuccessWhenAuthenticated(MockHttpServletRequestBuilder builder,
-      Object expectedSuccessResponse, HttpStatus expectedSuccessStatus) {
+      Object expectedSuccessResponse, HttpStatus expectedSuccessStatus, boolean isAdminUser,
+      Permission... permissions) {
 
-    ResultActions resultActions = mvc.perform(
-            setupAuthentication(builder))
+    when(mClientService.getClientByApiKey(API_KEY_1)).thenReturn(clientForIp(IP_ADDRESS));
+    when(mUserService.getUser(USER_ID_1)).thenReturn(mLoginUser);
+    when(mAdminService.isAdminUser(mLoginUser)).thenReturn(isAdminUser);
+    when(mLoginUser.getID()).thenReturn(USER_ID_1);
+    when(mRolesAndPermissionService.getUserPermissions(USER_ID_1)).thenReturn(
+        getPermissions(permissions));
+
+    ResultActions resultActions = mvc.perform(setupAuthentication(builder))
         .andDo(print())
         .andExpect(status().is(expectedSuccessStatus.value()));
 
     if (expectedSuccessResponse == null) {
-      resultActions
-          .andExpect(content().string(""));
+      resultActions.andExpect(content().string(""));
     } else {
       //an expected response of type String means we should have 'text/plain' response
       if (expectedSuccessResponse instanceof String) {
         resultActions
-            .andExpect(content().string(expectedSuccessResponse.toString()))
-            .andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_PLAIN));
+            .andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_PLAIN))
+            .andExpect(content().string(expectedSuccessResponse.toString()));
       } else {
         resultActions
-            .andExpect(content().string(mapper.writeValueAsString(expectedSuccessResponse)))
-            .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
+            .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+            .andExpect(content().string(mapper.writeValueAsString(expectedSuccessResponse)));
       }
     }
 
@@ -178,7 +194,94 @@ public abstract class BaseControllerAuthTest {
         .andDo(print())
         .andExpect(status().isUnauthorized());
     verify(mClientService).getClientByApiKey(null);
-    verifyNoMoreInteractions(mClientService, mUserService);
+    verifyNoMoreInteractions(mClientService, mUserService, mAdminService, mLoginUser);
   }
 
+  @Configuration
+  static class MyMvcConfigurer implements WebMvcConfigurer {
+
+    public void addInterceptors(InterceptorRegistry registry) {
+      registry.addInterceptor(new HandlerInterceptor() {
+        @Override
+        public boolean preHandle(HttpServletRequest request, HttpServletResponse response,
+            Object handler) throws Exception {
+          SECURITY_CONTEXT_TL.set(SecurityContextHolder.getContext());
+          log.info("IN INTERCEPTOR {}", SECURITY_CONTEXT_TL.get());
+          return true;
+        }
+      });
+    }
+  }
+
+  public static ThreadLocal<SecurityContext> SECURITY_CONTEXT_TL = new ThreadLocal<>();
+
+  public void checkSecurityRoles(String... roles) {
+    Set<String> expectedRoles = getExpectedRoles(roles);
+    Set<String> actualRoles = getActualRoles();
+    assertEquals(expectedRoles, actualRoles);
+  }
+
+  private Set<String> getExpectedRoles(String... roles){
+    return Arrays.stream(roles).map(name -> "ROLE_" + name)
+        .collect(Collectors.toSet());
+  }
+
+  private Set<String> getActualRoles(){
+    return SECURITY_CONTEXT_TL.get().getAuthentication().getAuthorities()
+        .stream().map(
+            GrantedAuthority::getAuthority).collect(Collectors.toSet());
+  }
+
+  public void checkHasSecurityRoles(String... roles) {
+    Set<String> expectedRoles = getExpectedRoles(roles);
+    Set<String> actualRoles = getActualRoles();
+    assertTrue(actualRoles.containsAll(expectedRoles));
+  }
+
+  public void checkHasSecurityUserAndClientUserRolesOnly() {
+    checkSecurityRoles("USER", "CLIENT_USER");
+  }
+
+  private void checkHasSecurityUserAndClientUserRoles() {
+    checkHasSecurityRoles("USER", "CLIENT_USER");
+  }
+
+  public void checkHasSecurityAdminRole() {
+    checkHasSecurityRoles("ADMIN", "CLIENT_USER");
+  }
+
+  public void checkHasSecurityAdminArchiveStoresRole() {
+    checkHasSecurityUserAndClientUserRoles();
+    checkHasSecurityRoles("ADMIN_ARCHIVESTORES");
+  }
+
+  public void checkHasSecurityAdminDepositsRole() {
+    checkHasSecurityUserAndClientUserRoles();
+    checkHasSecurityRoles("ADMIN_DEPOSITS");
+  }
+
+  public void checkHasSecurityAdminRetrievesRole() {
+    checkHasSecurityUserAndClientUserRoles();
+    checkHasSecurityRoles("ADMIN_RETRIEVES");
+  }
+
+  public void checkHasSecurityAdminVaultsRole() {
+    checkHasSecurityUserAndClientUserRoles();
+    checkHasSecurityRoles("ADMIN_VAULTS");
+  }
+
+  public void checkHasSecurityAdminEventsRole() {
+    checkHasSecurityUserAndClientUserRoles();
+    checkHasSecurityRoles("ADMIN_EVENTS");
+  }
+
+  public void checkHasSecurityAdminBillingRole() {
+    checkHasSecurityUserAndClientUserRoles();
+    checkHasSecurityRoles("ADMIN_BILLING");
+  }
+
+  @BeforeEach
+  void setup() {
+    SECURITY_CONTEXT_TL.remove();
+  }
 }

@@ -30,10 +30,11 @@ public class AdminControllerAuthTest extends BaseControllerAuthTest {
     when(controller.deleteDeposit(USER_ID_1, "deposit-id-123")).thenReturn(ResponseEntity.ok(null));
 
     checkWorksWhenAuthenticatedFailsOtherwise(
-        delete("/admin/deposits/{depositID}","deposit-id-123"),
+        delete("/admin/deposits/{depositID}", "deposit-id-123"),
         null, Permission.CAN_MANAGE_DEPOSITS);
 
     verify(controller).deleteDeposit(USER_ID_1, "deposit-id-123");
+    checkHasSecurityAdminDepositsRole();
   }
 
   @Test
@@ -47,7 +48,7 @@ public class AdminControllerAuthTest extends BaseControllerAuthTest {
         Arrays.asList(AuthTestData.AUDIT_INFO_1, AuthTestData.AUDIT_INFO_2));
 
     verify(controller).getAuditsAll(USER_ID_1);
-
+    checkHasSecurityUserAndClientUserRolesOnly();
   }
 
   @Test
@@ -67,6 +68,7 @@ public class AdminControllerAuthTest extends BaseControllerAuthTest {
         Permission.CAN_MANAGE_DEPOSITS);
 
     verify(controller).getDepositsAll(USER_ID_1, "query1", "sort1", "order1", 123, 1234);
+    checkHasSecurityAdminDepositsRole();
   }
 
   @Test
@@ -79,7 +81,7 @@ public class AdminControllerAuthTest extends BaseControllerAuthTest {
         2112, Permission.CAN_MANAGE_DEPOSITS);
 
     verify(controller).getDepositsCount(USER_ID_1, "query1");
-
+    checkHasSecurityAdminDepositsRole();
   }
 
   @Test
@@ -93,6 +95,7 @@ public class AdminControllerAuthTest extends BaseControllerAuthTest {
         Permission.CAN_MANAGE_DEPOSITS);
 
     verify(controller).getDepositsAllData(USER_ID_1, "sort1");
+    checkHasSecurityAdminDepositsRole();
   }
 
   @Test
@@ -108,6 +111,7 @@ public class AdminControllerAuthTest extends BaseControllerAuthTest {
         Permission.CAN_VIEW_EVENTS);
 
     verify(controller).getEventsAll(USER_ID_1, "sort1");
+    checkHasSecurityAdminEventsRole();
   }
 
   @Test
@@ -122,6 +126,7 @@ public class AdminControllerAuthTest extends BaseControllerAuthTest {
         Permission.CAN_VIEW_RETRIEVES);
 
     verify(controller).getRetrievesAll(USER_ID_1);
+    checkHasSecurityAdminRetrievesRole();
   }
 
   @Test
@@ -139,6 +144,7 @@ public class AdminControllerAuthTest extends BaseControllerAuthTest {
         Permission.CAN_MANAGE_VAULTS);
 
     verify(controller).getVaultsAll(USER_ID_1, "sort1", "order1", "123", "1234");
+    checkHasSecurityAdminVaultsRole();
   }
 
   @Test
@@ -153,7 +159,7 @@ public class AdminControllerAuthTest extends BaseControllerAuthTest {
         Permission.CAN_MANAGE_DEPOSITS);
 
     verify(controller).runDepositAudit(USER_ID_1, argHttpRequest.getValue());
-
+    checkHasSecurityAdminDepositsRole();
   }
   @Test
   void testGetAdminDepositsCount() {
@@ -167,6 +173,6 @@ public class AdminControllerAuthTest extends BaseControllerAuthTest {
         Permission.CAN_MANAGE_DEPOSITS);
 
     verify(controller).getDepositsCount(USER_ID_1, "query1");
-
+    checkHasSecurityAdminDepositsRole();
   }
 }

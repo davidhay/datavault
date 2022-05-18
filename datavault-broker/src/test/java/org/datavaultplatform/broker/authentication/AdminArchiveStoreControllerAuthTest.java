@@ -15,6 +15,7 @@ import java.util.List;
 import org.datavaultplatform.broker.controllers.admin.AdminArchiveStoreController;
 import org.datavaultplatform.common.model.ArchiveStore;
 import org.datavaultplatform.common.model.Permission;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
@@ -53,7 +54,7 @@ public class AdminArchiveStoreControllerAuthTest extends BaseControllerAuthTest 
     when(controller.getArchiveStore(USER_ID_1, "2112")).thenReturn(result);
 
     checkWorksWhenAuthenticatedFailsOtherwise(
-        get("/admin/archivestores/{archivestoreid}","2112"),
+        get("/admin/archivestores/{archivestoreid}", "2112"),
         ARCHIVE_STORE_1,
         Permission.CAN_MANAGE_ARCHIVE_STORES);
 
@@ -98,13 +99,19 @@ public class AdminArchiveStoreControllerAuthTest extends BaseControllerAuthTest 
 
   @Test
   void testDeleteArchiveStore() {
-    when(controller.deleteArchiveStore(USER_ID_1, "2112")).thenReturn(ResponseEntity.ok().body(null));
+    when(controller.deleteArchiveStore(USER_ID_1, "2112")).thenReturn(
+        ResponseEntity.ok().body(null));
 
     checkWorksWhenAuthenticatedFailsOtherwise(
-        delete("/admin/archivestores/{archivesstoreid}","2112"),
+        delete("/admin/archivestores/{archivesstoreid}", "2112"),
         null,
         Permission.CAN_MANAGE_ARCHIVE_STORES);
 
     verify(controller).deleteArchiveStore(USER_ID_1, "2112");
+  }
+
+  @AfterEach
+  void checkSecurityRoles() {
+    checkHasSecurityAdminArchiveStoresRole();
   }
 }
