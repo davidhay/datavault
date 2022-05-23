@@ -4,17 +4,9 @@ import org.datavaultplatform.common.model.VaultReview;
 
 import java.util.List;
 
-public interface VaultReviewDAO {
+public interface VaultReviewDAO extends BaseDAO<VaultReview> {
 
-    public void save(VaultReview vaultReview);
-    
-    public void update(VaultReview vaultReview);
-    
-    public List<VaultReview> list();
+    List<VaultReview> search(String query);
 
-    public VaultReview findById(String Id);
-
-    public List<VaultReview> search(String query);
-
-    public int count();
+    int count();
 }

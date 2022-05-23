@@ -4,12 +4,8 @@ import org.datavaultplatform.common.model.DataCreator;
 
 import java.util.List;
 
-public interface DataCreatorDAO {
+public interface DataCreatorDAO extends BaseDAO<DataCreator> {
     void save(List<DataCreator> dataCreators);
-
-    DataCreator findById(String Id);
-
-    void update(DataCreator dataCreator);
 
     void delete(String id);
 }

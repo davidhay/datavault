@@ -26,6 +26,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
     "broker.controllers.enabled=false",
     "broker.services.enabled=false",
     "broker.scheduled.enabled=false",
+    "broker.rabbit.enabled=false",
     "broker.initialise.enabled=false",
     "broker.database.enabled=false"})
 @Testcontainers

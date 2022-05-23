@@ -90,7 +90,7 @@ public abstract class BaseLDAPServiceTest {
   private String ldapPassword;
 
   @DynamicPropertySource
-  static void setupLDAP(DynamicPropertyRegistry registry) {
+  static void setupProperties(DynamicPropertyRegistry registry) {
     registry.add("ldap.host", LDAP_CONTAINER::getHost);
     registry.add("ldap.port", () -> LDAP_CONTAINER.getMappedPort(LDAP_EXPOSED_PORT));
     registry.add("ldap.attrs", () -> "uid, mail, cn, mail"); //add duplicates which are filtered out

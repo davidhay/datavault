@@ -3,12 +3,12 @@ package org.datavaultplatform.common.model.dao;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.transaction.Transactional;
 import org.datavaultplatform.common.model.*;
 import org.datavaultplatform.common.util.DaoUtils;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 @Repository
+@Transactional
 public class PendingVaultDAOImpl implements PendingVaultDAO {
     private static final Logger LOGGER = LoggerFactory.getLogger(PendingVaultDAOImpl.class);
 
@@ -28,61 +29,40 @@ public class PendingVaultDAOImpl implements PendingVaultDAO {
 
     @Override
     public void save(PendingVault pendingVault) {
-        Session session = this.sessionFactory.openSession();
-        Transaction tx = session.beginTransaction();
+        Session session = this.sessionFactory.getCurrentSession();
         session.persist(pendingVault);
-        tx.commit();
-        session.close();
     }
 
     @Override
     public PendingVault findById(String Id) {
-        Session session = this.sessionFactory.openSession();
+        Session session = this.sessionFactory.getCurrentSession();
         Criteria criteria = session.createCriteria(PendingVault.class);
         criteria.add(Restrictions.eq("id", Id));
         PendingVault vault = (PendingVault)criteria.uniqueResult();
-        session.close();
         return vault;
     }
 
     @Override
     public void update(PendingVault vault) {
-        Session session = null;
-        Transaction tx = null;
-        try {
-            session = this.sessionFactory.openSession();
-            tx = session.beginTransaction();
-            session.update(vault);
-            tx.commit();
-        } catch (RuntimeException e) {
-            if (tx != null) {
-                tx.rollback();
-                System.out.println("PendingVault.update - ROLLBACK");
-            }
-            throw e;
-        } finally {
-            if (session != null) {
-                session.close();
-            }
-        }
+        Session session = this.sessionFactory.getCurrentSession();
+        session.update(vault);
     }
     
     @SuppressWarnings("unchecked")
     @Override
     public List<PendingVault> list() {
-        Session session = this.sessionFactory.openSession();
+        Session session = this.sessionFactory.getCurrentSession();
         Criteria criteria = session.createCriteria(PendingVault.class);
         criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
         criteria.addOrder(Order.asc("creationTime"));
         List<PendingVault> vaults = criteria.list();
-        session.close();
         return vaults;
     }
 
     @SuppressWarnings("unchecked")
     @Override
     public List<PendingVault> list(String userId, String sort, String order, String offset, String maxResult) {
-        Session session = this.sessionFactory.openSession();
+        Session session = this.sessionFactory.getCurrentSession();
         SchoolPermissionCriteriaBuilder criteriaBuilder = createPendingVaultCriteriaBuilder(userId, session, Permission.CAN_MANAGE_VAULTS);
         if (criteriaBuilder.hasNoAccess()) {
             return new ArrayList<>();
@@ -93,18 +73,17 @@ public class PendingVaultDAOImpl implements PendingVaultDAO {
         order(sort, order, criteria);
         
         if((offset != null && maxResult != null) || !maxResult.equals("0")) {
-        	criteria.setMaxResults(Integer.valueOf(maxResult));
-        	criteria.setFirstResult(Integer.valueOf(offset));
+        	criteria.setMaxResults(Integer.parseInt(maxResult));
+        	criteria.setFirstResult(Integer.parseInt(offset));
         }
 
         List<PendingVault> vaults = criteria.list();
-        session.close();
         return vaults;
     }
     
     @Override
 	public int getTotalNumberOfPendingVaults(String userId, String confirmed) {
-		Session session = this.sessionFactory.openSession();
+		Session session = this.sessionFactory.getCurrentSession();
         SchoolPermissionCriteriaBuilder criteriaBuilder = createPendingVaultCriteriaBuilder(userId, session, Permission.CAN_MANAGE_VAULTS);
         if (criteriaBuilder.hasNoAccess()) {
             return 0;
@@ -117,7 +96,6 @@ public class PendingVaultDAOImpl implements PendingVaultDAO {
         criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
         criteria.setProjection(Projections.rowCount());
         int totalNumberOfVaults = ((Long) criteria.uniqueResult()).intValue();
-        session.close();
         return totalNumberOfVaults;
 	}
 
@@ -126,7 +104,7 @@ public class PendingVaultDAOImpl implements PendingVaultDAO {
 	 */
 	@Override
 	public int getTotalNumberOfPendingVaults(String userId, String query, String confirmed) {
-		Session session = this.sessionFactory.openSession();
+		Session session = this.sessionFactory.getCurrentSession();
         SchoolPermissionCriteriaBuilder criteriaBuilder = createPendingVaultCriteriaBuilder(userId, session, Permission.CAN_MANAGE_VAULTS);
         if (criteriaBuilder.hasNoAccess()) {
             return 0;
@@ -142,14 +120,13 @@ public class PendingVaultDAOImpl implements PendingVaultDAO {
         criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
         criteria.setProjection(Projections.rowCount());
         int totalNumberOfVaults = ((Long) criteria.uniqueResult()).intValue();
-        session.close();
         return totalNumberOfVaults;
 	}
     
     @SuppressWarnings("unchecked")
     @Override
     public List<PendingVault> search(String userId, String query, String sort, String order, String offset, String maxResult, String confirmed) {
-        Session session = this.sessionFactory.openSession();
+        Session session = this.sessionFactory.getCurrentSession();
         SchoolPermissionCriteriaBuilder criteriaBuilder = createPendingVaultCriteriaBuilder(userId, session, Permission.CAN_MANAGE_VAULTS);
         if (criteriaBuilder.hasNoAccess()) {
             return new ArrayList<>();
@@ -170,24 +147,24 @@ public class PendingVaultDAOImpl implements PendingVaultDAO {
 
         order(sort, order, criteria);
         if((offset != null && maxResult != null) || !maxResult.equals("0")) {
-        	criteria.setMaxResults(Integer.valueOf(maxResult));
-        	criteria.setFirstResult(Integer.valueOf(offset));
+        	criteria.setMaxResults(Integer.parseInt(maxResult));
+        	criteria.setFirstResult(Integer.parseInt(offset));
         }
 
         List<PendingVault> vaults = criteria.list();
-        session.close();
         return vaults;
     }
 
     @Override
     public int count(String userId) {
-        Session session = this.sessionFactory.openSession();
+        Session session = this.sessionFactory.getCurrentSession();
         SchoolPermissionCriteriaBuilder criteriaBuilder = createPendingVaultCriteriaBuilder(userId, session, Permission.CAN_MANAGE_VAULTS);
         if (criteriaBuilder.hasNoAccess()) {
             return 0;
         }
         Criteria criteria = criteriaBuilder.build();
-        return (int) (long) (Long) criteria.setProjection(Projections.rowCount()).uniqueResult();
+        Long count = (Long) criteria.setProjection(Projections.rowCount()).uniqueResult();
+        return count.intValue();
     }
     
     private SchoolPermissionCriteriaBuilder createPendingVaultCriteriaBuilder(String userId, Session session, Permission permission) {
@@ -222,7 +199,7 @@ public class PendingVaultDAOImpl implements PendingVaultDAO {
     @Override
     public void deleteById(String Id) {
 
-        Session session = this.sessionFactory.openSession();
+        Session session = this.sessionFactory.getCurrentSession();
         Criteria criteria = session.createCriteria(PendingVault.class);
         criteria.add(Restrictions.eq("id", Id));
         PendingVault pv = (PendingVault) criteria.uniqueResult();
@@ -230,9 +207,6 @@ public class PendingVaultDAOImpl implements PendingVaultDAO {
         //session.flush();
         //session.close();
 
-        Transaction tx = session.beginTransaction();
         session.delete(pv);
-        tx.commit();
-        session.close();
     }
 }

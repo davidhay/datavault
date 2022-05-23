@@ -1,10 +1,10 @@
 package org.datavaultplatform.common.model.dao;
 
+import javax.transaction.Transactional;
 import org.datavaultplatform.common.model.Archive;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
 import org.hibernate.criterion.Restrictions;
 
 import java.util.List;
@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 
 
 @Repository
+@Transactional
 public class ArchiveDAOImpl implements ArchiveDAO {
 
     private final SessionFactory sessionFactory;
@@ -22,39 +23,30 @@ public class ArchiveDAOImpl implements ArchiveDAO {
 
     @Override
     public void save(Archive archive) {
-        Session session = this.sessionFactory.openSession();
-        Transaction tx = session.beginTransaction();
+        Session session = this.sessionFactory.getCurrentSession();
         session.persist(archive);
-        tx.commit();
-        session.close();
     }
 
     @Override
     public void update(Archive archive) {
-        Session session = this.sessionFactory.openSession();
-        Transaction tx = session.beginTransaction();
+        Session session = this.sessionFactory.getCurrentSession();
         session.update(archive);
-        tx.commit();
-        session.close();
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public List<Archive> list() {
-        Session session = this.sessionFactory.openSession();
+        Session session = this.sessionFactory.getCurrentSession();
         Criteria criteria = session.createCriteria(Archive.class);
         List<Archive> archives = criteria.list();
-        session.close();
         return archives;
     }
 
     @Override
     public Archive findById(String Id) {
-        Session session = this.sessionFactory.openSession();
+        Session session = this.sessionFactory.getCurrentSession();
         Criteria criteria = session.createCriteria(Archive.class);
         criteria.add(Restrictions.eq("id",Id));
         Archive archive = (Archive)criteria.uniqueResult();
-        session.close();
         return archive;
     }
 

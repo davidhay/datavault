@@ -55,7 +55,7 @@ public class ScheduledBeansConfigTest extends BaseScheduledTest {
   }
 
   @DynamicPropertySource
-  static void setupCronExpressions(DynamicPropertyRegistry registry) {
+  static void setupProperties(DynamicPropertyRegistry registry) {
     setAllCronExpressionToNever(registry);
   }
 }

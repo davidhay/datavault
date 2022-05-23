@@ -4,21 +4,15 @@ import org.datavaultplatform.common.model.Retrieve;
 
 import java.util.List;
 
-public interface RetrieveDAO {
-
-    public void save(Retrieve retrieve);
+public interface RetrieveDAO extends BaseDAO<Retrieve> {
     
-    public void update(Retrieve retrieve);
-    
-    public List<Retrieve> list(String userId);
+    List<Retrieve> list(String userId);
 
-    public Retrieve findById(String Id);
+    int count(String userId);
 
-    public int count(String userId);
+    int inProgressCount(String userId);
 
-    public int inProgressCount(String userId);
+    List<Retrieve> inProgress();
 
-    public List<Retrieve> inProgress();
-
-    public int queueCount(String userId);
+    int queueCount(String userId);
 }

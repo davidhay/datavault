@@ -6,17 +6,11 @@ import org.datavaultplatform.common.model.RoleAssignment;
 import java.util.List;
 import java.util.Set;
 
-public interface RoleAssignmentDAO {
+public interface RoleAssignmentDAO extends AbstractDAO<RoleAssignment,Long> {
 
     boolean roleAssignmentExists(RoleAssignment roleAssignment);
 
-    void store(RoleAssignment roleAssignment);
-
-    RoleAssignment find(Long id);
-
     Set<Permission> findUserPermissions(String userId);
-
-    List<RoleAssignment> findAll();
 
     List<RoleAssignment> findBySchoolId(String schoolId);
 
@@ -31,8 +25,6 @@ public interface RoleAssignmentDAO {
     boolean hasPermission(String userId, Permission permission);
 
     boolean isAdminUser(String userId);
-
-    void update(RoleAssignment roleAssignment);
 
     void delete(Long id);
 }

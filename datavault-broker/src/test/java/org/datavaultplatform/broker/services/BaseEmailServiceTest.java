@@ -45,6 +45,8 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 @AddTestProperties
 @TestPropertySource(properties = {
     "spring.jpa.properties.hibernate.hbm2ddl.auto=none",
+    "broker.scheduled.enabled=false",
+    "broker.rabbit.enabled=false",
     "mail.administrator=test@datavaultplatform.org"})
 @Import(EmailService.class)
 @Slf4j

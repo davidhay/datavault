@@ -3,17 +3,9 @@ package org.datavaultplatform.common.model.dao;
 import java.util.List;
 import org.datavaultplatform.common.model.User;
  
-public interface UserDAO {
+public interface UserDAO extends BaseDAO<User> {
 
-    public void save(User user);
-    
-    public void update(User user);
-    
-    public List<User> list();
+    List<User> search(String query);
 
-    public User findById(String Id);
-
-    public List<User> search(String query);
-
-    public int count();
+    int count();
 }

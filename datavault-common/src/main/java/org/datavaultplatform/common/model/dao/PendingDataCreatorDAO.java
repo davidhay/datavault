@@ -4,12 +4,8 @@ import org.datavaultplatform.common.model.PendingDataCreator;
 
 import java.util.List;
 
-public interface PendingDataCreatorDAO {
+public interface PendingDataCreatorDAO extends BaseDAO<PendingDataCreator> {
     void save(List<PendingDataCreator> pendingDataCreators);
-
-    PendingDataCreator findById(String Id);
-
-    void update(PendingDataCreator pendingDataCreator);
 
     void delete(String id);
 }

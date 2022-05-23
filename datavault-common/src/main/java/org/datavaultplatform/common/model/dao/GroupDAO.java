@@ -4,19 +4,11 @@ import org.datavaultplatform.common.model.Group;
 
 import java.util.List;
 
-public interface GroupDAO {
+public interface GroupDAO extends BaseDAO<Group> {
 
-    public void save(Group group);
-    
-    public void update(Group group);
+    void delete(Group group);
 
-    public void delete(Group group);
+    List<Group> list(String userId);
 
-    public List<Group> list();
-
-    public List<Group> list(String userId);
-
-    public Group findById(String Id);
-
-    public int count(String userId);
+    int count(String userId);
 }

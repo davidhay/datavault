@@ -6,13 +6,9 @@ import org.datavaultplatform.common.model.RoleType;
 import java.util.Collection;
 import java.util.List;
 
-public interface RoleDAO {
+public interface RoleDAO extends AbstractDAO<RoleModel,Long> {
 
     void storeSpecialRoles();
-
-    void store(RoleModel role);
-
-    RoleModel find(Long id);
 
     RoleModel getIsAdmin();
 
@@ -24,13 +20,9 @@ public interface RoleDAO {
 
     RoleModel getNominatedDataManager();
 
-    Collection<RoleModel> findAll();
-
     Collection<RoleModel> findAll(RoleType roleType);
 
     List<RoleModel> findAllEditableRoles();
-
-    void update(RoleModel role);
 
     void delete(Long id);
 }

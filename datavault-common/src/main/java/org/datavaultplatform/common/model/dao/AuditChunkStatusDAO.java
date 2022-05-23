@@ -8,14 +8,7 @@ import org.datavaultplatform.common.model.DepositChunk;
 import java.util.HashMap;
 import java.util.List;
 
-public interface AuditChunkStatusDAO {
-    void save(AuditChunkStatus auditChunkStatus);
-
-    void update(AuditChunkStatus auditChunkStatus);
-
-    List<AuditChunkStatus> list();
-
-    AuditChunkStatus findById(String Id);
+public interface AuditChunkStatusDAO extends BaseDAO<AuditChunkStatus> {
 
     List<AuditChunkStatus> findByAudit(Audit audit);
 

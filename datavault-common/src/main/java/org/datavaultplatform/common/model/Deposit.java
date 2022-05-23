@@ -87,7 +87,7 @@ public class Deposit {
     // A Deposit can have a number of reviews
     @JsonIgnore
     @OneToMany(targetEntity=DepositReview.class, mappedBy="deposit", fetch=FetchType.LAZY)
-    @OrderBy("timestamp")
+    @OrderBy("creationTime")
     private List<DepositReview> depositReviews;
 
 

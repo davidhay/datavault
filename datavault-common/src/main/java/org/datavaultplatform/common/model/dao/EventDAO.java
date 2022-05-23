@@ -4,18 +4,12 @@ import java.util.List;
 import org.datavaultplatform.common.event.Event;
 import org.datavaultplatform.common.model.Vault;
 
-public interface EventDAO {
-    
-    public void save(Event event);
-    
-    public List<Event> list();
-    
-    public List<Event> list(String sort);
+public interface EventDAO extends BaseDAO<Event> {
 
-    public Event findById(String Id);
+    List<Event> list(String sort);
 
-    public List<Event> findVaultEvents(Vault vault);
+    List<Event> findVaultEvents(Vault vault);
     
-    public int count();
+    int count();
     
 }

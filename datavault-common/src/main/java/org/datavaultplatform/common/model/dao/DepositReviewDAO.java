@@ -4,17 +4,9 @@ import org.datavaultplatform.common.model.DepositReview;
 
 import java.util.List;
 
-public interface DepositReviewDAO {
+public interface DepositReviewDAO extends BaseDAO<DepositReview> {
 
-    public void save(DepositReview depositReview);
-    
-    public void update(DepositReview depositReview);
-    
-    public List<DepositReview> list();
+    List<DepositReview> search(String query);
 
-    public DepositReview findById(String Id);
-
-    public List<DepositReview> search(String query);
-
-    public int count();
+    int count();
 }

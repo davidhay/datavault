@@ -1,10 +1,12 @@
 package org.datavaultplatform.common.model.dao;
 
+import java.util.Arrays;
+import java.util.Collections;
+import javax.transaction.Transactional;
 import org.datavaultplatform.common.model.PendingDataCreator;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
 import org.hibernate.criterion.Restrictions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,6 +15,7 @@ import java.util.List;
 import org.springframework.stereotype.Repository;
 
 @Repository
+@Transactional
 public class PendingDataCreatorDAOImpl implements PendingDataCreatorDAO{
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PendingDataCreatorDAOImpl.class);
@@ -26,59 +29,44 @@ public class PendingDataCreatorDAOImpl implements PendingDataCreatorDAO{
 
     @Override
     public void save(List<PendingDataCreator> pendingDataCreators) {
-        Session session = this.sessionFactory.openSession();
-        Transaction tx = session.beginTransaction();
+        Session session = this.sessionFactory.getCurrentSession();
         for (PendingDataCreator pdc : pendingDataCreators) {
             session.persist(pdc);
         }
-        tx.commit();
-        session.close();
     }
 
     @Override
     public PendingDataCreator findById(String Id) {
-        Session session = this.sessionFactory.openSession();
+        Session session = this.sessionFactory.getCurrentSession();
         Criteria criteria = session.createCriteria(PendingDataCreator.class);
         criteria.add(Restrictions.eq("id", Id));
         PendingDataCreator creator = (PendingDataCreator) criteria.uniqueResult();
-        session.close();
         return creator;
     }
 
     @Override
+    public void save(PendingDataCreator item) {
+        save(Collections.singletonList(item));
+    }
+
+    @Override
     public void update(PendingDataCreator pendingDataCreator) {
-        Session session = null;
-        Transaction tx = null;
-        try {
-            session = this.sessionFactory.openSession();
-            tx = session.beginTransaction();
-            session.update(pendingDataCreator);
-            tx.commit();
-        } catch (RuntimeException e) {
-            if (tx != null) {
-                tx.rollback();
-                System.out.println("PendingDataCreator.update - ROLLBACK");
-            }
-            throw e;
-        } finally {
-            if (session != null) {
-                session.close();
-            }
-        }
+        Session session = this.sessionFactory.getCurrentSession();
+        session.update(pendingDataCreator);
+    }
+
+    @Override
+    public List<PendingDataCreator> list() {
+        Session session = this.sessionFactory.getCurrentSession();
+        Criteria criteria = session.createCriteria(PendingDataCreator.class);
+        List<PendingDataCreator> result = criteria.list();
+        return result;
     }
 
     @Override
     public void delete(String id) {
         PendingDataCreator creator = findById(id);
-        Session session = null;
-        try {
-            session = this.sessionFactory.openSession();
-
-            Transaction tx = session.beginTransaction();
-            session.delete(creator);
-            tx.commit();
-        } finally {
-            if (session != null) session.close();
-        }
+        Session session = this.sessionFactory.getCurrentSession();
+        session.delete(creator);
     }
 }

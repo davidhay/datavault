@@ -4,26 +4,18 @@ import java.util.List;
 
 import org.datavaultplatform.common.model.BillingInfo;
  
-public interface BillingDAO {
+public interface BillingDAO extends BaseDAO<BillingInfo> {
 
-    public void save(BillingInfo vault);
-    
-    public void update(BillingInfo vault);
+    List<BillingInfo> list(String sort, String order, String offset, String maxResult);
 
-    public List<BillingInfo> list();
+    void saveOrUpdateVault(BillingInfo billing);
 
-    public List<BillingInfo> list(String sort, String order, String offset, String maxResult);
+    List<BillingInfo> search(String query, String sort, String order, String offset, String maxResult);
 
-    public BillingInfo findById(String Id);
-    
-    public void saveOrUpdateVault(BillingInfo billing);
+    int count();
 
-    public List<BillingInfo> search(String query, String sort, String order, String offset, String maxResult);
+    Long getTotalNumberOfVaults();
 
-    public int count();
+    Long getTotalNumberOfVaults(String query);
 
-    public Long getTotalNumberOfVaults();
-
-	public Long getTotalNumberOfVaults(String query);
-	
 }

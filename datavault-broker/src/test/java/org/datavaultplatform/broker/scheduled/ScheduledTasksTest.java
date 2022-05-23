@@ -78,7 +78,7 @@ public class ScheduledTasksTest extends BaseScheduledTest {
   }
 
   @DynamicPropertySource
-  static void setupCronExpressions(DynamicPropertyRegistry registry) {
+  static void setupProperties(DynamicPropertyRegistry registry) {
     setAllCronExression(registry, EVERY_FIVE_SECONDS);
   }
 

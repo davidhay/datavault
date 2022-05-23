@@ -2,12 +2,11 @@ package org.datavaultplatform.common.model.dao;
 
 import java.util.List;
 
+import javax.transaction.Transactional;
 import org.datavaultplatform.common.model.Client;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
 import org.hibernate.Criteria;
-import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,7 +19,8 @@ import org.springframework.stereotype.Repository;
  */
 
 @Repository
-public class ClientDAOImpl implements ClientDAO {
+@Transactional
+public class ClientDAOImpl extends BaseDaoImpl implements ClientDAO {
 
     private static final Logger logger = LoggerFactory.getLogger(ClientDAOImpl.class);
 
@@ -33,55 +33,46 @@ public class ClientDAOImpl implements ClientDAO {
 
     @Override
     public void save(Client client) {
-        Session session = this.sessionFactory.openSession();
-        Transaction tx = session.beginTransaction();
+        Session session = this.sessionFactory.getCurrentSession();
         session.persist(client);
-        tx.commit();
-        session.close();
     }
 
     @Override
     public void update(Client client) {
-        Session session = this.sessionFactory.openSession();
-        Transaction tx = session.beginTransaction();
+        Session session = this.sessionFactory.getCurrentSession();
         session.update(client);
-        tx.commit();
-        session.close();
     }
 
     @SuppressWarnings("unchecked")
     @Override
     public List<Client> list() {
-        Session session = this.sessionFactory.openSession();
+        Session session = this.sessionFactory.getCurrentSession();
         Criteria criteria = session.createCriteria(Client.class);
         List<Client> clients = criteria.list();
-        session.close();
         return clients;
     }
 
     @Override
     public Client findById(String Id) {
-        Session session = this.sessionFactory.openSession();
+        Session session = this.sessionFactory.getCurrentSession();
         Criteria criteria = session.createCriteria(Client.class);
         criteria.add(Restrictions.eq("id",Id));
         Client client = (Client)criteria.uniqueResult();
-        session.close();
         return client;
     }
 
     @Override
     public Client findByApiKey(String apiKey) {
-        Session session = this.sessionFactory.openSession();
+        Session session = this.sessionFactory.getCurrentSession();
         Criteria criteria = session.createCriteria(Client.class);
         criteria.add(Restrictions.eq("apiKey", apiKey));
         Client client = (Client)criteria.uniqueResult();
-        session.close();
         return client;
     }
 
     @Override
     public int count() {
-        Session session = this.sessionFactory.openSession();
-        return (int)(long)(Long)session.createCriteria(Client.class).setProjection(Projections.rowCount()).uniqueResult();
+        Session session = this.sessionFactory.getCurrentSession();
+        return count(session, Client.class);
     }
 }

@@ -3,26 +3,18 @@ package org.datavaultplatform.common.model.dao;
 import java.util.List;
 
 import org.datavaultplatform.common.model.PendingVault;
-import org.datavaultplatform.common.model.Vault;
 
-public interface PendingVaultDAO {
-    public void save(PendingVault pendingVault);
+public interface PendingVaultDAO extends BaseDAO<PendingVault> {
 
-    public PendingVault findById(String Id);
+    List<PendingVault> list(String userId, String sort, String order, String offset, String maxResult);
 
-    public void update(PendingVault vault);
+    List<PendingVault> search(String userId, String query, String sort, String order, String offset, String maxResult, String confirmed);
+
+    int count(String userId);
     
-    public List<PendingVault> list();
+    int getTotalNumberOfPendingVaults(String userId, String confirmed);
 
-    public List<PendingVault> list(String userId, String sort, String order, String offset, String maxResult);
+	  int getTotalNumberOfPendingVaults(String userId, String query, String confirmed);
 
-    public List<PendingVault> search(String userId, String query, String sort, String order, String offset, String maxResult, String confirmed);
-
-    public int count(String userId);
-    
-    public int getTotalNumberOfPendingVaults(String userId, String confirmed);
-
-	public int getTotalNumberOfPendingVaults(String userId, String query, String confirmed);
-
-    public void deleteById(String Id);
+    void deleteById(String Id);
 }

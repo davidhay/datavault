@@ -60,4 +60,11 @@ public class Archive {
     public String getArchiveId() {
         return archiveId;
     }
+
+    public Deposit getDeposit() {
+        return this.deposit;
+    }
+    public String getId() {
+        return this.id;
+    }
 }

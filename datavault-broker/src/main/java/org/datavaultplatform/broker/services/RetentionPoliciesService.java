@@ -44,11 +44,11 @@ public class RetentionPoliciesService {
     }
     
     public RetentionPolicy getPolicy(String policyID) {
-        return retentionPolicyDAO.findById(policyID);
+        return retentionPolicyDAO.findById(Integer.parseInt(policyID));
     }
 
     public void delete(String policyID) {
-        retentionPolicyDAO.delete(policyID);
+        retentionPolicyDAO.delete(Integer.parseInt(policyID));
     }
 
     public RetentionPolicy buildRetentionPolicy(CreateRetentionPolicy createRetentionPolicy) {

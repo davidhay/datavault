@@ -1,10 +1,10 @@
 package org.datavaultplatform.common.model.dao;
 
 import java.util.List;
- 
+
+import javax.transaction.Transactional;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 
@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 @Repository
+@Transactional
 public class DataManagerDAOImpl implements DataManagerDAO {
 
     private static final Logger logger = LoggerFactory.getLogger(DataManagerDAOImpl.class);
@@ -26,31 +27,31 @@ public class DataManagerDAOImpl implements DataManagerDAO {
 
     @Override
     public void save(DataManager dataManager) {
-        Session session = this.sessionFactory.openSession();
-        Transaction tx = session.beginTransaction();
+        Session session = this.sessionFactory.getCurrentSession();
         System.out.println("DOA save dataManager:"+dataManager.getUUN());
         session.persist(dataManager);
-        tx.commit();
-        session.close();
     }
-    
+
+    @Override
+    public void update(DataManager item) {
+        throw new UnsupportedOperationException();
+    }
+
     @SuppressWarnings("unchecked")
     @Override
     public List<DataManager> list() {
-        Session session = this.sessionFactory.openSession();
+        Session session = this.sessionFactory.getCurrentSession();
         Criteria criteria = session.createCriteria(DataManager.class);
         List<DataManager> dataManagers = criteria.list();
-        session.close();
         return dataManagers;
     }
     
     @Override
     public DataManager findById(String Id) {
-        Session session = this.sessionFactory.openSession();
+        Session session = this.sessionFactory.getCurrentSession();
         Criteria criteria = session.createCriteria(DataManager.class);
         criteria.add(Restrictions.eq("id",Id));
         DataManager dataManager = (DataManager)criteria.uniqueResult();
-        session.close();
         return dataManager;
     }
 
@@ -58,13 +59,11 @@ public class DataManagerDAOImpl implements DataManagerDAO {
     public void deleteById(String Id) {
         logger.info("Deleting Data Manager with id " + Id);
 
-        Session session = this.sessionFactory.openSession();
+        Session session = this.sessionFactory.getCurrentSession();
         Criteria criteria = session.createCriteria(DataManager.class);
         criteria.add(Restrictions.eq("id", Id));
         DataManager dataManager = (DataManager) criteria.uniqueResult();
         session.delete(dataManager);
-        session.flush();
-        session.close();
     }
 
 }

@@ -2,20 +2,20 @@ package org.datavaultplatform.common.model.dao;
 
 import java.util.List;
 
+import javax.transaction.Transactional;
 import org.datavaultplatform.common.model.Vault;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 
 import org.datavaultplatform.common.event.Event;
 import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Projections;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class EventDAOImpl implements EventDAO {
+@Transactional
+public class EventDAOImpl extends BaseDaoImpl implements EventDAO {
     
     private final SessionFactory sessionFactory;
 
@@ -25,28 +25,29 @@ public class EventDAOImpl implements EventDAO {
 
     @Override
     public void save(Event event) {
-        Session session = this.sessionFactory.openSession();
-        Transaction tx = session.beginTransaction();
+        Session session = this.sessionFactory.getCurrentSession();
         session.persist(event);
-        tx.commit();
-        session.close();
     }
-    
+
+    @Override
+    public void update(Event item) {
+        throw new UnsupportedOperationException();
+    }
+
     @SuppressWarnings("unchecked")
     @Override
     public List<Event> list() {        
-        Session session = this.sessionFactory.openSession();
+        Session session = this.sessionFactory.getCurrentSession();
         Criteria criteria = session.createCriteria(Event.class);
         criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
         List<Event> events = criteria.list();
-        session.close();
         return events;
     }
     
     @SuppressWarnings("unchecked")
     @Override
     public List<Event> list(String sort) {
-        Session session = this.sessionFactory.openSession();
+        Session session = this.sessionFactory.getCurrentSession();
         Criteria criteria = session.createCriteria(Event.class);
         // See if there is a valid sort option
         if ("id".equals(sort)) {
@@ -56,34 +57,31 @@ public class EventDAOImpl implements EventDAO {
         }
 
         List<Event> events = criteria.list();
-        session.close();
         return events;
     }
     
     @Override
     public Event findById(String Id) {
-        Session session = this.sessionFactory.openSession();
+        Session session = this.sessionFactory.getCurrentSession();
         Criteria criteria = session.createCriteria(Event.class);
         criteria.add(Restrictions.eq("id",Id));
         Event event = (Event)criteria.uniqueResult();
-        session.close();
         return event;
     }
 
     @Override
     public List<Event> findVaultEvents(Vault vault) {
-        Session session = this.sessionFactory.openSession();
+        Session session = this.sessionFactory.getCurrentSession();
         Criteria criteria = session.createCriteria(Event.class);
         criteria.add(Restrictions.eq("vault",vault));
         criteria.addOrder(Order.asc("timestamp"));
         List<Event> events = criteria.list();
-        session.close();
         return events;
     }
     
     @Override
     public int count() {
-        Session session = this.sessionFactory.openSession();
-        return (int)(long)(Long)session.createCriteria(Event.class).setProjection(Projections.rowCount()).uniqueResult();
+        Session session = this.sessionFactory.getCurrentSession();
+        return count(session, Event.class);
     }
 }

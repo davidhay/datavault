@@ -16,7 +16,7 @@ public abstract class BaseRabbitTCTest extends BaseRabbitTest {
       "rabbitmq:3.10.0-management-alpine");//.withExposedPorts(15672);
 
   @DynamicPropertySource
-  static void tellSpringAboutRabbitInTestContainer(DynamicPropertyRegistry registry) {
+  static void setupProperties(DynamicPropertyRegistry registry) {
     log.info("RABBIT HTTP URL [ {} ]",RABBIT.getHttpUrl());
     registry.add("spring.rabbitmq.host", RABBIT::getHost);
     registry.add("spring.rabbitmq.port", RABBIT::getAmqpPort);
