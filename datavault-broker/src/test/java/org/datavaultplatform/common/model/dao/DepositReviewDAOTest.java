@@ -51,10 +51,10 @@ public class DepositReviewDAOTest extends BaseReuseDatabaseTest {
     assertNotNull(dr2.getId());
     assertEquals(2, dao.count());
 
-    DepositReview foundById1 = dao.findById(dr1.getId());
+    DepositReview foundById1 = dao.findById(dr1.getId()).get();
     assertEquals(dr1.getComment(), foundById1.getComment());
 
-    DepositReview foundById2 = dao.findById(dr2.getId());
+    DepositReview foundById2 = dao.findById(dr2.getId()).get();
     assertEquals(dr2.getComment(), foundById2.getComment());
   }
 
@@ -118,12 +118,12 @@ public class DepositReviewDAOTest extends BaseReuseDatabaseTest {
 
     dr1.setComment("dr1-comment-updated");
 
-    DepositReview found1 = dao.findById(dr1.getId());
+    DepositReview found1 = dao.findById(dr1.getId()).get();
     assertEquals("dr1-comment", found1.getComment());
 
     dao.update(dr1);
 
-    DepositReview found2 = dao.findById(dr1.getId());
+    DepositReview found2 = dao.findById(dr1.getId()).get();
     assertEquals("dr1-comment-updated", found2.getComment());
 
   }

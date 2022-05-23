@@ -1,42 +1,41 @@
 package org.datavaultplatform.common.model.dao;
 
-import java.util.Date;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
-
-import javax.transaction.Transactional;
+import java.util.Optional;
+import javax.persistence.EntityManager;
+import org.datavaultplatform.common.model.Deposit;
 import org.datavaultplatform.common.model.Permission;
 import org.datavaultplatform.common.util.DaoUtils;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.hibernate.Criteria;
+import org.hibernate.Session;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
-
-import org.datavaultplatform.common.model.Deposit;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 @Transactional
-public class DepositDAOImpl implements DepositDAO {
+public class DepositDAOImpl extends BaseDaoImpl<Deposit,String> implements DepositDAO {
 
-    private final SessionFactory sessionFactory;
-
-    public DepositDAOImpl(SessionFactory sessionFactory) {
-        this.sessionFactory = sessionFactory;
+    public DepositDAOImpl(EntityManager em) {
+        super(Deposit.class, em);
     }
 
     @Override
-    public void save(Deposit deposit) {
-        Session session = this.sessionFactory.getCurrentSession();
+    public Deposit save(Deposit deposit) {
+        Session session = this.getCurrentSession();
         session.persist(deposit);
+        return deposit;
     }
 
     @Override
-    public void update(Deposit deposit) {
-        Session session = this.sessionFactory.getCurrentSession();
+    public Deposit update(Deposit deposit) {
+        Session session = this.getCurrentSession();
         session.update(deposit);
+        return deposit;
     }
 
     @Override
@@ -48,7 +47,7 @@ public class DepositDAOImpl implements DepositDAO {
     @Override
     public List<Deposit> list(String query,  String userId, String sort, String order, int offset, int maxResult) {
         System.out.println("query:"+query+", sort: "+sort+", order: "+order+", offset: "+offset+", maxResult: "+maxResult);
-        Session session = this.sessionFactory.getCurrentSession();
+        Session session = this.getCurrentSession();
         SchoolPermissionCriteriaBuilder criteriaBuilder = createDepositCriteriaBuilder(userId, session, Permission.CAN_MANAGE_DEPOSITS);
         if (criteriaBuilder.hasNoAccess()) {
             return new ArrayList<>();
@@ -83,17 +82,17 @@ public class DepositDAOImpl implements DepositDAO {
     }
 
     @Override
-    public Deposit findById(String Id) {
-        Session session = this.sessionFactory.getCurrentSession();
+    public Optional<Deposit> findById(String Id) {
+        Session session = this.getCurrentSession();
         Criteria criteria = session.createCriteria(Deposit.class);
         criteria.add(Restrictions.eq("id",Id));
         Deposit deposit = (Deposit)criteria.uniqueResult();
-        return deposit;
+        return Optional.ofNullable(deposit);
     }
 
     @Override
     public int count(String userId, String query) {
-        Session session = this.sessionFactory.getCurrentSession();
+        Session session = this.getCurrentSession();
         SchoolPermissionCriteriaBuilder criteriaBuilder = createDepositCriteriaBuilder(userId, session, Permission.CAN_MANAGE_DEPOSITS);
         if (criteriaBuilder.hasNoAccess()) {
             return 0;
@@ -112,7 +111,7 @@ public class DepositDAOImpl implements DepositDAO {
 
     @Override
     public int queueCount(String userId) {
-        Session session = this.sessionFactory.getCurrentSession();
+        Session session = this.getCurrentSession();
         SchoolPermissionCriteriaBuilder criteriaBuilder = createDepositCriteriaBuilder(userId, session, Permission.CAN_VIEW_QUEUES);
         if (criteriaBuilder.hasNoAccess()) {
             return 0;
@@ -126,7 +125,7 @@ public class DepositDAOImpl implements DepositDAO {
 
     @Override
     public int inProgressCount(String userId) {
-        Session session = this.sessionFactory.getCurrentSession();
+        Session session = this.getCurrentSession();
         SchoolPermissionCriteriaBuilder criteriaBuilder = createDepositCriteriaBuilder(userId, session, Permission.CAN_VIEW_IN_PROGRESS);
         if (criteriaBuilder.hasNoAccess()) {
             return 0;
@@ -140,7 +139,7 @@ public class DepositDAOImpl implements DepositDAO {
 
     @Override
     public List<Deposit> inProgress() {
-        Session session = this.sessionFactory.getCurrentSession();
+        Session session = this.getCurrentSession();
         Criteria criteria = session.createCriteria(Deposit.class);
         criteria.add(Restrictions.and(Restrictions.ne("status", Deposit.Status.NOT_STARTED), Restrictions.ne("status", Deposit.Status.COMPLETE)));
         List<Deposit> deposits = criteria.list();
@@ -149,7 +148,7 @@ public class DepositDAOImpl implements DepositDAO {
 
     @Override
     public List<Deposit> completed() {
-        Session session = this.sessionFactory.getCurrentSession();
+        Session session = this.getCurrentSession();
         Criteria criteria = session.createCriteria(Deposit.class);
         criteria.add(Restrictions.eq("status", Deposit.Status.COMPLETE));
         List<Deposit> deposits = criteria.list();
@@ -158,7 +157,7 @@ public class DepositDAOImpl implements DepositDAO {
 
     @Override
     public List<Deposit> search(String query, String sort, String order, String userId) {
-        Session session = this.sessionFactory.getCurrentSession();
+        Session session = this.getCurrentSession();
         SchoolPermissionCriteriaBuilder criteriaBuilder = createDepositCriteriaBuilder(userId, session, Permission.CAN_MANAGE_DEPOSITS);
         if (criteriaBuilder.hasNoAccess()) {
             return new ArrayList<>();
@@ -184,7 +183,7 @@ public class DepositDAOImpl implements DepositDAO {
 
     @Override
     public Long size(String userId) {
-        Session session = this.sessionFactory.getCurrentSession();
+        Session session = this.getCurrentSession();
         SchoolPermissionCriteriaBuilder criteriaBuilder = createDepositCriteriaBuilder(userId, session, Permission.CAN_VIEW_VAULTS_SIZE);
         if (criteriaBuilder.hasNoAccess()) {
             return 0L;
@@ -206,7 +205,7 @@ public class DepositDAOImpl implements DepositDAO {
 
     @Override
     public List<Deposit> getDepositsWaitingForAudit(Date olderThanDate) {
-        Session session = this.sessionFactory.getCurrentSession();
+        Session session = this.getCurrentSession();
         Criteria criteria = session.createCriteria(Deposit.class);
 
         criteria.add(Restrictions.le("creationTime", olderThanDate));

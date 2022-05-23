@@ -54,10 +54,10 @@ public class VaultDAOTest extends BaseReuseDatabaseTest {
     assertNotNull(review2.getID());
     assertEquals(2, count());
 
-    Vault foundById1 = dao.findById(review1.getID());
+    Vault foundById1 = dao.findById(review1.getID()).get();
     assertEquals(review1.getID(), foundById1.getID());
 
-    Vault foundById2 = dao.findById(review2.getID());
+    Vault foundById2 = dao.findById(review2.getID()).get();
     assertEquals(review2.getID(), foundById2.getID());
   }
 
@@ -90,7 +90,7 @@ public class VaultDAOTest extends BaseReuseDatabaseTest {
 
     dao.update(arc1);
 
-    Vault found = dao.findById(arc1.getID());
+    Vault found = dao.findById(arc1.getID()).get();
     assertEquals(arc1.getName(), found.getName());
   }
 
@@ -123,8 +123,8 @@ public class VaultDAOTest extends BaseReuseDatabaseTest {
     return result;
   }
 
-  int count() {
+  long count() {
      return template.queryForObject(
-          "select count(*) from Vaults", Integer.class);
+          "select count(*) from Vaults", Long.class);
   }
 }

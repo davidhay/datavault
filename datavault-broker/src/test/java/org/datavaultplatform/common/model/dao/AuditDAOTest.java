@@ -48,10 +48,10 @@ public class AuditDAOTest extends BaseReuseDatabaseTest {
     assertNotNull(arc2.getID());
     assertEquals(2, count());
 
-    Audit foundById1 = dao.findById(arc1.getID());
+    Audit foundById1 = dao.findById(arc1.getID()).get();
     assertEquals(arc1.getID(), foundById1.getID());
 
-    Audit foundById2 = dao.findById(arc2.getID());
+    Audit foundById2 = dao.findById(arc2.getID()).get();
     assertEquals(arc2.getID(), foundById2.getID());
   }
 
@@ -84,7 +84,7 @@ public class AuditDAOTest extends BaseReuseDatabaseTest {
 
     dao.update(arc1);
 
-    Audit found = dao.findById(arc1.getID());
+    Audit found = dao.findById(arc1.getID()).get();
     assertEquals(arc1.getNote(), found.getNote());
   }
 
@@ -111,7 +111,7 @@ public class AuditDAOTest extends BaseReuseDatabaseTest {
     return audit;
   }
 
-  int count() {
+  long count() {
     return dao.count();
   }
 

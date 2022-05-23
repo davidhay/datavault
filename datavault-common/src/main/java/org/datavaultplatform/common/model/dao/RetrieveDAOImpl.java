@@ -1,11 +1,11 @@
 package org.datavaultplatform.common.model.dao;
 
-import javax.transaction.Transactional;
+import java.util.Optional;
+import javax.persistence.EntityManager;
 import org.datavaultplatform.common.model.*;
 import org.datavaultplatform.common.util.DaoUtils;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
@@ -13,28 +13,28 @@ import org.hibernate.criterion.Restrictions;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 @Transactional
-public class RetrieveDAOImpl implements RetrieveDAO {
+public class RetrieveDAOImpl extends BaseDaoImpl<Retrieve,String> implements RetrieveDAO {
 
-    private final SessionFactory sessionFactory;
-
-    public RetrieveDAOImpl(SessionFactory sessionFactory) {
-        this.sessionFactory = sessionFactory;
+    public RetrieveDAOImpl(EntityManager em) {
+        super(Retrieve.class, em);
     }
 
-
     @Override
-    public void save(Retrieve retrieve) {
-        Session session = this.sessionFactory.getCurrentSession();
+    public Retrieve save(Retrieve retrieve) {
+        Session session = this.getCurrentSession();
         session.persist(retrieve);
+        return retrieve;
     }
 
     @Override
-    public void update(Retrieve retrieve) {
-        Session session = this.sessionFactory.getCurrentSession();
+    public Retrieve update(Retrieve retrieve) {
+        Session session = this.getCurrentSession();
         session.update(retrieve);
+        return retrieve;
     }
 
     @Override
@@ -45,7 +45,7 @@ public class RetrieveDAOImpl implements RetrieveDAO {
     @SuppressWarnings("unchecked")
     @Override
     public List<Retrieve> list(String userId) {
-        Session session = this.sessionFactory.getCurrentSession();
+        Session session = this.getCurrentSession();
         SchoolPermissionCriteriaBuilder criteriaBuilder = createRetrieveCriteriaBuilder(userId, session, Permission.CAN_VIEW_RETRIEVES);
         if (criteriaBuilder.hasNoAccess()) {
             return new ArrayList<>();
@@ -58,17 +58,17 @@ public class RetrieveDAOImpl implements RetrieveDAO {
     }
 
     @Override
-    public Retrieve findById(String Id) {
-        Session session = this.sessionFactory.getCurrentSession();
+    public Optional<Retrieve> findById(String Id) {
+        Session session = this.getCurrentSession();
         Criteria criteria = session.createCriteria(Retrieve.class);
         criteria.add(Restrictions.eq("id", Id));
         Retrieve retrieve = (Retrieve) criteria.uniqueResult();
-        return retrieve;
+        return Optional.ofNullable(retrieve);
     }
 
     @Override
     public int count(String userId) {
-        Session session = this.sessionFactory.getCurrentSession();
+        Session session = this.getCurrentSession();
         SchoolPermissionCriteriaBuilder criteriaBuilder = createRetrieveCriteriaBuilder(userId, session, Permission.CAN_VIEW_RETRIEVES);
         if (criteriaBuilder.hasNoAccess()) {
             return 0;
@@ -80,7 +80,7 @@ public class RetrieveDAOImpl implements RetrieveDAO {
 
     @Override
     public int queueCount(String userId) {
-        Session session = this.sessionFactory.getCurrentSession();
+        Session session = this.getCurrentSession();
         SchoolPermissionCriteriaBuilder criteriaBuilder = createRetrieveCriteriaBuilder(userId, session, Permission.CAN_VIEW_QUEUES);
         if (criteriaBuilder.hasNoAccess()) {
             return 0;
@@ -94,7 +94,7 @@ public class RetrieveDAOImpl implements RetrieveDAO {
 
     @Override
     public int inProgressCount(String userId) {
-        Session session = this.sessionFactory.getCurrentSession();
+        Session session = this.getCurrentSession();
         SchoolPermissionCriteriaBuilder criteriaBuilder = createRetrieveCriteriaBuilder(userId, session, Permission.CAN_VIEW_IN_PROGRESS);
         if (criteriaBuilder.hasNoAccess()) {
             return 0;
@@ -108,7 +108,7 @@ public class RetrieveDAOImpl implements RetrieveDAO {
 
     @Override
     public List<Retrieve> inProgress() {
-        Session session = this.sessionFactory.getCurrentSession();
+        Session session = this.getCurrentSession();
         Criteria criteria = session.createCriteria(Retrieve.class);
         criteria.add(Restrictions.and(Restrictions.ne("status", Retrieve.Status.NOT_STARTED), Restrictions.ne("status", Retrieve.Status.COMPLETE)));
         criteria.addOrder(Order.asc("timestamp"));

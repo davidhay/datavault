@@ -8,5 +8,5 @@ public interface VaultReviewDAO extends BaseDAO<VaultReview> {
 
     List<VaultReview> search(String query);
 
-    int count();
+    long count();
 }

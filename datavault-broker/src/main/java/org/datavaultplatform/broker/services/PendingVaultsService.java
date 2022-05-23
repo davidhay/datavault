@@ -74,7 +74,7 @@ public class PendingVaultsService {
         pendingVaultDAO.deleteById(id);
     }
     public PendingVault getPendingVault(String vaultID) {
-        return pendingVaultDAO.findById(vaultID);
+        return pendingVaultDAO.findById(vaultID).orElse(null);
     }
     
     public int getTotalNumberOfPendingVaults(String userId, String confirmed) {

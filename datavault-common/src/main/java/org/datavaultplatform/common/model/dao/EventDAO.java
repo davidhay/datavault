@@ -10,6 +10,6 @@ public interface EventDAO extends BaseDAO<Event> {
 
     List<Event> findVaultEvents(Vault vault);
     
-    int count();
+    long count();
     
 }

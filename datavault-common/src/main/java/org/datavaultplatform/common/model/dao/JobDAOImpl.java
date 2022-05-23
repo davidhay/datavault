@@ -2,58 +2,58 @@ package org.datavaultplatform.common.model.dao;
 
 import java.util.List;
 
-import javax.transaction.Transactional;
+import java.util.Optional;
+import javax.persistence.EntityManager;
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 
 import org.datavaultplatform.common.model.Job;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 @Transactional
-public class JobDAOImpl extends BaseDaoImpl implements JobDAO {
+public class JobDAOImpl extends BaseDaoImpl<Job,String> implements JobDAO {
 
-    private final SessionFactory sessionFactory;
-
-    public JobDAOImpl(SessionFactory sessionFactory) {
-        this.sessionFactory = sessionFactory;
+    public JobDAOImpl(EntityManager em) {
+        super(Job.class, em);
     }
 
     @Override
-    public void save(Job job) {
-        Session session = this.sessionFactory.getCurrentSession();
+    public Job save(Job job) {
+        Session session = this.getCurrentSession();
         session.persist(job);
+        return job;
     }
     
     @Override
-    public void update(Job job) {
-        Session session = this.sessionFactory.getCurrentSession();
+    public Job update(Job job) {
+        Session session = this.getCurrentSession();
         session.update(job);
+        return job;
     }
  
-    @SuppressWarnings("unchecked")
     @Override
     public List<Job> list() {        
-        Session session = this.sessionFactory.getCurrentSession();
+        Session session = this.getCurrentSession();
         Criteria criteria = session.createCriteria(Job.class);
         List<Job> jobs = criteria.list();
         return jobs;
     }
     
     @Override
-    public Job findById(String Id) {
-        Session session = this.sessionFactory.getCurrentSession();
+    public Optional<Job> findById(String Id) {
+        Session session = this.getCurrentSession();
         Criteria criteria = session.createCriteria(Job.class);
         criteria.add(Restrictions.eq("id",Id));
         Job job = (Job)criteria.uniqueResult();
-        return job;
+        return Optional.ofNullable(job);
     }
 
     @Override
-    public int count() {
-        Session session = this.sessionFactory.getCurrentSession();
+    public long count() {
+        Session session = this.getCurrentSession();
         return count(session, Job.class);
     }
 }

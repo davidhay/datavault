@@ -4,5 +4,5 @@ import org.datavaultplatform.common.model.Job;
  
 public interface JobDAO extends BaseDAO<Job> {
 
-    int count();
+    long count();
 }

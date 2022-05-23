@@ -11,6 +11,4 @@ import org.datavaultplatform.common.model.Client;
 public interface ClientDAO extends BaseDAO<Client> {
 
     Client findByApiKey(String Apikey);
-
-    int count();
 }

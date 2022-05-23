@@ -3,55 +3,57 @@ package org.datavaultplatform.common.model.dao;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.transaction.Transactional;
-import org.datavaultplatform.common.model.*;
+import java.util.Optional;
+import javax.persistence.EntityManager;
+import org.datavaultplatform.common.model.PendingVault;
+import org.datavaultplatform.common.model.Permission;
 import org.datavaultplatform.common.util.DaoUtils;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 @Transactional
-public class PendingVaultDAOImpl implements PendingVaultDAO {
+public class PendingVaultDAOImpl extends BaseDaoImpl<PendingVault,String> implements PendingVaultDAO {
     private static final Logger LOGGER = LoggerFactory.getLogger(PendingVaultDAOImpl.class);
 
-    private final SessionFactory sessionFactory;
-
-    public PendingVaultDAOImpl(SessionFactory sessionFactory) {
-        this.sessionFactory = sessionFactory;
+    public PendingVaultDAOImpl(EntityManager em) {
+        super(PendingVault.class, em);
     }
 
     @Override
-    public void save(PendingVault pendingVault) {
-        Session session = this.sessionFactory.getCurrentSession();
+    public PendingVault save(PendingVault pendingVault) {
+        Session session = this.getCurrentSession();
         session.persist(pendingVault);
+        return pendingVault;
     }
 
     @Override
-    public PendingVault findById(String Id) {
-        Session session = this.sessionFactory.getCurrentSession();
+    public Optional<PendingVault> findById(String Id) {
+        Session session = this.getCurrentSession();
         Criteria criteria = session.createCriteria(PendingVault.class);
         criteria.add(Restrictions.eq("id", Id));
         PendingVault vault = (PendingVault)criteria.uniqueResult();
-        return vault;
+        return Optional.ofNullable(vault);
     }
 
     @Override
-    public void update(PendingVault vault) {
-        Session session = this.sessionFactory.getCurrentSession();
+    public PendingVault update(PendingVault vault) {
+        Session session = this.getCurrentSession();
         session.update(vault);
+        return vault;
     }
     
     @SuppressWarnings("unchecked")
     @Override
     public List<PendingVault> list() {
-        Session session = this.sessionFactory.getCurrentSession();
+        Session session = this.getCurrentSession();
         Criteria criteria = session.createCriteria(PendingVault.class);
         criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
         criteria.addOrder(Order.asc("creationTime"));
@@ -62,7 +64,7 @@ public class PendingVaultDAOImpl implements PendingVaultDAO {
     @SuppressWarnings("unchecked")
     @Override
     public List<PendingVault> list(String userId, String sort, String order, String offset, String maxResult) {
-        Session session = this.sessionFactory.getCurrentSession();
+        Session session = this.getCurrentSession();
         SchoolPermissionCriteriaBuilder criteriaBuilder = createPendingVaultCriteriaBuilder(userId, session, Permission.CAN_MANAGE_VAULTS);
         if (criteriaBuilder.hasNoAccess()) {
             return new ArrayList<>();
@@ -83,7 +85,7 @@ public class PendingVaultDAOImpl implements PendingVaultDAO {
     
     @Override
 	public int getTotalNumberOfPendingVaults(String userId, String confirmed) {
-		Session session = this.sessionFactory.getCurrentSession();
+		Session session = this.getCurrentSession();
         SchoolPermissionCriteriaBuilder criteriaBuilder = createPendingVaultCriteriaBuilder(userId, session, Permission.CAN_MANAGE_VAULTS);
         if (criteriaBuilder.hasNoAccess()) {
             return 0;
@@ -104,7 +106,7 @@ public class PendingVaultDAOImpl implements PendingVaultDAO {
 	 */
 	@Override
 	public int getTotalNumberOfPendingVaults(String userId, String query, String confirmed) {
-		Session session = this.sessionFactory.getCurrentSession();
+		Session session = this.getCurrentSession();
         SchoolPermissionCriteriaBuilder criteriaBuilder = createPendingVaultCriteriaBuilder(userId, session, Permission.CAN_MANAGE_VAULTS);
         if (criteriaBuilder.hasNoAccess()) {
             return 0;
@@ -126,7 +128,7 @@ public class PendingVaultDAOImpl implements PendingVaultDAO {
     @SuppressWarnings("unchecked")
     @Override
     public List<PendingVault> search(String userId, String query, String sort, String order, String offset, String maxResult, String confirmed) {
-        Session session = this.sessionFactory.getCurrentSession();
+        Session session = this.getCurrentSession();
         SchoolPermissionCriteriaBuilder criteriaBuilder = createPendingVaultCriteriaBuilder(userId, session, Permission.CAN_MANAGE_VAULTS);
         if (criteriaBuilder.hasNoAccess()) {
             return new ArrayList<>();
@@ -157,7 +159,7 @@ public class PendingVaultDAOImpl implements PendingVaultDAO {
 
     @Override
     public int count(String userId) {
-        Session session = this.sessionFactory.getCurrentSession();
+        Session session = this.getCurrentSession();
         SchoolPermissionCriteriaBuilder criteriaBuilder = createPendingVaultCriteriaBuilder(userId, session, Permission.CAN_MANAGE_VAULTS);
         if (criteriaBuilder.hasNoAccess()) {
             return 0;
@@ -199,7 +201,7 @@ public class PendingVaultDAOImpl implements PendingVaultDAO {
     @Override
     public void deleteById(String Id) {
 
-        Session session = this.sessionFactory.getCurrentSession();
+        Session session = this.getCurrentSession();
         Criteria criteria = session.createCriteria(PendingVault.class);
         criteria.add(Restrictions.eq("id", Id));
         PendingVault pv = (PendingVault) criteria.uniqueResult();

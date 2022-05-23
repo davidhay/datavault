@@ -8,5 +8,5 @@ public interface DepositReviewDAO extends BaseDAO<DepositReview> {
 
     List<DepositReview> search(String query);
 
-    int count();
+    long count();
 }

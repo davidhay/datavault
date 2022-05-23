@@ -1,11 +1,11 @@
 package org.datavaultplatform.common.model.dao;
 
-import javax.transaction.Transactional;
+import java.util.Optional;
+import javax.persistence.EntityManager;
 import org.datavaultplatform.common.model.*;
 import org.datavaultplatform.common.util.DaoUtils;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
@@ -13,39 +13,40 @@ import org.hibernate.criterion.Restrictions;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 @Transactional
-public class GroupDAOImpl implements GroupDAO {
+public class GroupDAOImpl extends BaseDaoImpl<Group,String> implements GroupDAO {
 
-    private final SessionFactory sessionFactory;
-
-    public GroupDAOImpl(SessionFactory sessionFactory) {
-        this.sessionFactory = sessionFactory;
+    public GroupDAOImpl(EntityManager em) {
+        super(Group.class, em);
     }
 
     @Override
-    public void save(Group group) {
-        Session session = this.sessionFactory.getCurrentSession();
+    public Group save(Group group) {
+        Session session = this.getCurrentSession();
         session.persist(group);
+        return group;
     }
 
     @Override
-    public void update(Group group) {
-        Session session = this.sessionFactory.getCurrentSession();
+    public Group update(Group group) {
+        Session session = this.getCurrentSession();
         session.update(group);
+        return group;
     }
 
     @Override
     public void delete(Group group) {
-        Session session = this.sessionFactory.getCurrentSession();
+        Session session = this.getCurrentSession();
         session.delete(group);
     }
 
     @SuppressWarnings("unchecked")
     @Override
     public List<Group> list() {
-        Session session = this.sessionFactory.getCurrentSession();
+        Session session = this.getCurrentSession();
         Criteria criteria = session.createCriteria(Group.class);
         criteria.addOrder(Order.asc("name"));
         List<Group> groups = criteria.list();
@@ -54,7 +55,7 @@ public class GroupDAOImpl implements GroupDAO {
 
     @Override
     public List<Group> list(String userId) {
-        Session session = this.sessionFactory.getCurrentSession();
+        Session session = this.getCurrentSession();
         SchoolPermissionCriteriaBuilder criteriaBuilder = createGroupCriteriaBuilder(userId, session, Permission.CAN_VIEW_SCHOOL_ROLE_ASSIGNMENTS);
         if (criteriaBuilder.hasNoAccess()) {
             return new ArrayList<>();
@@ -65,17 +66,17 @@ public class GroupDAOImpl implements GroupDAO {
     }
 
     @Override
-    public Group findById(String Id) {
-        Session session = this.sessionFactory.getCurrentSession();
+    public Optional<Group> findById(String Id) {
+        Session session = this.getCurrentSession();
         Criteria criteria = session.createCriteria(Group.class);
         criteria.add(Restrictions.eq("id", Id));
         Group group = (Group)criteria.uniqueResult();
-        return group;
+        return Optional.ofNullable(group);
     }
 
     @Override
     public int count(String userId) {
-        Session session = this.sessionFactory.getCurrentSession();
+        Session session = this.getCurrentSession();
         SchoolPermissionCriteriaBuilder criteriaBuilder = createGroupCriteriaBuilder(userId, session, Permission.CAN_VIEW_SCHOOL_ROLE_ASSIGNMENTS);
         if (criteriaBuilder.hasNoAccess()) {
             return 0;

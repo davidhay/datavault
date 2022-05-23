@@ -56,7 +56,7 @@ public class RolesAndPermissionsService {
     }
 
     private boolean roleExists(Long roleId) {
-        return roleId != null && roleDao.findById(roleId) != null;
+        return roleId != null && roleDao.findById(roleId).isPresent();
     }
 
     private void validateRolePermissions(RoleModel role) {
@@ -105,7 +105,7 @@ public class RolesAndPermissionsService {
     }
 
     public RoleModel getRole(long id) {
-        return roleDao.findById(id);
+        return roleDao.findById(id).orElse(null);
     }
 
     public RoleModel getIsAdmin() {
@@ -145,7 +145,7 @@ public class RolesAndPermissionsService {
     }
 
     public RoleAssignment getRoleAssignment(long id) {
-        return roleAssignmentDao.findById(id);
+        return roleAssignmentDao.findById(id).orElse(null);
     }
 
     public List<RoleAssignment> getRoleAssignmentsForSchool(String schoolId) {
@@ -274,7 +274,7 @@ public class RolesAndPermissionsService {
     }
 
     public RoleAssignment updateRoleAssignment(RoleAssignment roleAssignment) {
-        RoleAssignment original = roleAssignmentDao.findById(roleAssignment.getId());
+        RoleAssignment original = roleAssignmentDao.findById(roleAssignment.getId()).orElse(null);
         if (original == null) {
             throw new IllegalStateException("Cannot update a role assignment that does not exist");
         }

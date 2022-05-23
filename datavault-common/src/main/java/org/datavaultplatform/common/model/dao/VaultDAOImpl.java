@@ -2,56 +2,56 @@ package org.datavaultplatform.common.model.dao;
 
 import java.util.ArrayList;
 import java.util.List;
-import javax.transaction.Transactional;
+import java.util.Optional;
+import javax.persistence.EntityManager;
 import org.datavaultplatform.common.model.Permission;
 import org.datavaultplatform.common.model.Vault;
 import org.datavaultplatform.common.util.DaoUtils;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 @Transactional
-public class VaultDAOImpl implements VaultDAO {
+public class VaultDAOImpl extends BaseDaoImpl<Vault,String> implements VaultDAO {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(VaultDAOImpl.class);
 
-    private final SessionFactory sessionFactory;
-
-    public VaultDAOImpl(SessionFactory sessionFactory) {
-        this.sessionFactory = sessionFactory;
+    public VaultDAOImpl(EntityManager em) {
+        super(Vault.class, em);
     }
 
-
     @Override
-    public void save(Vault vault) {
-        Session session = this.sessionFactory.getCurrentSession();
+    public Vault save(Vault vault) {
+        Session session = this.getCurrentSession();
         session.persist(vault);
+        return vault;
     }
  
     @Override
-    public void update(Vault vault) {
-        Session session = this.sessionFactory.getCurrentSession();
+    public Vault update(Vault vault) {
+        Session session = this.getCurrentSession();
         session.update(vault);
+        return vault;
     }
     
     @Override
     public void saveOrUpdateVault(Vault vault) {        
-        Session session = this.sessionFactory.getCurrentSession();
+        Session session = this.getCurrentSession();
         session.saveOrUpdate(vault);
     }
 
     @SuppressWarnings("unchecked")
     @Override
     public List<Vault> list() {
-        Session session = this.sessionFactory.getCurrentSession();
+        Session session = this.getCurrentSession();
         Criteria criteria = session.createCriteria(Vault.class);
         criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
         criteria.addOrder(Order.asc("creationTime"));
@@ -62,7 +62,7 @@ public class VaultDAOImpl implements VaultDAO {
     @SuppressWarnings("unchecked")
     @Override
     public List<Vault> list(String userId, String sort, String order, String offset, String maxResult) {
-        Session session = this.sessionFactory.getCurrentSession();
+        Session session = this.getCurrentSession();
         SchoolPermissionCriteriaBuilder criteriaBuilder = createVaultCriteriaBuilder(userId, session, Permission.CAN_MANAGE_VAULTS);
         if (criteriaBuilder.hasNoAccess()) {
             return new ArrayList<>();
@@ -81,18 +81,18 @@ public class VaultDAOImpl implements VaultDAO {
     }
     
     @Override
-    public Vault findById(String Id) {
-        Session session = this.sessionFactory.getCurrentSession();
+    public Optional<Vault> findById(String Id) {
+        Session session = this.getCurrentSession();
         Criteria criteria = session.createCriteria(Vault.class);
         criteria.add(Restrictions.eq("id", Id));
         Vault vault = (Vault)criteria.uniqueResult();
-        return vault;
+        return Optional.ofNullable(vault);
     }
 
     @SuppressWarnings("unchecked")
     @Override
     public List<Vault> search(String userId, String query, String sort, String order, String offset, String maxResult) {
-        Session session = this.sessionFactory.getCurrentSession();
+        Session session = this.getCurrentSession();
         SchoolPermissionCriteriaBuilder criteriaBuilder = createVaultCriteriaBuilder(userId, session, Permission.CAN_MANAGE_VAULTS);
         if (criteriaBuilder.hasNoAccess()) {
             return new ArrayList<>();
@@ -118,7 +118,7 @@ public class VaultDAOImpl implements VaultDAO {
 
     @Override
     public int count(String userId) {
-        Session session = this.sessionFactory.getCurrentSession();
+        Session session = this.getCurrentSession();
         SchoolPermissionCriteriaBuilder criteriaBuilder = createVaultCriteriaBuilder(userId, session, Permission.CAN_MANAGE_VAULTS);
         if (criteriaBuilder.hasNoAccess()) {
             return 0;
@@ -130,7 +130,7 @@ public class VaultDAOImpl implements VaultDAO {
 
     @Override
     public int getRetentionPolicyCount(int status) {
-        Session session = this.sessionFactory.getCurrentSession();
+        Session session = this.getCurrentSession();
         Criteria criteria = session.createCriteria(Vault.class);
         criteria.add(Restrictions.eq("retentionPolicyStatus", status));
         criteria.setProjection(Projections.rowCount());
@@ -174,7 +174,7 @@ public class VaultDAOImpl implements VaultDAO {
 
 	@Override
 	public int getTotalNumberOfVaults(String userId) {
-		Session session = this.sessionFactory.getCurrentSession();
+		Session session = this.getCurrentSession();
         SchoolPermissionCriteriaBuilder criteriaBuilder = createVaultCriteriaBuilder(userId, session, Permission.CAN_MANAGE_VAULTS);
         if (criteriaBuilder.hasNoAccess()) {
             return 0;
@@ -191,7 +191,7 @@ public class VaultDAOImpl implements VaultDAO {
 	 */
 	@Override
 	public int getTotalNumberOfVaults(String userId, String query) {
-		Session session = this.sessionFactory.getCurrentSession();
+		Session session = this.getCurrentSession();
         SchoolPermissionCriteriaBuilder criteriaBuilder = createVaultCriteriaBuilder(userId, session, Permission.CAN_MANAGE_VAULTS);
         if (criteriaBuilder.hasNoAccess()) {
             return 0;
@@ -209,7 +209,7 @@ public class VaultDAOImpl implements VaultDAO {
 
 	@Override
 	public List<Object[]> getAllProjectsSize() {
-		Session session = this.sessionFactory.getCurrentSession();
+		Session session = this.getCurrentSession();
 		Query<Object[]> query = session.createQuery("select v.projectId, sum(v.vaultSize) from Vault v group by v.projectId");
 		return query.list();
 	}

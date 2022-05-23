@@ -11,6 +11,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import org.datavaultplatform.broker.test.TestUtils;
 import org.datavaultplatform.common.model.Group;
 import org.datavaultplatform.common.model.Permission;
@@ -76,7 +77,7 @@ public class RolesAndPermissionsServiceTest {
 
         RoleModel originalRole = aRole(RoleType.SCHOOL);
         originalRole.setId(123L);
-        given(mockRoleDao.findById(123L)).willReturn(originalRole);
+        given(mockRoleDao.findById(123L)).willReturn(Optional.of(originalRole));
 
         RoleModel toCreate = aRole(RoleType.SCHOOL);
         toCreate.setId(123L);
@@ -288,7 +289,7 @@ public class RolesAndPermissionsServiceTest {
         // Given
         RoleModel originalRole = aRole(RoleType.SCHOOL);
         originalRole.setId(123L);
-        given(mockRoleDao.findById(123L)).willReturn(originalRole);
+        given(mockRoleDao.findById(123L)).willReturn(Optional.of(originalRole));
 
         RoleModel toUpdate = aRole(RoleType.SCHOOL);
         toUpdate.setId(123L);
@@ -322,7 +323,7 @@ public class RolesAndPermissionsServiceTest {
         // Given
         checkIllegalStateExcepton("Cannot update a role that does not exist", () -> {
 
-        given(mockRoleDao.findById(123L)).willReturn(null);
+        given(mockRoleDao.findById(123L)).willReturn(Optional.empty());
 
         RoleModel toUpdate = aRole(RoleType.SCHOOL);
         toUpdate.setId(123L);
@@ -343,7 +344,7 @@ public class RolesAndPermissionsServiceTest {
 
         RoleModel originalRole = aRole(RoleType.SCHOOL);
         originalRole.setId(123L);
-        given(mockRoleDao.findById(123L)).willReturn(originalRole);
+        given(mockRoleDao.findById(123L)).willReturn(Optional.of(originalRole));
 
         RoleModel toUpdate = aRole(RoleType.SCHOOL);
         toUpdate.setId(123L);
@@ -368,7 +369,7 @@ public class RolesAndPermissionsServiceTest {
         original.setSchoolId(schoolId1);
         original.setId(1L);
 
-        given(mockRoleAssignmentDao.findById(1L)).willReturn(original);
+        given(mockRoleAssignmentDao.findById(1L)).willReturn(Optional.of(original));
 
         RoleModel newRole = aRole(RoleType.SCHOOL);
 
@@ -393,7 +394,7 @@ public class RolesAndPermissionsServiceTest {
         // Given
         checkIllegalStateExcepton("Cannot update a role assignment that does not exist", () -> {
 
-        given(mockRoleAssignmentDao.findById(1L)).willReturn(null);
+        given(mockRoleAssignmentDao.findById(1L)).willReturn(Optional.empty());
 
         RoleAssignment updatedRoleAssignment = aRoleAssignment(aRole(RoleType.SCHOOL));
         updatedRoleAssignment.setSchoolId("school1");
@@ -413,7 +414,7 @@ public class RolesAndPermissionsServiceTest {
         roleAssignment.setSchoolId("school1");
         roleAssignment.setId(1L);
 
-        given(mockRoleAssignmentDao.findById(1L)).willReturn(roleAssignment);
+        given(mockRoleAssignmentDao.findById(1L)).willReturn(Optional.of(roleAssignment));
 
         // When
         underTest.updateRoleAssignment(roleAssignment);
@@ -430,7 +431,7 @@ public class RolesAndPermissionsServiceTest {
         RoleAssignment original = aRoleAssignment(aRole(RoleType.SCHOOL));
         original.setSchoolId("school1");
         original.setId(1L);
-        given(mockRoleAssignmentDao.findById(1L)).willReturn(original);
+        given(mockRoleAssignmentDao.findById(1L)).willReturn(Optional.of(original));
 
         RoleAssignment update = aRoleAssignment(null);
         update.setUserId(null);
@@ -448,7 +449,7 @@ public class RolesAndPermissionsServiceTest {
         // Given
         RoleModel originalRole = aRole(RoleType.SCHOOL);
         originalRole.setId(123L);
-        given(mockRoleDao.findById(123L)).willReturn(originalRole);
+        given(mockRoleDao.findById(123L)).willReturn(Optional.of(originalRole));
 
         // When
         underTest.deleteRole(123L);
@@ -461,7 +462,7 @@ public class RolesAndPermissionsServiceTest {
     public void deleteRoleShouldThrowExceptionWhenRoleDoesNotExist() {
         checkIllegalStateExcepton("Cannot delete a role that does not exist", () -> {
 
-        given(mockRoleDao.findById(123L)).willReturn(null);
+        given(mockRoleDao.findById(123L)).willReturn(Optional.empty());
 
         // When
         underTest.deleteRole(123L);
@@ -476,7 +477,7 @@ public class RolesAndPermissionsServiceTest {
         RoleAssignment original = aRoleAssignment(aRole(RoleType.ADMIN));
         original.setId(1L);
 
-        given(mockRoleAssignmentDao.findById(1L)).willReturn(original);
+        given(mockRoleAssignmentDao.findById(1L)).willReturn(Optional.of(original));
 
         // When
         underTest.deleteRoleAssignment(1L);

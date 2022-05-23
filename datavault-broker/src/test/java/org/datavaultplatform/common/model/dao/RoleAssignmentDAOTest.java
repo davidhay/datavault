@@ -53,10 +53,10 @@ public class RoleAssignmentDAOTest extends BaseReuseDatabaseTest {
     assertNotNull(review2.getId());
     assertEquals(2, count());
 
-    RoleAssignment foundById1 = dao.findById(review1.getId());
+    RoleAssignment foundById1 = dao.findById(review1.getId()).get();
     assertEquals(review1.getId(), foundById1.getId());
 
-    RoleAssignment foundById2 = dao.findById(review2.getId());
+    RoleAssignment foundById2 = dao.findById(review2.getId()).get();
     assertEquals(review2.getId(), foundById2.getId());
   }
 
@@ -75,7 +75,7 @@ public class RoleAssignmentDAOTest extends BaseReuseDatabaseTest {
 
     dao.update(arc1);
 
-    RoleAssignment found = dao.findById(arc1.getId());
+    RoleAssignment found = dao.findById(arc1.getId()).get();
     assertEquals(arc1.getUserId(), found.getUserId());
   }
 

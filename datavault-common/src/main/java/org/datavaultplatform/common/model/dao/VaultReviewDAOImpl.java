@@ -1,58 +1,59 @@
 package org.datavaultplatform.common.model.dao;
 
-import javax.transaction.Transactional;
+import java.util.Optional;
+import javax.persistence.EntityManager;
 import org.datavaultplatform.common.model.VaultReview;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
 
 import java.util.List;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 @Transactional
-public class VaultReviewDAOImpl extends BaseDaoImpl implements VaultReviewDAO {
+public class VaultReviewDAOImpl extends BaseDaoImpl<VaultReview,String> implements VaultReviewDAO {
 
-    private final SessionFactory sessionFactory;
-
-    public VaultReviewDAOImpl(SessionFactory sessionFactory) {
-        this.sessionFactory = sessionFactory;
+    public VaultReviewDAOImpl(EntityManager em) {
+        super(VaultReview.class, em);
     }
 
     @Override
-    public void save(VaultReview vaultReview) {
-        Session session = this.sessionFactory.getCurrentSession();
+    public VaultReview save(VaultReview vaultReview) {
+        Session session = this.getCurrentSession();
         session.persist(vaultReview);
+        return vaultReview;
     }
     
     @Override
-    public void update(VaultReview vaultReview) {
-        Session session = this.sessionFactory.getCurrentSession();
+    public VaultReview update(VaultReview vaultReview) {
+        Session session = this.getCurrentSession();
         session.update(vaultReview);
+        return vaultReview;
     }
  
     @SuppressWarnings("unchecked")
     @Override
     public List<VaultReview> list() {
-        Session session = this.sessionFactory.getCurrentSession();
+        Session session = this.getCurrentSession();
         Criteria criteria = session.createCriteria(VaultReview.class);
         List<VaultReview> vaultReviews = criteria.list();
         return vaultReviews;
     }
 
     @Override
-    public VaultReview findById(String Id) {
-        Session session = this.sessionFactory.getCurrentSession();
+    public Optional<VaultReview> findById(String Id) {
+        Session session = this.getCurrentSession();
         Criteria criteria = session.createCriteria(VaultReview.class);
         criteria.add(Restrictions.eq("id",Id));
         VaultReview vaultReview = (VaultReview)criteria.uniqueResult();
-        return vaultReview;
+        return Optional.ofNullable(vaultReview);
     }
 
     @Override
     public List<VaultReview> search(String query) {
-        Session session = this.sessionFactory.getCurrentSession();
+        Session session = this.getCurrentSession();
         Criteria criteria = session.createCriteria(VaultReview.class);
         criteria.add(Restrictions.or(Restrictions.ilike("id", "%" + query + "%")));
         criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
@@ -61,8 +62,8 @@ public class VaultReviewDAOImpl extends BaseDaoImpl implements VaultReviewDAO {
     }
 
     @Override
-    public int count() {
-        Session session = this.sessionFactory.getCurrentSession();
+    public long count() {
+        Session session = this.getCurrentSession();
         return count(session, VaultReview.class);
     }
 }

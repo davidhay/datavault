@@ -54,10 +54,10 @@ public class RetentionPolicyDAOTest extends BaseReuseDatabaseTest {
     assertNotNull(retPol2.getID());
     assertEquals(2, count());
 
-    RetentionPolicy foundById1 = dao.findById(retPol1.getID());
+    RetentionPolicy foundById1 = dao.findById(retPol1.getID()).get();
     assertEquals(retPol1.getID(), foundById1.getID());
 
-    RetentionPolicy foundById2 = dao.findById(retPol2.getID());
+    RetentionPolicy foundById2 = dao.findById(retPol2.getID()).get();
     assertEquals(retPol2.getID(), foundById2.getID());
   }
 
@@ -89,7 +89,7 @@ public class RetentionPolicyDAOTest extends BaseReuseDatabaseTest {
 
     dao.update(rp1);
 
-    RetentionPolicy found = dao.findById(rp1.getID());
+    RetentionPolicy found = dao.findById(rp1.getID()).get();
     assertEquals(rp1.getName(), found.getName());
   }
 
@@ -118,8 +118,8 @@ public class RetentionPolicyDAOTest extends BaseReuseDatabaseTest {
     return result;
   }
 
-  int count() {
+  long count() {
     return template.queryForObject(
-          "select count(*) from RetentionPolicies", Integer.class);
+          "select count(*) from RetentionPolicies", Long.class);
   }
 }

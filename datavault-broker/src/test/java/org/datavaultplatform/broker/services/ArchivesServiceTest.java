@@ -1,15 +1,13 @@
-package org.datavaultplatform.common.model.dao;
+package org.datavaultplatform.broker.services;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.util.Date;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.datavaultplatform.broker.app.DataVaultBrokerApp;
 import org.datavaultplatform.broker.test.AddTestProperties;
-import org.datavaultplatform.broker.test.BaseDatabaseTest;
 import org.datavaultplatform.broker.test.BaseReuseDatabaseTest;
 import org.datavaultplatform.common.model.Archive;
 import org.junit.jupiter.api.AfterEach;
@@ -18,8 +16,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.test.context.DynamicPropertyRegistry;
-import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.context.TestPropertySource;
 
 @SpringBootTest(classes = DataVaultBrokerApp.class)
@@ -31,10 +27,10 @@ import org.springframework.test.context.TestPropertySource;
     "broker.rabbit.enabled=false",
     "broker.scheduled.enabled=false"
 })
-public class ArchiveDAOTest extends BaseReuseDatabaseTest {
+public class ArchivesServiceTest extends BaseReuseDatabaseTest {
 
   @Autowired
-  ArchiveDAO dao;
+  ArchivesService service;
 
   @Autowired
   JdbcTemplate template;
@@ -47,18 +43,18 @@ public class ArchiveDAOTest extends BaseReuseDatabaseTest {
 
     Archive arc2 = getArchive2();
 
-    dao.save(arc1);
+    service.saveArchive(arc1);
     assertNotNull(arc1.getArchiveId());
     assertEquals(1, count());
 
-    dao.save(arc2);
+    service.saveArchive(arc2);
     assertNotNull(arc2.getArchiveId());
     assertEquals(2, count());
 
-    Archive foundById1 = dao.findById(arc1.getId()).get();
+    Archive foundById1 = service.findById(arc1.getId());
     assertEquals(arc1.getArchiveId(), foundById1.getArchiveId());
 
-    Archive foundById2 = dao.findById(arc2.getId()).get();
+    Archive foundById2 = service.findById(arc2.getId());
     assertEquals(arc2.getArchiveId(), foundById2.getArchiveId());
   }
 
@@ -68,13 +64,13 @@ public class ArchiveDAOTest extends BaseReuseDatabaseTest {
 
     Archive arc2 = getArchive2();
 
-    dao.save(arc1);
+    service.saveArchive(arc1);
     assertEquals(1, count());
 
-    dao.save(arc2);
+    service.saveArchive(arc2);
     assertEquals(2, count());
 
-    List<Archive> items = dao.list();
+    List<Archive> items = service.getArchives();
     assertEquals(2, items.size());
     assertEquals(1,items.stream().filter(dr -> dr.getId().equals(arc1.getId())).count());
     assertEquals(1,items.stream().filter(dr -> dr.getId().equals(arc2.getId())).count());
@@ -85,13 +81,13 @@ public class ArchiveDAOTest extends BaseReuseDatabaseTest {
   void testUpdate() {
     Archive arc1 = getArchive1();
 
-    dao.save(arc1);
+    service.saveArchive(arc1);
 
     arc1.setArchiveId("updated-archive-id-1");
 
-    dao.update(arc1);
+    service.updateArchive(arc1);
 
-    Archive found = dao.findById(arc1.getId()).get();
+    Archive found = service.findById(arc1.getId());
     assertEquals(arc1.getArchiveId(), found.getArchiveId());
   }
 

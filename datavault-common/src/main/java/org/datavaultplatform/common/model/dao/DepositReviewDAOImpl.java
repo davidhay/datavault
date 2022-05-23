@@ -1,58 +1,60 @@
 package org.datavaultplatform.common.model.dao;
 
-import javax.transaction.Transactional;
+import java.util.Optional;
+import javax.persistence.EntityManager;
 import org.datavaultplatform.common.model.DepositReview;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
 
 import java.util.List;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 @Transactional
-public class DepositReviewDAOImpl extends BaseDaoImpl implements DepositReviewDAO {
+public class DepositReviewDAOImpl extends BaseDaoImpl<DepositReview,String> implements
+    DepositReviewDAO {
 
-    private final SessionFactory sessionFactory;
-
-    public DepositReviewDAOImpl(SessionFactory sessionFactory) {
-        this.sessionFactory = sessionFactory;
+    public DepositReviewDAOImpl( EntityManager em ) {
+        super(DepositReview.class, em);
     }
 
     @Override
-    public void save(DepositReview depositReview) {
-        Session session = this.sessionFactory.getCurrentSession();
+    public DepositReview save(DepositReview depositReview) {
+        Session session = this.getCurrentSession();
         session.persist(depositReview);
+        return depositReview;
     }
     
     @Override
-    public void update(DepositReview depositReview) {
-        Session session = this.sessionFactory.getCurrentSession();
+    public DepositReview update(DepositReview depositReview) {
+        Session session = this.getCurrentSession();
         session.update(depositReview);
+        return depositReview;
     }
  
     @SuppressWarnings("unchecked")
     @Override
     public List<DepositReview> list() {
-        Session session = this.sessionFactory.getCurrentSession();
+        Session session = this.getCurrentSession();
         Criteria criteria = session.createCriteria(DepositReview.class);
         List<DepositReview> depositReviews = criteria.list();
         return depositReviews;
     }
 
     @Override
-    public DepositReview findById(String Id) {
-        Session session = this.sessionFactory.getCurrentSession();
+    public Optional<DepositReview> findById(String Id) {
+        Session session = this.getCurrentSession();
         Criteria criteria = session.createCriteria(DepositReview.class);
         criteria.add(Restrictions.eq("id",Id));
         DepositReview depositReview = (DepositReview)criteria.uniqueResult();
-        return depositReview;
+        return Optional.ofNullable(depositReview);
     }
 
     @Override
     public List<DepositReview> search(String query) {
-        Session session = this.sessionFactory.getCurrentSession();
+        Session session = this.getCurrentSession();
         Criteria criteria = session.createCriteria(DepositReview.class);
         criteria.add(Restrictions.or(Restrictions.ilike("id", "%" + query + "%")));
         criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
@@ -61,8 +63,8 @@ public class DepositReviewDAOImpl extends BaseDaoImpl implements DepositReviewDA
     }
 
     @Override
-    public int count() {
-        Session session = this.sessionFactory.getCurrentSession();
+    public long count() {
+        Session session = this.getCurrentSession();
         return count(session, DepositReview.class);
     }
 }

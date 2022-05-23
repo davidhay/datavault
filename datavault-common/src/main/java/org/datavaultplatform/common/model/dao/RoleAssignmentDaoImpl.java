@@ -1,34 +1,32 @@
 package org.datavaultplatform.common.model.dao;
 
-import javax.transaction.Transactional;
+import java.util.Optional;
+import javax.persistence.EntityManager;
 import org.datavaultplatform.common.model.*;
 import org.datavaultplatform.common.util.RoleUtils;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
 
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 @Transactional
-public class RoleAssignmentDaoImpl implements RoleAssignmentDAO {
+public class RoleAssignmentDaoImpl extends BaseDaoImpl<RoleAssignment,Long> implements
+    RoleAssignmentDAO {
 
-    private final SessionFactory sessionFactory;
-
-    @Autowired
-    public RoleAssignmentDaoImpl(SessionFactory sessionFactory) {
-        this.sessionFactory = sessionFactory;
+    public RoleAssignmentDaoImpl(EntityManager em) {
+        super(RoleAssignment.class, em);
     }
 
     @Override
     public boolean roleAssignmentExists(RoleAssignment roleAssignment) {
-        Session session = this.sessionFactory.getCurrentSession();
+        Session session = this.getCurrentSession();
 
         Criteria criteria = session.createCriteria(RoleAssignment.class);
         criteria.add(Restrictions.eq("role", roleAssignment.getRole()));
@@ -47,24 +45,25 @@ public class RoleAssignmentDaoImpl implements RoleAssignmentDAO {
     }
 
     @Override
-    public void save(RoleAssignment roleAssignment) {
-        Session session = this.sessionFactory.getCurrentSession();
+    public RoleAssignment save(RoleAssignment roleAssignment) {
+        Session session = this.getCurrentSession();
         session.persist(roleAssignment);
-    }
-
-    @Override
-    public RoleAssignment findById(Long id) {
-        Session session = this.sessionFactory.getCurrentSession();
-
-        Criteria criteria = session.createCriteria(RoleAssignment.class);
-        criteria.add(Restrictions.eq("id", id));
-        RoleAssignment roleAssignment = (RoleAssignment) criteria.uniqueResult();
         return roleAssignment;
     }
 
     @Override
+    public Optional<RoleAssignment> findById(Long id) {
+        Session session = this.getCurrentSession();
+
+        Criteria criteria = session.createCriteria(RoleAssignment.class);
+        criteria.add(Restrictions.eq("id", id));
+        RoleAssignment roleAssignment = (RoleAssignment) criteria.uniqueResult();
+        return Optional.ofNullable(roleAssignment);
+    }
+
+    @Override
     public Set<Permission> findUserPermissions(String userId) {
-        Session session = sessionFactory.getCurrentSession();
+        Session session = getCurrentSession();
         Query<PermissionModel> query = session.createQuery("SELECT DISTINCT role.permissions \n" +
             "FROM org.datavaultplatform.common.model.RoleAssignment ra\n" +
             "INNER JOIN ra.role as role\n" +
@@ -79,7 +78,7 @@ public class RoleAssignmentDaoImpl implements RoleAssignmentDAO {
 
     @Override
     public List<RoleAssignment> list() {
-        Session session = sessionFactory.getCurrentSession();
+        Session session = getCurrentSession();
 
         Criteria criteria = session.createCriteria(RoleAssignment.class);
         List<RoleAssignment> roleAssignments = criteria.list();
@@ -88,7 +87,7 @@ public class RoleAssignmentDaoImpl implements RoleAssignmentDAO {
 
     @Override
     public List<RoleAssignment> findBySchoolId(String schoolId) {
-        Session session = sessionFactory.getCurrentSession();
+        Session session = getCurrentSession();
 
         List<RoleAssignment> schoolAssignments = findBy(session, "schoolId", schoolId);
         return schoolAssignments;
@@ -108,7 +107,7 @@ public class RoleAssignmentDaoImpl implements RoleAssignmentDAO {
 
     @Override
     public List<RoleAssignment> findByVaultId(String vaultId) {
-        Session session = sessionFactory.getCurrentSession();
+        Session session = getCurrentSession();
 
         List<RoleAssignment> vaultAssignments = findBy(session, "vaultId", vaultId);
         return vaultAssignments;
@@ -116,21 +115,21 @@ public class RoleAssignmentDaoImpl implements RoleAssignmentDAO {
 
     @Override
     public List<RoleAssignment> findByPendingVaultId(String vaultId) {
-        Session session = sessionFactory.getCurrentSession();
+        Session session = getCurrentSession();
         List<RoleAssignment> vaultAssignments = findBy(session, "pendingVaultId", vaultId);
         return vaultAssignments;
     }
 
     @Override
     public List<RoleAssignment> findByUserId(String userId) {
-        Session session = sessionFactory.getCurrentSession();
+        Session session = getCurrentSession();
         List<RoleAssignment> schoolAssignments = findBy(session, "userId", userId);
         return schoolAssignments;
     }
 
     @Override
     public List<RoleAssignment> findByRoleId(Long roleId) {
-        Session session = sessionFactory.getCurrentSession();
+        Session session = getCurrentSession();
         RoleModel role = findObjectById(session, RoleModel.class, "id", roleId);
         List<RoleAssignment> assignments = findBy(session, "role", role);
         return assignments;
@@ -138,7 +137,7 @@ public class RoleAssignmentDaoImpl implements RoleAssignmentDAO {
 
     @Override
     public boolean hasPermission(String userId, Permission permission) {
-        Session session = sessionFactory.getCurrentSession();
+        Session session = getCurrentSession();
         Criteria criteria = session.createCriteria(RoleAssignment.class, "assignment");
         criteria.createAlias("assignment.role", "role");
         criteria.createAlias("role.permissions", "permission");
@@ -149,7 +148,7 @@ public class RoleAssignmentDaoImpl implements RoleAssignmentDAO {
 
     @Override
     public boolean isAdminUser(String userId) {
-        Session session = sessionFactory.getCurrentSession();
+        Session session = getCurrentSession();
         Criteria criteria = session.createCriteria(RoleAssignment.class, "assignment");
         criteria.createAlias("assignment.role", "role");
         criteria.add(Restrictions.eq("assignment.userId", userId));
@@ -158,15 +157,15 @@ public class RoleAssignmentDaoImpl implements RoleAssignmentDAO {
     }
 
     @Override
-    public void update(RoleAssignment roleAssignment) {
-        Session session = this.sessionFactory.getCurrentSession();
+    public RoleAssignment update(RoleAssignment roleAssignment) {
+        Session session = this.getCurrentSession();
         session.update(roleAssignment);
+        return roleAssignment;
     }
 
     @Override
     public void delete(Long id) {
-        RoleAssignment roleAssignment = findById(id);
-        Session session = this.sessionFactory.getCurrentSession();
-        session.delete(roleAssignment);
+        Session session = this.getCurrentSession();
+        findById(id).ifPresent(session::delete);
     }
 }

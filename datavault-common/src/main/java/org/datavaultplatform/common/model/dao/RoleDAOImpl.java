@@ -1,35 +1,30 @@
 package org.datavaultplatform.common.model.dao;
 
 import com.google.common.collect.Sets;
-import javax.transaction.Transactional;
+import java.util.Optional;
+import javax.persistence.EntityManager;
 import org.datavaultplatform.common.model.*;
 import org.datavaultplatform.common.util.RoleUtils;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 @Transactional
-public class RoleDAOImpl implements RoleDAO {
-
-    private final SessionFactory sessionFactory;
-
-    @Autowired
-    public RoleDAOImpl(SessionFactory sessionFactory) {
-        this.sessionFactory = sessionFactory;
+public class RoleDAOImpl extends BaseDaoImpl<RoleModel,Long> implements RoleDAO {
+    public RoleDAOImpl(EntityManager em) {
+        super(RoleModel.class, em);
     }
-
     @Override
     public void storeSpecialRoles() {
-        Session session = this.sessionFactory.getCurrentSession();
+        Session session = this.getCurrentSession();
 
         ensureIsAdminExists(session);
         ensureDataOwnerExists(session);
@@ -188,19 +183,20 @@ public class RoleDAOImpl implements RoleDAO {
     }
 
     @Override
-    public void save(RoleModel role) {
-        Session session = this.sessionFactory.getCurrentSession();
+    public RoleModel save(RoleModel role) {
+        Session session = this.getCurrentSession();
         session.persist(role);
+        return role;
     }
 
     @Override
-    public RoleModel findById(Long id) {
-        Session session = this.sessionFactory.getCurrentSession();
+    public Optional<RoleModel> findById(Long id) {
+        Session session = this.getCurrentSession();
         Criteria roleCriteria = session.createCriteria(RoleModel.class);
         roleCriteria.add(Restrictions.eq("id", id));
         RoleModel role = (RoleModel) roleCriteria.uniqueResult();
         populateAssignedUserCount(session, role);
-        return role;
+        return Optional.ofNullable(role);
     }
 
     private void populateAssignedUserCount(Session session, RoleModel role) {
@@ -213,7 +209,7 @@ public class RoleDAOImpl implements RoleDAO {
 
     @Override
     public RoleModel getIsAdmin() {
-        Session session = this.sessionFactory.getCurrentSession();
+        Session session = this.getCurrentSession();
         Criteria criteria = session.createCriteria(RoleModel.class);
         criteria.add(Restrictions.eq("name", RoleUtils.IS_ADMIN_ROLE_NAME));
         RoleModel role = (RoleModel) criteria.uniqueResult();
@@ -224,7 +220,7 @@ public class RoleDAOImpl implements RoleDAO {
 
     @Override
     public RoleModel getDataOwner() {
-        Session session = this.sessionFactory.getCurrentSession();
+        Session session = this.getCurrentSession();
         Criteria criteria = session.createCriteria(RoleModel.class);
         criteria.add(Restrictions.eq("name", RoleUtils.DATA_OWNER_ROLE_NAME));
         RoleModel role = (RoleModel) criteria.uniqueResult();
@@ -235,7 +231,7 @@ public class RoleDAOImpl implements RoleDAO {
 
     @Override
     public RoleModel getDepositor() {
-        Session session = this.sessionFactory.getCurrentSession();
+        Session session = this.getCurrentSession();
         Criteria criteria = session.createCriteria(RoleModel.class);
         criteria.add(Restrictions.eq("name", RoleUtils.DEPOSITOR_ROLE_NAME));
         RoleModel role = (RoleModel) criteria.uniqueResult();
@@ -246,7 +242,7 @@ public class RoleDAOImpl implements RoleDAO {
 
     @Override
     public RoleModel getVaultCreator() {
-        Session session = this.sessionFactory.getCurrentSession();
+        Session session = this.getCurrentSession();
         Criteria criteria = session.createCriteria(RoleModel.class);
         criteria.add(Restrictions.eq("name", RoleUtils.VAULT_CREATOR_ROLE_NAME));
         RoleModel role = (RoleModel) criteria.uniqueResult();
@@ -257,7 +253,7 @@ public class RoleDAOImpl implements RoleDAO {
 
     @Override
     public RoleModel getNominatedDataManager() {
-        Session session = this.sessionFactory.getCurrentSession();
+        Session session = this.getCurrentSession();
         Criteria criteria = session.createCriteria(RoleModel.class);
         criteria.add(Restrictions.eq("name", RoleUtils.NOMINATED_DATA_MANAGER_ROLE_NAME));
         RoleModel role = (RoleModel) criteria.uniqueResult();
@@ -268,7 +264,7 @@ public class RoleDAOImpl implements RoleDAO {
 
     @Override
     public List<RoleModel> list() {
-        Session session = this.sessionFactory.getCurrentSession();
+        Session session = this.getCurrentSession();
         Criteria criteria = session.createCriteria(RoleModel.class);
         List<RoleModel> roles = criteria.list();
         for (RoleModel role : roles) {
@@ -280,7 +276,7 @@ public class RoleDAOImpl implements RoleDAO {
 
     @Override
     public Collection<RoleModel> findAll(RoleType roleType) {
-        Session session = this.sessionFactory.getCurrentSession();
+        Session session = this.getCurrentSession();
         Criteria criteria = session.createCriteria(RoleModel.class);
         criteria.add(Restrictions.eq("type", roleType));
         List<RoleModel> roles = criteria.list();
@@ -293,7 +289,7 @@ public class RoleDAOImpl implements RoleDAO {
 
     @Override
     public List<RoleModel> findAllEditableRoles() {
-        Session session = sessionFactory.getCurrentSession();
+        Session session = getCurrentSession();
         Criteria criteria = session.createCriteria(RoleModel.class);
         criteria.add(Restrictions.or(
                 Restrictions.eq("type", RoleType.SCHOOL),
@@ -308,15 +304,15 @@ public class RoleDAOImpl implements RoleDAO {
     }
 
     @Override
-    public void update(RoleModel role) {
-        Session session = this.sessionFactory.getCurrentSession();
+    public RoleModel update(RoleModel role) {
+        Session session = this.getCurrentSession();
         session.update(role);
+        return role;
     }
 
     @Override
     public void delete(Long id) {
-        Session session = this.sessionFactory.getCurrentSession();
-        RoleModel role = findById(id);
-        session.delete(role);
+        Session session = this.getCurrentSession();
+        findById(id).ifPresent(session::delete);
     }
 }

@@ -52,10 +52,10 @@ public class UserDAOTest extends BaseReuseDatabaseTest {
     assertNotNull(user2.getID());
     assertEquals(2, dao.count());
 
-    User foundById1 = dao.findById(user1.getID());
+    User foundById1 = dao.findById(user1.getID()).get();
     assertEquals(user1.getEmail(), foundById1.getEmail());
 
-    User foundById2 = dao.findById(user2.getID());
+    User foundById2 = dao.findById(user2.getID()).get();
     assertEquals(user2.getEmail(), foundById2.getEmail());
   }
 
@@ -110,12 +110,12 @@ public class UserDAOTest extends BaseReuseDatabaseTest {
 
     user1.setEmail("user1.user1@test.com");
 
-    User found1 = dao.findById(user1.getID());
+    User found1 = dao.findById(user1.getID()).get();
     assertEquals("user1@test.com", found1.getEmail());
 
     dao.update(user1);
 
-    User found2 = dao.findById(user1.getID());
+    User found2 = dao.findById(user1.getID()).get();
     assertEquals("user1.user1@test.com", found2.getEmail());
 
   }

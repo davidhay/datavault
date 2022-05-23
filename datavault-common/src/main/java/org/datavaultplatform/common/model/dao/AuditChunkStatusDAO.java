@@ -20,5 +20,4 @@ public interface AuditChunkStatusDAO extends BaseDAO<AuditChunkStatus> {
 
     AuditChunkStatus getLastChunkAuditTime(DepositChunk chunk);
 
-    int count();
 }

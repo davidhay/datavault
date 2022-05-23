@@ -2,7 +2,8 @@ package org.datavaultplatform.common.model.dao;
 
 import java.util.List;
 
-import javax.transaction.Transactional;
+import java.util.Optional;
+import javax.persistence.EntityManager;
 import org.datavaultplatform.common.model.BillingInfo;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
@@ -13,41 +14,42 @@ import org.hibernate.criterion.Restrictions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 @Transactional
-public class BillingDAOImpl extends BaseDaoImpl implements BillingDAO {
+public class BillingDAOImpl extends BaseDaoImpl<BillingInfo,String> implements BillingDAO {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(BillingDAOImpl.class);
 
-    private final SessionFactory sessionFactory;
-
-    public BillingDAOImpl(SessionFactory sessionFactory) {
-        this.sessionFactory = sessionFactory;
+    public BillingDAOImpl(EntityManager em) {
+        super(BillingInfo.class, em);
     }
 
     @Override
-    public void save(BillingInfo billing) {
-        Session session = this.sessionFactory.getCurrentSession();
+    public BillingInfo save(BillingInfo billing) {
+        Session session = this.getCurrentSession();
         session.persist(billing);
+        return billing;
     }
  
     @Override
-    public void update(BillingInfo billing) {
-        Session session = this.sessionFactory.getCurrentSession();
+    public BillingInfo update(BillingInfo billing) {
+        Session session = this.getCurrentSession();
         session.update(billing);
+        return billing;
     }
     
     @Override
     public void saveOrUpdateVault(BillingInfo billing) {        
-        Session session = this.sessionFactory.getCurrentSession();
+        Session session = this.getCurrentSession();
         session.saveOrUpdate(billing);
     }
 
     @SuppressWarnings("unchecked")
     @Override
     public List<BillingInfo> list() {
-        Session session = this.sessionFactory.getCurrentSession();
+        Session session = this.getCurrentSession();
         Criteria criteria = session.createCriteria(BillingInfo.class);
         criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
         criteria.addOrder(Order.asc("creationTime"));
@@ -58,7 +60,7 @@ public class BillingDAOImpl extends BaseDaoImpl implements BillingDAO {
     @SuppressWarnings("unchecked")
     @Override
     public List<BillingInfo> list(String sort, String order, String offset, String maxResult) {
-        Session session = this.sessionFactory.getCurrentSession();
+        Session session = this.getCurrentSession();
         Criteria criteria = session.createCriteria(BillingInfo.class);
         criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
 
@@ -77,18 +79,18 @@ public class BillingDAOImpl extends BaseDaoImpl implements BillingDAO {
     }
     
     @Override
-    public BillingInfo findById(String Id) {
-        Session session = this.sessionFactory.getCurrentSession();
+    public Optional<BillingInfo> findById(String Id) {
+        Session session = this.getCurrentSession();
         Criteria criteria = session.createCriteria(BillingInfo.class);
         criteria.add(Restrictions.eq("id", Id));
-        BillingInfo vault = (BillingInfo)criteria.uniqueResult();
-        return vault;
+        BillingInfo result = (BillingInfo)criteria.uniqueResult();
+        return Optional.ofNullable(result);
     }
 
     @SuppressWarnings("unchecked")
     @Override
     public List<BillingInfo> search(String query, String sort, String order, String offset, String maxResult) {
-        Session session = this.sessionFactory.getCurrentSession();
+        Session session = this.getCurrentSession();
         Criteria criteria = session.createCriteria(BillingInfo.class);
         criteria.add(Restrictions.or(Restrictions.ilike("id", "%" + query + "%"), Restrictions.ilike("name", "%" + query + "%"), Restrictions.ilike("description", "%" + query + "%")));
         criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
@@ -108,14 +110,14 @@ public class BillingDAOImpl extends BaseDaoImpl implements BillingDAO {
     }
 
     @Override
-    public int count() {
-        Session session = this.sessionFactory.getCurrentSession();
+    public long count() {
+        Session session = this.getCurrentSession();
         return count(session, BillingInfo.class);
     }
 
 	@Override
 	public Long getTotalNumberOfVaults() {
-		Session session = this.sessionFactory.getCurrentSession();
+		Session session = this.getCurrentSession();
         Criteria criteria = session.createCriteria(BillingInfo.class);
         criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
         criteria.setProjection(Projections.rowCount());
@@ -127,7 +129,7 @@ public class BillingDAOImpl extends BaseDaoImpl implements BillingDAO {
 	 * Retrieve Total NUmber of rows after applying the filter
 	 */
 	public Long getTotalNumberOfVaults(String query) {
-		Session session = this.sessionFactory.getCurrentSession();
+		Session session = this.getCurrentSession();
         Criteria criteria = session.createCriteria(BillingInfo.class);
         criteria.add(Restrictions.or(Restrictions.ilike("id", "%" + query + "%"), Restrictions.ilike("name", "%" + query + "%"), Restrictions.ilike("description", "%" + query + "%")));
         criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);

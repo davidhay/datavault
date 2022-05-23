@@ -2,15 +2,16 @@ package org.datavaultplatform.common.model.dao;
 
 
 import java.util.List;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface AbstractDAO<T, ID> {
+public interface AbstractDAO<T,ID> extends JpaRepository<T,ID> {
 
-    void save(T item);
+  default List<T> list(){
+    return findAll();
+  }
+  long count();
 
-    void update(T item);
-
-    List<T> list();
-
-    T findById(ID Id);
-
+  default T update(T item) {
+    return this.save(item);
+  }
 }

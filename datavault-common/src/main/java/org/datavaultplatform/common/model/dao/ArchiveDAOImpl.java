@@ -1,53 +1,55 @@
 package org.datavaultplatform.common.model.dao;
 
-import javax.transaction.Transactional;
+import java.util.List;
+import java.util.Optional;
+import javax.persistence.EntityManager;
 import org.datavaultplatform.common.model.Archive;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
-
-import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 
-@Repository
 @Transactional
-public class ArchiveDAOImpl implements ArchiveDAO {
+@Repository
+public class ArchiveDAOImpl extends BaseDaoImpl<Archive,String> implements ArchiveDAO {
 
-    private final SessionFactory sessionFactory;
-
-    public ArchiveDAOImpl(SessionFactory sessionFactory) {
-        this.sessionFactory = sessionFactory;
+    @Autowired
+    public ArchiveDAOImpl(EntityManager em) {
+        super(Archive.class , em);
     }
 
     @Override
-    public void save(Archive archive) {
-        Session session = this.sessionFactory.getCurrentSession();
+    public Archive save(Archive archive) {
+        Session session = getCurrentSession();
         session.persist(archive);
+        return archive;
     }
 
     @Override
-    public void update(Archive archive) {
-        Session session = this.sessionFactory.getCurrentSession();
+    public Archive update(Archive archive) {
+        Session session = this.getCurrentSession();
         session.update(archive);
+        return archive;
     }
 
     @Override
     public List<Archive> list() {
-        Session session = this.sessionFactory.getCurrentSession();
+        Session session = this.getCurrentSession();
         Criteria criteria = session.createCriteria(Archive.class);
         List<Archive> archives = criteria.list();
         return archives;
     }
 
     @Override
-    public Archive findById(String Id) {
-        Session session = this.sessionFactory.getCurrentSession();
+    public Optional<Archive> findById(String Id) {
+        Session session = this.getCurrentSession();
         Criteria criteria = session.createCriteria(Archive.class);
         criteria.add(Restrictions.eq("id",Id));
         Archive archive = (Archive)criteria.uniqueResult();
-        return archive;
+        return Optional.ofNullable(archive);
     }
 
 }

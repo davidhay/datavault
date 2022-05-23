@@ -7,5 +7,5 @@ public interface UserDAO extends BaseDAO<User> {
 
     List<User> search(String query);
 
-    int count();
+    long count();
 }

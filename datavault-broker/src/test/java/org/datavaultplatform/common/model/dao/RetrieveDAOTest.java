@@ -6,7 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import lombok.extern.slf4j.Slf4j;
 import org.datavaultplatform.broker.app.DataVaultBrokerApp;
 import org.datavaultplatform.broker.test.AddTestProperties;
-import org.datavaultplatform.broker.test.BaseDatabaseTest;
 import org.datavaultplatform.broker.test.BaseReuseDatabaseTest;
 import org.datavaultplatform.common.model.Retrieve;
 import org.junit.jupiter.api.AfterEach;
@@ -16,8 +15,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.test.context.DynamicPropertyRegistry;
-import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.context.TestPropertySource;
 
 @SpringBootTest(classes = DataVaultBrokerApp.class)
@@ -51,10 +48,10 @@ public class RetrieveDAOTest extends BaseReuseDatabaseTest {
     assertNotNull(review2.getID());
     assertEquals(2, count());
 
-    Retrieve foundById1 = dao.findById(review1.getID());
+    Retrieve foundById1 = dao.findById(review1.getID()).get();
     assertEquals(review1.getID(), foundById1.getID());
 
-    Retrieve foundById2 = dao.findById(review2.getID());
+    Retrieve foundById2 = dao.findById(review2.getID()).get();
     assertEquals(review2.getID(), foundById2.getID());
   }
 
@@ -73,7 +70,7 @@ public class RetrieveDAOTest extends BaseReuseDatabaseTest {
 
     dao.update(arc1);
 
-    Retrieve found = dao.findById(arc1.getID());
+    Retrieve found = dao.findById(arc1.getID()).get();
     assertEquals(arc1.getNote(), found.getNote());
   }
 

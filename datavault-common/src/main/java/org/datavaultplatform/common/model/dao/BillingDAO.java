@@ -12,8 +12,6 @@ public interface BillingDAO extends BaseDAO<BillingInfo> {
 
     List<BillingInfo> search(String query, String sort, String order, String offset, String maxResult);
 
-    int count();
-
     Long getTotalNumberOfVaults();
 
     Long getTotalNumberOfVaults(String query);

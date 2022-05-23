@@ -1,46 +1,46 @@
 package org.datavaultplatform.common.model.dao;
 
-import javax.transaction.Transactional;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Optional;
+import javax.persistence.EntityManager;
 import org.datavaultplatform.common.model.Audit;
 import org.datavaultplatform.common.model.AuditChunkStatus;
 import org.datavaultplatform.common.model.Deposit;
 import org.datavaultplatform.common.model.DepositChunk;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
-
-import java.util.HashMap;
-import java.util.List;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 @Transactional
-public class AuditChunkStatusDAOImpl extends BaseDaoImpl implements AuditChunkStatusDAO {
+public class AuditChunkStatusDAOImpl extends BaseDaoImpl<AuditChunkStatus,String> implements AuditChunkStatusDAO {
 
-    private final SessionFactory sessionFactory;
-
-    public AuditChunkStatusDAOImpl(SessionFactory sessionFactory) {
-        this.sessionFactory = sessionFactory;
+    public AuditChunkStatusDAOImpl(EntityManager em) {
+        super(AuditChunkStatus.class, em);
     }
 
     @Override
-    public void save(AuditChunkStatus auditChunkStatus) {
-        Session session = this.sessionFactory.getCurrentSession();
+    public AuditChunkStatus save(AuditChunkStatus auditChunkStatus) {
+        Session session = this.getCurrentSession();
         session.persist(auditChunkStatus);
+        return auditChunkStatus;
     }
 
     @Override
-    public void update(AuditChunkStatus auditChunkStatus) {
-        Session session = this.sessionFactory.getCurrentSession();
+    public AuditChunkStatus update(AuditChunkStatus auditChunkStatus) {
+        Session session = this.getCurrentSession();
         session.update(auditChunkStatus);
+        return auditChunkStatus;
     }
 
     @SuppressWarnings("unchecked")
     @Override
     public List<AuditChunkStatus> list() {
-        Session session = this.sessionFactory.getCurrentSession();
+        Session session = this.getCurrentSession();
         Criteria criteria = session.createCriteria(AuditChunkStatus.class);
         criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
         criteria.addOrder(Order.asc("timestamp"));
@@ -49,12 +49,12 @@ public class AuditChunkStatusDAOImpl extends BaseDaoImpl implements AuditChunkSt
     }
 
     @Override
-    public AuditChunkStatus findById(String Id) {
-        Session session = this.sessionFactory.getCurrentSession();
+    public Optional<AuditChunkStatus> findById(String Id) {
+        Session session = this.getCurrentSession();
         Criteria criteria = session.createCriteria(AuditChunkStatus.class);
         criteria.add(Restrictions.eq("id", Id));
         AuditChunkStatus AuditChunkStatus = (AuditChunkStatus) criteria.uniqueResult();
-        return AuditChunkStatus;
+        return Optional.of(AuditChunkStatus);
     }
 
     @Override
@@ -73,7 +73,7 @@ public class AuditChunkStatusDAOImpl extends BaseDaoImpl implements AuditChunkSt
     }
 
     public List<AuditChunkStatus> findBy(String propertyName, Object value){
-        Session session = this.sessionFactory.getCurrentSession();
+        Session session = this.getCurrentSession();
         Criteria criteria = session.createCriteria(AuditChunkStatus.class);
         criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
         criteria.addOrder(Order.asc("timestamp"));
@@ -83,7 +83,7 @@ public class AuditChunkStatusDAOImpl extends BaseDaoImpl implements AuditChunkSt
     }
 
     public List<AuditChunkStatus> findBy(HashMap<String, Object> properties){
-        Session session = this.sessionFactory.getCurrentSession();
+        Session session = this.getCurrentSession();
         Criteria criteria = session.createCriteria(AuditChunkStatus.class);
         criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
         criteria.addOrder(Order.asc("timestamp"));
@@ -96,7 +96,7 @@ public class AuditChunkStatusDAOImpl extends BaseDaoImpl implements AuditChunkSt
     }
 
     public AuditChunkStatus getLastChunkAuditTime(DepositChunk chunk){
-        Session session = this.sessionFactory.getCurrentSession();
+        Session session = this.getCurrentSession();
         Criteria criteria = session.createCriteria(AuditChunkStatus.class);
         criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
         criteria.add(Restrictions.eq("depositChunk", chunk));
@@ -111,8 +111,8 @@ public class AuditChunkStatusDAOImpl extends BaseDaoImpl implements AuditChunkSt
     }
 
     @Override
-    public int count() {
-        Session session = this.sessionFactory.getCurrentSession();
+    public long count() {
+        Session session = this.getCurrentSession();
         return count(session, AuditChunkStatus.class);
     }
 }
