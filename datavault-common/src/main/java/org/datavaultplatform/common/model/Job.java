@@ -72,15 +72,16 @@ public class Job {
     @Column(columnDefinition = "TEXT")
     private String errorMessage;
     
-    public Job() {};
+    public Job() {}
+
     public Job(String taskClass) {
         this.taskClass = taskClass;
     }
     
     public String getID() { return id; }
     
-    public long getVersion() { return version; };
-    
+    public long getVersion() { return version; }
+
     public void setTimestamp(Date timestamp) {
         this.timestamp = timestamp;
     }

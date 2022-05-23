@@ -18,7 +18,6 @@ import java.util.List;
 @Entity
 @Table(name="PendingVaults")
 public class PendingVault {
-    private static final long ZERO = 0l;
     
     private static String DEFAULT_PENDING_VAULT_NAME = "*** UNNAMED VAULT ***";
 

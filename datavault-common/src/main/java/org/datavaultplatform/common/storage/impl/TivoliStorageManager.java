@@ -63,7 +63,7 @@ public class TivoliStorageManager extends Device implements ArchiveStore {
 				TivoliStorageManager.maxRetries = TivoliStorageManager.defaultMaxRetries;
 			}
 		}
-        locations = new ArrayList<String>();
+        locations = new ArrayList<>();
         locations.add(TivoliStorageManager.TSM_SERVER_NODE1_OPT);
         locations.add(TivoliStorageManager.TSM_SERVER_NODE2_OPT);
         super.multipleCopies = true;

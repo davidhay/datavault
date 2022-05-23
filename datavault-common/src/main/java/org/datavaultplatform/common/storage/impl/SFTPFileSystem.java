@@ -33,7 +33,7 @@ public class SFTPFileSystem extends Device implements UserStore {
     
     private Session session = null;
     private ChannelSftp channelSftp = null;
-    private int port;
+    private final int port;
     private final String PATH_SEPARATOR = "/";
     
     private Utility.SFTPMonitor monitor = null;

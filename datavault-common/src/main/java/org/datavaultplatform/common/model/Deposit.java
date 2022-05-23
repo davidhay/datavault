@@ -173,8 +173,8 @@ public class Deposit {
     
     public String getID() { return id; }
 
-    public long getVersion() { return version; };
-    
+    public long getVersion() { return version; }
+
     public void setCreationTime(Date creationTime) {
         this.creationTime = creationTime;
     }
