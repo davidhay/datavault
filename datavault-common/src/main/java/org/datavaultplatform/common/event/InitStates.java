@@ -11,7 +11,8 @@ public class InitStates extends Event {
     @Transient
     public ArrayList<String> states;
     
-    InitStates() {};
+    public InitStates() {
+    }
     public InitStates(String jobId, String depositId, ArrayList<String> states) {
         super("Job states: " + states.size());
         this.eventClass = InitStates.class.getCanonicalName();

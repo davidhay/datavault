@@ -10,7 +10,8 @@ import javax.persistence.Entity;
 @Entity
 public class TransferVaultOwnership extends Event {
 
-    TransferVaultOwnership(){};
+    public TransferVaultOwnership(){
+    }
     public TransferVaultOwnership(TransferVault transfer, Vault vault, String userId){
         super("Transfer of ownership to "+transfer.getUserId()+" by "+userId );
         this.eventClass = CreateRoleAssignment.class.getCanonicalName();

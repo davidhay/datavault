@@ -7,7 +7,8 @@ import org.datavaultplatform.common.event.Event;
 @Entity
 public class Start extends Event {
     
-    Start() {};
+    public Start() {
+    }
     public Start(String jobId, String depositId) {
         super("Deposit started");
         this.eventClass = Start.class.getCanonicalName();

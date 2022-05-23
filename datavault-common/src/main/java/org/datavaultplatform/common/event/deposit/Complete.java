@@ -14,7 +14,7 @@ public class Complete extends Event {
     //public String archiveId;
     public long archiveSize;
 
-    Complete() {};
+    public Complete() {}
     public Complete(String jobId, String depositId, HashMap<String, String> archiveIds, long archiveSize) {
 
         super("Deposit completed");

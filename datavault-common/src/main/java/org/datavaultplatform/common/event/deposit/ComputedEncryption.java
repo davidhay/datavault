@@ -23,7 +23,8 @@ public class ComputedEncryption extends Event {
     public HashMap<Integer, String> chunksDigest;
     public String digestAlgorithm;
     
-    ComputedEncryption() {};
+    public ComputedEncryption() {
+    }
     public ComputedEncryption(
             String jobId,
             String depositId,

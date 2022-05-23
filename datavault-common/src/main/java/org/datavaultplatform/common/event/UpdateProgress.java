@@ -16,7 +16,8 @@ public class UpdateProgress extends Event {
     @Transient
     public String progressMessage;
     
-    UpdateProgress() {};
+    public UpdateProgress() {
+    }
     public UpdateProgress(String jobId, String depositId) {
         this(jobId, depositId, 0, 0, "");
     }

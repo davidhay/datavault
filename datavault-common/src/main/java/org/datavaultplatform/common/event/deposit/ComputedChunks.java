@@ -16,7 +16,8 @@ public class ComputedChunks extends Event {
     public HashMap<Integer, String> chunksDigest;
     public String digestAlgorithm;
     
-    ComputedChunks() {};
+    public ComputedChunks() {
+    }
     public ComputedChunks(
             String jobId,
             String depositId,

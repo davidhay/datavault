@@ -11,8 +11,7 @@ public class UploadComplete extends Event {
     // Maps the model ArchiveStore Id to the generated Archive Id
     HashMap<String, String> archiveIds = new HashMap<>();
 
-    UploadComplete() {
-
+    public UploadComplete() {
     };
 
     public UploadComplete(String jobId, String depositId, HashMap<String, String> archiveIds) {

@@ -9,7 +9,8 @@ import javax.persistence.Entity;
 @Entity
 public class OrphanVault extends Event {
 
-    OrphanVault(){};
+    public OrphanVault() {
+    }
     public OrphanVault(Vault vault, String userId){
         super("Vault made orphan by "+userId);
         this.eventClass = CreateRoleAssignment.class.getCanonicalName();

@@ -6,8 +6,9 @@ import org.datavaultplatform.common.event.Event;
 
 @Entity
 public class Login extends Event {
-       
-    Login() {};
+
+    public Login() {
+    }
     public Login(String remoteAddress, String userAgent) {
         super("Login");
         this.eventClass = Login.class.getCanonicalName();
