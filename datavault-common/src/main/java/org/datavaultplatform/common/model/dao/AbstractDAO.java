@@ -9,7 +9,6 @@ public interface AbstractDAO<T,ID> extends JpaRepository<T,ID> {
   default List<T> list(){
     return findAll();
   }
-  long count();
 
   default T update(T item) {
     return this.save(item);
