@@ -1,14 +1,11 @@
 package org.datavaultplatform.common.model.dao;
 
 import org.datavaultplatform.common.model.Client;
+import org.datavaultplatform.common.model.dao.custom.ClientCustomDAO;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
-/**
- * User: Robin Taylor
- * Date: 10/02/2016
- * Time: 10:59
- */
-
-public interface ClientDAO extends BaseDAO<Client> {
-
-    Client findByApiKey(String Apikey);
+@Repository
+@Transactional
+public interface ClientDAO extends BaseDAO<Client>, ClientCustomDAO {
 }

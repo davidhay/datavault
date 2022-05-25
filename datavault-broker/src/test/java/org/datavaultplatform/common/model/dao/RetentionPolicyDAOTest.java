@@ -1,4 +1,4 @@
-package org.datavaultplatform.common.model.dao;
+package org.datavaultplatform.common.model.repo;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -7,18 +7,15 @@ import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.datavaultplatform.broker.app.DataVaultBrokerApp;
 import org.datavaultplatform.broker.test.AddTestProperties;
-import org.datavaultplatform.broker.test.BaseDatabaseTest;
 import org.datavaultplatform.broker.test.BaseReuseDatabaseTest;
 import org.datavaultplatform.common.model.RetentionPolicy;
+import org.datavaultplatform.common.model.dao.RetentionPolicyDAO;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.test.context.DynamicPropertyRegistry;
-import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.context.TestPropertySource;
 
 @SpringBootTest(classes = DataVaultBrokerApp.class)
@@ -28,10 +25,8 @@ import org.springframework.test.context.TestPropertySource;
     "broker.email.enabled=false",
     "broker.controllers.enabled=false",
     "broker.rabbit.enabled=false",
-    "broker.initialise.enabled=false",
     "broker.scheduled.enabled=false"
 })
-@Disabled
 public class RetentionPolicyDAOTest extends BaseReuseDatabaseTest {
 
   @Autowired
@@ -42,55 +37,58 @@ public class RetentionPolicyDAOTest extends BaseReuseDatabaseTest {
 
   @Test
   void testWriteThenRead() {
-    RetentionPolicy retPol1 = getRetentionPolicy1();
+    RetentionPolicy retentionPolicy1 = getRetentionPolicy1();
 
-    RetentionPolicy retPol2 = getRetentionPolicy2();
+    RetentionPolicy retentionPolicy2 = getRetentionPolicy2();
 
-    dao.save(retPol1);
-    assertNotNull(retPol1.getID());
+    dao.save(retentionPolicy1);
+    assertNotNull(retentionPolicy1.getID());
     assertEquals(1, count());
 
-    dao.save(retPol2);
-    assertNotNull(retPol2.getID());
+    dao.save(retentionPolicy2);
+    assertNotNull(retentionPolicy2.getID());
     assertEquals(2, count());
 
-    RetentionPolicy foundById1 = dao.findById(retPol1.getID()).get();
-    assertEquals(retPol1.getID(), foundById1.getID());
+    RetentionPolicy foundById1 = dao.findById(retentionPolicy1.getID()).get();
+    assertEquals(retentionPolicy1.getID(), foundById1.getID());
 
-    RetentionPolicy foundById2 = dao.findById(retPol2.getID()).get();
-    assertEquals(retPol2.getID(), foundById2.getID());
+    RetentionPolicy foundById2 = dao.findById(retentionPolicy2.getID()).get();
+    assertEquals(retentionPolicy2.getID(), foundById2.getID());
   }
 
   @Test
   void testList() {
-    RetentionPolicy rp1 = getRetentionPolicy1();
+    RetentionPolicy archive1 = getRetentionPolicy1();
 
-    RetentionPolicy rp2 = getRetentionPolicy2();
+    RetentionPolicy archive2 = getRetentionPolicy2();
 
-    dao.save(rp1);
+    dao.save(archive1);
+    assertNotNull(archive1.getID());
     assertEquals(1, count());
 
-    dao.save(rp2);
+    dao.save(archive2);
+    assertNotNull(archive2.getID());
     assertEquals(2, count());
 
-    List<RetentionPolicy> items = dao.list();
+    List<RetentionPolicy> items = dao.findAll();
     assertEquals(2, items.size());
-    assertEquals(1, items.stream().filter(rp -> rp.getID() == rp1.getID()).count());
-    assertEquals(1, items.stream().filter(rp -> rp.getID() == rp2.getID()).count());
+    assertEquals(1, items.stream().filter(dr -> dr.getID() == archive1.getID()).count());
+    assertEquals(1, items.stream().filter(dr -> dr.getID() == archive2.getID()).count());
   }
+
 
   @Test
   void testUpdate() {
-    RetentionPolicy rp1 = getRetentionPolicy1();
+    RetentionPolicy retentionPolicy = getRetentionPolicy1();
 
-    dao.save(rp1);
+    dao.save(retentionPolicy);
 
-    rp1.setName("updated-name");
+    retentionPolicy.setName("111-updated");
 
-    dao.update(rp1);
+    dao.update(retentionPolicy);
 
-    RetentionPolicy found = dao.findById(rp1.getID()).get();
-    assertEquals(rp1.getName(), found.getName());
+    RetentionPolicy found = dao.findById(retentionPolicy.getID()).get();
+    assertEquals(retentionPolicy.getName(), found.getName());
   }
 
   @BeforeEach
@@ -105,21 +103,20 @@ public class RetentionPolicyDAOTest extends BaseReuseDatabaseTest {
   }
 
   private RetentionPolicy getRetentionPolicy1() {
-    RetentionPolicy result = new RetentionPolicy();
-    result.setEngine("engine-1");
-    result.setName("ret-pol-1");
-    return result;
+    RetentionPolicy ret = new RetentionPolicy();
+    ret.setEngine("engine-1");
+    ret.setName("111");
+    return ret;
   }
 
   private RetentionPolicy getRetentionPolicy2() {
-    RetentionPolicy result = new RetentionPolicy();
-    result.setName("ret-pol-2");
-    result.setEngine("engine-2");
-    return result;
+    RetentionPolicy ret = new RetentionPolicy();
+    ret.setName("222");
+    ret.setEngine("engine-2");
+    return ret;
   }
 
   long count() {
-    return template.queryForObject(
-          "select count(*) from RetentionPolicies", Long.class);
+    return dao.count();
   }
 }

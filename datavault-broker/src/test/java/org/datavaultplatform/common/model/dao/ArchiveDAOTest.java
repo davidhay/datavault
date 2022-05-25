@@ -1,25 +1,21 @@
-package org.datavaultplatform.common.model.dao;
+package org.datavaultplatform.common.model.repo;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
 
-import java.util.Date;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.datavaultplatform.broker.app.DataVaultBrokerApp;
 import org.datavaultplatform.broker.test.AddTestProperties;
-import org.datavaultplatform.broker.test.BaseDatabaseTest;
 import org.datavaultplatform.broker.test.BaseReuseDatabaseTest;
 import org.datavaultplatform.common.model.Archive;
+import org.datavaultplatform.common.model.dao.ArchiveDAO;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.test.context.DynamicPropertyRegistry;
-import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.context.TestPropertySource;
 
 @SpringBootTest(classes = DataVaultBrokerApp.class)
@@ -39,60 +35,60 @@ public class ArchiveDAOTest extends BaseReuseDatabaseTest {
   @Autowired
   JdbcTemplate template;
 
-  Date now = new Date();
-
   @Test
   void testWriteThenRead() {
-    Archive arc1 = getArchive1();
+    Archive archive1 = getArchive1();
 
-    Archive arc2 = getArchive2();
+    Archive archive2 = getArchive2();
 
-    dao.save(arc1);
-    assertNotNull(arc1.getArchiveId());
+    dao.save(archive1);
+    assertNotNull(archive1.getId());
     assertEquals(1, count());
 
-    dao.save(arc2);
-    assertNotNull(arc2.getArchiveId());
+    dao.save(archive2);
+    assertNotNull(archive2.getId());
     assertEquals(2, count());
 
-    Archive foundById1 = dao.findById(arc1.getId()).get();
-    assertEquals(arc1.getArchiveId(), foundById1.getArchiveId());
+    Archive foundById1 = dao.findById(archive1.getId()).get();
+    assertEquals(archive1.getId(), foundById1.getId());
 
-    Archive foundById2 = dao.findById(arc2.getId()).get();
-    assertEquals(arc2.getArchiveId(), foundById2.getArchiveId());
+    Archive foundById2 = dao.findById(archive2.getId()).get();
+    assertEquals(archive2.getId(), foundById2.getId());
   }
 
   @Test
   void testList() {
-    Archive arc1 = getArchive1();
+    Archive archive1 = getArchive1();
 
-    Archive arc2 = getArchive2();
+    Archive archive2 = getArchive2();
 
-    dao.save(arc1);
+    dao.save(archive1);
+    assertNotNull(archive1.getId());
     assertEquals(1, count());
 
-    dao.save(arc2);
+    dao.save(archive2);
+    assertNotNull(archive2.getId());
     assertEquals(2, count());
 
-    List<Archive> items = dao.list();
+    List<Archive> items = dao.findAll();
     assertEquals(2, items.size());
-    assertEquals(1,items.stream().filter(dr -> dr.getId().equals(arc1.getId())).count());
-    assertEquals(1,items.stream().filter(dr -> dr.getId().equals(arc2.getId())).count());
+    assertEquals(1, items.stream().filter(dr -> dr.getId().equals(archive1.getId())).count());
+    assertEquals(1, items.stream().filter(dr -> dr.getId().equals(archive2.getId())).count());
   }
 
 
   @Test
   void testUpdate() {
-    Archive arc1 = getArchive1();
+    Archive archive1 = getArchive1();
 
-    dao.save(arc1);
+    dao.save(archive1);
 
-    arc1.setArchiveId("updated-archive-id-1");
+    archive1.setArchiveId("111-updated");
 
-    dao.update(arc1);
+    dao.update(archive1);
 
-    Archive found = dao.findById(arc1.getId()).get();
-    assertEquals(arc1.getArchiveId(), found.getArchiveId());
+    Archive found = dao.findById(archive1.getId()).get();
+    assertEquals(archive1.getArchiveId(), found.getArchiveId());
   }
 
   @BeforeEach
@@ -108,21 +104,17 @@ public class ArchiveDAOTest extends BaseReuseDatabaseTest {
 
   private Archive getArchive1() {
     Archive archive = new Archive();
-    archive.setArchiveId("arc1-arc2");
-    archive.setCreationTime(now);
+    archive.setArchiveId("111");
     return archive;
   }
 
   private Archive getArchive2() {
     Archive archive = new Archive();
-    archive.setArchiveId("user2-user2");
-    archive.setCreationTime(now);
+    archive.setArchiveId("222");
     return archive;
   }
 
-  int count() {
-    return template.queryForObject(
-        "select count(*) from Archives", Integer.class);
+  long count() {
+    return dao.count();
   }
-
 }

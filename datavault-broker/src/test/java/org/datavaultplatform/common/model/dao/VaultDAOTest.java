@@ -1,4 +1,4 @@
-package org.datavaultplatform.common.model.dao;
+package org.datavaultplatform.common.model.repo;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -8,17 +8,15 @@ import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.datavaultplatform.broker.app.DataVaultBrokerApp;
 import org.datavaultplatform.broker.test.AddTestProperties;
-import org.datavaultplatform.broker.test.BaseDatabaseTest;
 import org.datavaultplatform.broker.test.BaseReuseDatabaseTest;
 import org.datavaultplatform.common.model.Vault;
+import org.datavaultplatform.common.model.dao.VaultDAO;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.test.context.DynamicPropertyRegistry;
-import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.context.TestPropertySource;
 
 @SpringBootTest(classes = DataVaultBrokerApp.class)
@@ -32,7 +30,7 @@ import org.springframework.test.context.TestPropertySource;
 })
 public class VaultDAOTest extends BaseReuseDatabaseTest {
 
-  Date now = new Date();
+  static Date NOW = new Date();
 
   @Autowired
   VaultDAO dao;
@@ -105,21 +103,21 @@ public class VaultDAOTest extends BaseReuseDatabaseTest {
     assertEquals(0, count());
   }
 
-  private Vault getVault1() {
+  static  Vault getVault1() {
     Vault result = new Vault();
     result.setContact("contact-1");
     result.setName("vault-1");
-    result.setReviewDate(now);
-    result.setCreationTime(now);
+    result.setReviewDate(NOW);
+    result.setCreationTime(NOW);
     return result;
   }
 
-  private Vault getVault2() {
+  static Vault getVault2() {
     Vault result = new Vault();
     result.setContact("contact-2");
     result.setName("vault-2");
-    result.setReviewDate(now);
-    result.setCreationTime(now);
+    result.setReviewDate(NOW);
+    result.setCreationTime(NOW);
     return result;
   }
 

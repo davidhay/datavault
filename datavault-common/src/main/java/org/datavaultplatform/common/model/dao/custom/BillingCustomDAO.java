@@ -1,0 +1,15 @@
+package org.datavaultplatform.common.model.dao.custom;
+
+import java.util.List;
+import org.datavaultplatform.common.model.BillingInfo;
+
+public interface BillingCustomDAO {
+
+  List<BillingInfo> list(String sort, String order, String offset, String maxResult);
+
+  List<BillingInfo> search(String query, String sort, String order, String offset, String maxResult);
+
+  Long getTotalNumberOfVaults();
+
+  Long getTotalNumberOfVaults(String query);
+}

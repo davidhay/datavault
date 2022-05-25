@@ -1,15 +1,11 @@
 package org.datavaultplatform.common.model.dao;
 
-import java.util.List;
 import org.datavaultplatform.common.event.Event;
-import org.datavaultplatform.common.model.Vault;
+import org.datavaultplatform.common.model.dao.custom.EventCustomDAO;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
-public interface EventDAO extends BaseDAO<Event> {
-
-    List<Event> list(String sort);
-
-    List<Event> findVaultEvents(Vault vault);
-    
-    long count();
-    
+@Transactional
+@Repository
+public interface EventDAO extends BaseDAO<Event>, EventCustomDAO {
 }

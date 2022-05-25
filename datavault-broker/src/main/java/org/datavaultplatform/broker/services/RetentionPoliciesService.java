@@ -48,7 +48,7 @@ public class RetentionPoliciesService {
     }
 
     public void delete(String policyID) {
-        retentionPolicyDAO.delete(Integer.parseInt(policyID));
+        retentionPolicyDAO.deleteById(Integer.parseInt(policyID));
     }
 
     public RetentionPolicy buildRetentionPolicy(CreateRetentionPolicy createRetentionPolicy) {

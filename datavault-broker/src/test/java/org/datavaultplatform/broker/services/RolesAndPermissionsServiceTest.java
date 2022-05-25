@@ -455,7 +455,7 @@ public class RolesAndPermissionsServiceTest {
         underTest.deleteRole(123L);
 
         // Then
-        verify(mockRoleDao).delete(123L);
+        verify(mockRoleDao).deleteById(123L);
     }
 
     @Test
@@ -483,7 +483,7 @@ public class RolesAndPermissionsServiceTest {
         underTest.deleteRoleAssignment(1L);
 
         // Then
-        verify(mockRoleAssignmentDao).delete(1L);
+        verify(mockRoleAssignmentDao).deleteById(1L);
     }
 
     @Test

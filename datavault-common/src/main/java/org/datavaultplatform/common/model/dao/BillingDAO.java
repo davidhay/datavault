@@ -1,19 +1,11 @@
 package org.datavaultplatform.common.model.dao;
 
-import java.util.List;
-
 import org.datavaultplatform.common.model.BillingInfo;
- 
-public interface BillingDAO extends BaseDAO<BillingInfo> {
+import org.datavaultplatform.common.model.dao.custom.BillingCustomDAO;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
-    List<BillingInfo> list(String sort, String order, String offset, String maxResult);
-
-    void saveOrUpdateVault(BillingInfo billing);
-
-    List<BillingInfo> search(String query, String sort, String order, String offset, String maxResult);
-
-    Long getTotalNumberOfVaults();
-
-    Long getTotalNumberOfVaults(String query);
-
+@Transactional
+@Repository
+public interface BillingDAO extends BaseDAO<BillingInfo>, BillingCustomDAO {
 }

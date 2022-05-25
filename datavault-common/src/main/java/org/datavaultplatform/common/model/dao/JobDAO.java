@@ -1,8 +1,10 @@
 package org.datavaultplatform.common.model.dao;
 
 import org.datavaultplatform.common.model.Job;
- 
-public interface JobDAO extends BaseDAO<Job> {
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
-    long count();
+@Repository
+@Transactional
+public interface JobDAO extends BaseDAO<Job> {
 }

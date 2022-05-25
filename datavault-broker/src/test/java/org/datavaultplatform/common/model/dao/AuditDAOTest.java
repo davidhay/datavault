@@ -1,4 +1,4 @@
-package org.datavaultplatform.common.model.dao;
+package org.datavaultplatform.common.model.repo;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -9,6 +9,7 @@ import org.datavaultplatform.broker.app.DataVaultBrokerApp;
 import org.datavaultplatform.broker.test.AddTestProperties;
 import org.datavaultplatform.broker.test.BaseReuseDatabaseTest;
 import org.datavaultplatform.common.model.Audit;
+import org.datavaultplatform.common.model.dao.AuditDAO;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -36,56 +37,58 @@ public class AuditDAOTest extends BaseReuseDatabaseTest {
 
   @Test
   void testWriteThenRead() {
-    Audit arc1 = getAudit1();
+    Audit Audit1 = getAudit1();
 
-    Audit arc2 = getAudit2();
+    Audit Audit2 = getAudit2();
 
-    dao.save(arc1);
-    assertNotNull(arc1.getID());
+    dao.save(Audit1);
+    assertNotNull(Audit1.getID());
     assertEquals(1, count());
 
-    dao.save(arc2);
-    assertNotNull(arc2.getID());
+    dao.save(Audit2);
+    assertNotNull(Audit2.getID());
     assertEquals(2, count());
 
-    Audit foundById1 = dao.findById(arc1.getID()).get();
-    assertEquals(arc1.getID(), foundById1.getID());
+    Audit foundById1 = dao.findById(Audit1.getID()).get();
+    assertEquals(Audit1.getID(), foundById1.getID());
 
-    Audit foundById2 = dao.findById(arc2.getID()).get();
-    assertEquals(arc2.getID(), foundById2.getID());
+    Audit foundById2 = dao.findById(Audit2.getID()).get();
+    assertEquals(Audit2.getID(), foundById2.getID());
   }
 
   @Test
   void testList() {
-    Audit arc1 = getAudit1();
+    Audit audit1 = getAudit1();
 
-    Audit arc2 = getAudit2();
+    Audit audit2 = getAudit2();
 
-    dao.save(arc1);
+    dao.save(audit1);
+    assertNotNull(audit1.getID());
     assertEquals(1, count());
 
-    dao.save(arc2);
+    dao.save(audit2);
+    assertNotNull(audit2.getID());
     assertEquals(2, count());
 
-    List<Audit> items = dao.list();
+    List<Audit> items = dao.findAll();
     assertEquals(2, items.size());
-    assertEquals(1, items.stream().filter(dr -> dr.getID().equals(arc1.getID())).count());
-    assertEquals(1, items.stream().filter(dr -> dr.getID().equals(arc2.getID())).count());
+    assertEquals(1, items.stream().filter(dr -> dr.getID().equals(audit1.getID())).count());
+    assertEquals(1, items.stream().filter(dr -> dr.getID().equals(audit2.getID())).count());
   }
 
 
   @Test
   void testUpdate() {
-    Audit arc1 = getAudit1();
+    Audit audit1 = getAudit1();
 
-    dao.save(arc1);
+    dao.save(audit1);
 
-    arc1.setNote("updated-not");
+    audit1.setNote("111-updated");
 
-    dao.update(arc1);
+    dao.update(audit1);
 
-    Audit found = dao.findById(arc1.getID()).get();
-    assertEquals(arc1.getNote(), found.getNote());
+    Audit found = dao.findById(audit1.getID()).get();
+    assertEquals(audit1.getNote(), found.getNote());
   }
 
   @BeforeEach
@@ -100,19 +103,18 @@ public class AuditDAOTest extends BaseReuseDatabaseTest {
   }
 
   private Audit getAudit1() {
-    Audit audit = new Audit();
-    audit.setNote("note-one");
-    return audit;
+    Audit result = new Audit();
+    result.setNote("111");
+    return result;
   }
 
   private Audit getAudit2() {
-    Audit audit = new Audit();
-    audit.setNote("note-two");
-    return audit;
+    Audit result = new Audit();
+    result.setNote("222");
+    return result;
   }
 
   long count() {
     return dao.count();
   }
-
 }

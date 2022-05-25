@@ -1,11 +1,11 @@
 package org.datavaultplatform.common.model.dao;
 
 import org.datavaultplatform.common.model.ArchiveStore;
- 
-public interface ArchiveStoreDAO extends BaseDAO<ArchiveStore> {
+import org.datavaultplatform.common.model.dao.custom.ArchiveStoreCustomDAO;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
-    ArchiveStore findForRetrieval();
-
-    void deleteById(String Id);
-    
+@Repository
+@Transactional
+public interface ArchiveStoreDAO extends BaseDAO<ArchiveStore>, ArchiveStoreCustomDAO {
 }

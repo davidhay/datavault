@@ -7,8 +7,6 @@ import org.datavaultplatform.common.model.dao.RoleDAO;
 import org.datavaultplatform.common.util.RoleUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.ApplicationListener;
-import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.ArrayList;
@@ -289,13 +287,13 @@ public class RolesAndPermissionsService {
         if (!roleExists(roleId)) {
             throw new IllegalStateException("Cannot delete a role that does not exist");
         }
-        roleDao.delete(roleId);
+        roleDao.deleteById(roleId);
     }
 
     public void deleteRoleAssignment(Long roleAssignmentId) {
         if (roleAssignmentDao.findById(roleAssignmentId) == null) {
             throw new IllegalStateException("Cannot delete a role assignment that does not exist");
         }
-        roleAssignmentDao.delete(roleAssignmentId);
+        roleAssignmentDao.deleteById(roleAssignmentId);
     }
 }

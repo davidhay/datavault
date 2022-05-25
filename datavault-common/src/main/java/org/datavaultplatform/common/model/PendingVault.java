@@ -135,7 +135,7 @@ public class PendingVault {
 
     @JsonIgnore
     @OneToMany(targetEntity=PendingDataCreator.class, mappedBy="pendingVault", orphanRemoval = true, cascade = CascadeType.PERSIST, fetch=FetchType.LAZY)
-    private List<PendingDataCreator> dataCreators;
+    private final List<PendingDataCreator> dataCreators = new ArrayList<>();
 
     @Column(name = "confirmed", nullable = false)
     private Boolean confirmed = false;
@@ -300,7 +300,10 @@ public class PendingVault {
     }
 
     public void setDataCreator(List<PendingDataCreator> dataCreators) {
-        this.dataCreators = dataCreators;
+        synchronized (dataCreators) {
+            this.dataCreators.clear();
+            this.dataCreators.addAll(dataCreators);
+        }
     }
 
     public User getOwner() {

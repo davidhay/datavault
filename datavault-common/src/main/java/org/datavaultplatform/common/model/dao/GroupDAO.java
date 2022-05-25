@@ -1,14 +1,11 @@
 package org.datavaultplatform.common.model.dao;
 
 import org.datavaultplatform.common.model.Group;
+import org.datavaultplatform.common.model.dao.custom.GroupCustomDAO;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-
-public interface GroupDAO extends BaseDAO<Group> {
-
-    void delete(Group group);
-
-    List<Group> list(String userId);
-
-    int count(String userId);
+@Transactional
+@Repository
+public interface GroupDAO extends BaseDAO<Group>, GroupCustomDAO {
 }

@@ -3,6 +3,7 @@ package org.datavaultplatform.broker.services;
 import javax.transaction.Transactional;
 import org.datavaultplatform.common.model.ArchiveStore;
 import org.datavaultplatform.common.model.dao.ArchiveStoreDAO;
+import org.datavaultplatform.common.model.dao.custom.ArchiveStoreCustomDAO;
 
 import java.util.HashMap;
 import java.util.List;
@@ -43,7 +44,7 @@ public class ArchiveStoreService {
             @Value("${occMaxRetries:#{null}}") String occMaxRetries,
             @Value("${ociNameSpace:#{null}}") String ociNameSpace,
             @Value("${s3.bucketName:#{null}}") String ociBucketName,
-        ArchiveStoreDAO archiveStoreDAO) {
+            ArchiveStoreDAO archiveStoreDAO) {
         this.optionsDir = optionsDir;
         this.tempDir = tempDir;
         this.bucketName = bucketName;

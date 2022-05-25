@@ -1,15 +1,18 @@
-package org.datavaultplatform.common.model.dao;
+package org.datavaultplatform.common.model.repo;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.datavaultplatform.broker.app.DataVaultBrokerApp;
 import org.datavaultplatform.broker.test.AddTestProperties;
 import org.datavaultplatform.broker.test.BaseReuseDatabaseTest;
 import org.datavaultplatform.common.model.Retrieve;
+import org.datavaultplatform.common.model.User;
+import org.datavaultplatform.common.model.dao.RetrieveDAO;
+import org.datavaultplatform.common.model.dao.UserDAO;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +33,10 @@ public class RetrieveDAOTest extends BaseReuseDatabaseTest {
 
   @Autowired
   RetrieveDAO dao;
+
+  @Autowired
+  UserDAO userDAO;
+
 
   @Autowired
   JdbcTemplate template;
@@ -57,7 +64,22 @@ public class RetrieveDAOTest extends BaseReuseDatabaseTest {
 
   @Test
   void testList() {
-    Assertions.assertThrows(UnsupportedOperationException.class, () -> dao.list());
+    Retrieve review1 = getRetrieve1();
+
+    Retrieve review2 = getRetrieve2();
+
+    dao.save(review1);
+    assertNotNull(review1.getID());
+    assertEquals(1, count());
+
+    dao.save(review2);
+    assertNotNull(review2.getID());
+    assertEquals(2, count());
+
+    List<Retrieve> items = dao.list();
+    assertEquals(2, items.size());
+    assertEquals(1, items.stream().filter(dr -> dr.getID().equals(review1.getID())).count());
+    assertEquals(1, items.stream().filter(dr -> dr.getID().equals(review2.getID())).count());
   }
 
   @Test
@@ -89,6 +111,24 @@ public class RetrieveDAOTest extends BaseReuseDatabaseTest {
     Retrieve result = new Retrieve();
     result.setHasExternalRecipients(false);
     result.setNote("note-1");
+     return result;
+  }
+
+  private User getUser1(){
+    User result = new User();
+    result.setID("userone");
+    result.setFirstname("first1");
+    result.setLastname("last1");
+    result.setEmail("one.one@test.com");
+    return result;
+  }
+
+  private User getUser2(){
+    User result = new User();
+    result.setID("usertwo");
+    result.setFirstname("first2");
+    result.setLastname("last2");
+    result.setEmail("two.two@test.com");
     return result;
   }
 

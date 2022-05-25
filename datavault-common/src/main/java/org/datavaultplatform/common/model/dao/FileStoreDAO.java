@@ -1,8 +1,10 @@
 package org.datavaultplatform.common.model.dao;
 
 import org.datavaultplatform.common.model.FileStore;
- 
-public interface FileStoreDAO extends BaseDAO<FileStore> {
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
-    void deleteById(String Id);
+@Repository
+@Transactional
+public interface FileStoreDAO extends BaseDAO<FileStore> {
 }

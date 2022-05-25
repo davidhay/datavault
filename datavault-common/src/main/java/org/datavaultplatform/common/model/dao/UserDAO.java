@@ -1,11 +1,11 @@
 package org.datavaultplatform.common.model.dao;
 
-import java.util.List;
 import org.datavaultplatform.common.model.User;
- 
-public interface UserDAO extends BaseDAO<User> {
+import org.datavaultplatform.common.model.dao.custom.UserCustomDAO;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
-    List<User> search(String query);
-
-    long count();
+@Transactional
+@Repository
+public interface UserDAO extends BaseDAO<User>, UserCustomDAO {
 }

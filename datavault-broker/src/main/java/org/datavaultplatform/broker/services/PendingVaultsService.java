@@ -1,7 +1,6 @@
 package org.datavaultplatform.broker.services;
 
 
-import org.datavaultplatform.broker.services.VaultsService;
 import org.datavaultplatform.common.model.*;
 import org.datavaultplatform.common.model.dao.PendingVaultDAO;
 import org.datavaultplatform.common.request.CreateVault;
