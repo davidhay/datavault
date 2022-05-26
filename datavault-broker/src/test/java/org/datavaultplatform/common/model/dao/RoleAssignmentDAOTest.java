@@ -3,12 +3,15 @@ package org.datavaultplatform.common.model.repo;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.datavaultplatform.broker.app.DataVaultBrokerApp;
 import org.datavaultplatform.broker.test.AddTestProperties;
 import org.datavaultplatform.broker.test.BaseReuseDatabaseTest;
 import org.datavaultplatform.common.model.RoleAssignment;
+import org.datavaultplatform.common.model.RoleModel;
 import org.datavaultplatform.common.model.dao.RoleAssignmentDAO;
+import org.datavaultplatform.common.model.dao.RoleDAO;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -28,14 +31,19 @@ import org.springframework.test.context.TestPropertySource;
     "broker.rabbit.enabled=false",
     "broker.scheduled.enabled=false"
 })
-@Disabled
 public class RoleAssignmentDAOTest extends BaseReuseDatabaseTest {
 
   @Autowired
   RoleAssignmentDAO dao;
 
   @Autowired
+  RoleDAO roleDAO;
+
+  @Autowired
   JdbcTemplate template;
+
+  private RoleModel role1;
+  private RoleModel role2;
 
   @Test
   void testWriteThenRead() {
@@ -60,7 +68,21 @@ public class RoleAssignmentDAOTest extends BaseReuseDatabaseTest {
 
   @Test
   void testList() {
-    Assertions.assertThrows(UnsupportedOperationException.class, () -> dao.list());
+    RoleAssignment ra1 = getRoleAssignment1();
+
+    RoleAssignment ra2 = getRoleAssignment2();
+
+    dao.save(ra1);
+    assertEquals(1, dao.count());
+
+    dao.save(ra2);
+    assertEquals(2, dao.count());
+
+    List<RoleAssignment> items = dao.list();
+    assertEquals(2, items.size());
+    assertEquals(1,items.stream().filter(dr -> dr.getId().equals(ra1.getId())).count());
+    assertEquals(1,items.stream().filter(dr -> dr.getId().equals(ra2.getId())).count());
+
   }
 
   @Test
@@ -84,24 +106,34 @@ public class RoleAssignmentDAOTest extends BaseReuseDatabaseTest {
 
   @AfterEach
   void cleanup() {
+    template.execute("delete from `Role_permissions`");
     template.execute("delete from `Role_assignments`");
+    template.execute("delete from `Roles`");
     assertEquals(0, count());
   }
 
   private RoleAssignment getRoleAssignment1() {
     RoleAssignment result = new RoleAssignment();
     result.setUserId("user-id-1");
+    result.setRole(role1);
     return result;
   }
 
   private RoleAssignment getRoleAssignment2() {
     RoleAssignment result = new RoleAssignment();
     result.setUserId("user-id-2");
+    result.setRole(role2);
     return result;
   }
 
   int count() {
      return template.queryForObject(
           "select count(*) from Role_assignments", Integer.class);
+  }
+
+  @BeforeEach
+  void beforeEach() {
+    this.role1 = roleDAO.save(org.datavaultplatform.common.model.repo.RoleDAOTest.getRoleModel1());
+    this.role2 = roleDAO.save(org.datavaultplatform.common.model.repo.RoleDAOTest.getRoleModel2());
   }
 }

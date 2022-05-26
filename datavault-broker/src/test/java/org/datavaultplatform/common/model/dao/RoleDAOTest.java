@@ -107,7 +107,7 @@ public class RoleDAOTest extends BaseDatabaseTest {
     assertEquals(0, dao.count());
   }
 
-  private RoleModel getRoleModel1() {
+  public static RoleModel getRoleModel1() {
     RoleModel role = new RoleModel();
     role.setName("RoleModel1");
     role.setStatus("STATUS1");
@@ -115,7 +115,7 @@ public class RoleDAOTest extends BaseDatabaseTest {
     return role;
   }
 
-  private RoleModel getRoleModel2() {
+  public static RoleModel getRoleModel2() {
     RoleModel role = new RoleModel();
     role.setName("RoleModel2");
     role.setStatus("STATUS2");
