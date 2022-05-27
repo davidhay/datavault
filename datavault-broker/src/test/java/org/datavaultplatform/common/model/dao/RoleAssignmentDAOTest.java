@@ -1,4 +1,4 @@
-package org.datavaultplatform.common.model.repo;
+package org.datavaultplatform.common.model.dao;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -10,12 +10,8 @@ import org.datavaultplatform.broker.test.AddTestProperties;
 import org.datavaultplatform.broker.test.BaseReuseDatabaseTest;
 import org.datavaultplatform.common.model.RoleAssignment;
 import org.datavaultplatform.common.model.RoleModel;
-import org.datavaultplatform.common.model.dao.RoleAssignmentDAO;
-import org.datavaultplatform.common.model.dao.RoleDAO;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -133,7 +129,7 @@ public class RoleAssignmentDAOTest extends BaseReuseDatabaseTest {
 
   @BeforeEach
   void beforeEach() {
-    this.role1 = roleDAO.save(org.datavaultplatform.common.model.repo.RoleDAOTest.getRoleModel1());
-    this.role2 = roleDAO.save(org.datavaultplatform.common.model.repo.RoleDAOTest.getRoleModel2());
+    this.role1 = roleDAO.save(RoleDAOTest.getRoleModel1());
+    this.role2 = roleDAO.save(RoleDAOTest.getRoleModel2());
   }
 }
