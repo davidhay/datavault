@@ -50,13 +50,13 @@ public class EventListenerTest extends BaseRabbitTCTest {
 
   @Test
   void testRecvFromWorker() {
+    doNothing().when(eventListener).onMessage(argEventMessage.capture());
+
     String rand = UUID.randomUUID().toString();
     //send message direct to 'events queue' and check that we can receive it via Listener
     RabbitUtils.sendDirectToQueue(template, eventQueue.getActualName(), rand);
 
-    doNothing().when(eventListener).onMessage(argEventMessage.capture());
-
-    Awaitility.await().atMost(5, TimeUnit.SECONDS)
+    Awaitility.await().atMost(10, TimeUnit.SECONDS)
         .pollInterval(200, TimeUnit.MILLISECONDS)
         .until(() -> argEventMessage.getAllValues().isEmpty() == false);
 

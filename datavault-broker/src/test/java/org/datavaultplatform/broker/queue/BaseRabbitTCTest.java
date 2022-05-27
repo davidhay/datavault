@@ -13,7 +13,7 @@ public abstract class BaseRabbitTCTest extends BaseRabbitTest {
 
   @Container
   private static RabbitMQContainer RABBIT = new RabbitMQContainer(
-      "rabbitmq:3.10.0-management-alpine");//.withExposedPorts(15672);
+      "rabbitmq:3.10.0-management-alpine").withExposedPorts(5672,15672);
 
   @DynamicPropertySource
   static void setupProperties(DynamicPropertyRegistry registry) {
