@@ -280,6 +280,7 @@
               <goal>test</goal>
             </goals>
             <configuration>
+              <skipTests>${skip.unit.tests}</skipTests>
               <testNGArtifactName>none:none</testNGArtifactName>
             </configuration>
           </execution>
@@ -290,27 +291,16 @@
               <goal>test</goal>
             </goals>
             <configuration>
+              <skipTests>${skip.unit.tests}</skipTests>
               <junitArtifactName>none:none</junitArtifactName>
             </configuration>
           </execution>
         </executions>
+        <configuration>
+          <skipTests>${skip.unit.tests}</skipTests>
+        </configuration>
       </plugin>
       </plugins>
     </pluginManagement>
-    <plugins>
-      <plugin>
-        <groupId>org.owasp</groupId>
-        <artifactId>dependency-check-maven</artifactId>
-        <version>${owasp.dependency.check.version}</version>
-        <executions>
-          <execution>
-            <goals>
-              <goal>check</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-    </plugins>
   </build>
-
 </project>
