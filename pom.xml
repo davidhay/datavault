@@ -30,6 +30,7 @@
     <java.version>1.8</java.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <skip.unit.tests>false</skip.unit.tests>
+    <skip.integration.tests>false</skip.integration.tests>
 
     <!-- dependency versions -->
     <aws.java.sdk.bom.version>1.12.222</aws.java.sdk.bom.version>
@@ -270,37 +271,46 @@
             </execution>
           </executions>
         </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <executions>
-          <execution>
-            <phase>test</phase>
-            <goals>
-              <goal>test</goal>
-            </goals>
-            <configuration>
-              <skipTests>${skip.unit.tests}</skipTests>
-              <testNGArtifactName>none:none</testNGArtifactName>
-            </configuration>
-          </execution>
-          <execution>
-            <id>test-testng</id>
-            <phase>test</phase>
-            <goals>
-              <goal>test</goal>
-            </goals>
-            <configuration>
-              <skipTests>${skip.unit.tests}</skipTests>
-              <junitArtifactName>none:none</junitArtifactName>
-            </configuration>
-          </execution>
-        </executions>
-        <configuration>
-          <skipTests>${skip.unit.tests}</skipTests>
-        </configuration>
-      </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <configuration>
+            <skipTests>${skip.unit.tests}</skipTests>
+          </configuration>
+          <executions>
+            <execution>
+              <phase>test</phase>
+              <goals>
+                <goal>test</goal>
+              </goals>
+              <configuration>
+                <testNGArtifactName>none:none</testNGArtifactName>
+              </configuration>
+            </execution>
+            <execution>
+              <id>test-testng</id>
+              <phase>test</phase>
+              <goals>
+                <goal>test</goal>
+              </goals>
+              <configuration>
+                <junitArtifactName>none:none</junitArtifactName>
+              </configuration>
+            </execution>
+          </executions>
+        </plugin>
       </plugins>
     </pluginManagement>
+    <plugins>
+      <!--
+      <plugin>
+        <artifactId>maven-failsafe-plugin</artifactId>
+      </plugin>
+      -->
+      <plugin>
+        <groupId>pl.project13.maven</groupId>
+        <artifactId>git-commit-id-plugin</artifactId>
+      </plugin>
+    </plugins>
   </build>
 </project>
