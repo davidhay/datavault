@@ -12,10 +12,9 @@ import org.hibernate.Session;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
-import org.springframework.transaction.annotation.Transactional;
 
-@Transactional
-public class RetrieveCustomDAOImpl extends BaseCustomDaoImpl implements RetrieveCustomDAO {
+
+public class RetrieveCustomDAOImpl extends BaseCustomDAOImpl implements RetrieveCustomDAO {
 
     public RetrieveCustomDAOImpl(EntityManager em) {
         super(em);

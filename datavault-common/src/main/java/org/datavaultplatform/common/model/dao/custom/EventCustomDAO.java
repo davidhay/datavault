@@ -4,7 +4,7 @@ import java.util.List;
 import org.datavaultplatform.common.event.Event;
 import org.datavaultplatform.common.model.Vault;
 
-public interface EventCustomDAO {
+public interface EventCustomDAO extends BaseCustomDAO {
 
     List<Event> list(String sort);
 

@@ -13,10 +13,9 @@ import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
-import org.springframework.transaction.annotation.Transactional;
 
-@Transactional
-public class RoleAssignmentCustomDAOImpl extends BaseCustomDaoImpl implements
+
+public class RoleAssignmentCustomDAOImpl extends BaseCustomDAOImpl implements
     RoleAssignmentCustomDAO {
 
   public RoleAssignmentCustomDAOImpl(EntityManager em) {

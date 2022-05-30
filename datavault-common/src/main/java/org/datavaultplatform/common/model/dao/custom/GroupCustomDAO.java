@@ -4,8 +4,8 @@ import java.util.List;
 import org.datavaultplatform.common.model.Group;
 import org.springframework.transaction.annotation.Transactional;
 
-@Transactional
-public interface GroupCustomDAO {
+
+public interface GroupCustomDAO extends BaseCustomDAO {
 
     List<Group> list(String userId);
 

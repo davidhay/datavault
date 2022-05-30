@@ -10,11 +10,9 @@ import org.datavaultplatform.common.model.PermissionModel;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
-import org.springframework.transaction.annotation.Transactional;
 
 
-@Transactional
-public class PermissionCustomDAOImpl extends BaseCustomDaoImpl implements
+public class PermissionCustomDAOImpl extends BaseCustomDAOImpl implements
     PermissionCustomDAO {
 
     public PermissionCustomDAOImpl(EntityManager em) {

@@ -31,9 +31,6 @@ public class FileStoreDAOIT extends BaseReuseDatabaseTest {
   @Autowired
   FileStoreDAO dao;
 
-  @Autowired
-  JdbcTemplate template;
-
   @Test
   void testWriteThenRead() {
     FileStore fs1 = getFileStore1();

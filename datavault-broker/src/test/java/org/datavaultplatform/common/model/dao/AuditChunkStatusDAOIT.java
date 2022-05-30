@@ -31,9 +31,6 @@ public class AuditChunkStatusDAOIT extends BaseReuseDatabaseTest {
   @Autowired
   AuditChunkStatusDAO dao;
 
-  @Autowired
-  JdbcTemplate template;
-
   @Test
   void testWriteThenRead() {
     AuditChunkStatus auditChunkStatus1 = getAuditChunkStatus1();

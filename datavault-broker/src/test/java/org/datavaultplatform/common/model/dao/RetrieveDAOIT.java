@@ -35,10 +35,6 @@ public class RetrieveDAOIT extends BaseReuseDatabaseTest {
   @Autowired
   UserDAO userDAO;
 
-
-  @Autowired
-  JdbcTemplate template;
-
   @Test
   void testWriteThenRead() {
     Retrieve review1 = getRetrieve1();
@@ -137,8 +133,7 @@ public class RetrieveDAOIT extends BaseReuseDatabaseTest {
     return result;
   }
 
-  int count() {
-     return template.queryForObject(
-          "select count(*) from Retrieves", Integer.class);
+  long count() {
+    return dao.count();
   }
 }

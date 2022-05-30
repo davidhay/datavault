@@ -32,9 +32,6 @@ public class DepositReviewDAOIT extends BaseReuseDatabaseTest {
   @Autowired
   DepositReviewDAO dao;
 
-  @Autowired
-  JdbcTemplate template;
-
   Date now = new Date();
 
   @Test

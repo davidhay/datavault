@@ -31,9 +31,6 @@ public class DataManagerDAOIT extends BaseReuseDatabaseTest {
   @Autowired
   DataManagerDAO dao;
 
-  @Autowired
-  JdbcTemplate template;
-
   @Test
   void testWriteThenRead() {
     DataManager dm1 = getDataManager1();

@@ -14,10 +14,9 @@ import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.transaction.annotation.Transactional;
 
-@Transactional
-public class PendingVaultCustomDAOImpl extends BaseCustomDaoImpl implements
+
+public class PendingVaultCustomDAOImpl extends BaseCustomDAOImpl implements
     PendingVaultCustomDAO {
     private static final Logger LOGGER = LoggerFactory.getLogger(PendingVaultCustomDAOImpl.class);
 

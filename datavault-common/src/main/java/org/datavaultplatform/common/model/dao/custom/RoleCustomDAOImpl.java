@@ -15,10 +15,9 @@ import org.datavaultplatform.common.util.RoleUtils;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
-import org.springframework.transaction.annotation.Transactional;
 
-@Transactional
-public class RoleCustomDAOImpl extends BaseCustomDaoImpl implements RoleCustomDAO {
+
+public class RoleCustomDAOImpl extends BaseCustomDAOImpl implements RoleCustomDAO {
     public RoleCustomDAOImpl(EntityManager em) {
         super(em);
     }

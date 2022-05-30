@@ -36,9 +36,6 @@ public class BillingDAOIT extends BaseReuseDatabaseTest {
   @Autowired
   VaultDAO vaultDAO;
 
-  @Autowired
-  JdbcTemplate template;
-
   Vault v1;
   Vault v2;
 

@@ -4,7 +4,7 @@ import java.util.List;
 import org.datavaultplatform.common.model.PendingDataCreator;
 import org.springframework.transaction.annotation.Transactional;
 
-@Transactional
-public interface PendingDataCreatorCustomDAO {
+
+public interface PendingDataCreatorCustomDAO extends BaseCustomDAO {
     void save(List<PendingDataCreator> pendingDataCreators);
 }

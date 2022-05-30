@@ -31,9 +31,6 @@ public class AuditDAOIT extends BaseReuseDatabaseTest {
   @Autowired
   AuditDAO dao;
 
-  @Autowired
-  JdbcTemplate template;
-
   @Test
   void testWriteThenRead() {
     Audit Audit1 = getAudit1();

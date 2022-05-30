@@ -11,10 +11,8 @@ import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.transaction.annotation.Transactional;
 
-@Transactional
-public class BillingCustomDAOImpl extends BaseCustomDaoImpl implements BillingCustomDAO {
+public class BillingCustomDAOImpl extends BaseCustomDAOImpl implements BillingCustomDAO {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(BillingCustomDAOImpl.class);
 

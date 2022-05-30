@@ -6,11 +6,9 @@ import org.datavaultplatform.common.model.Client;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
-import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
-@Transactional
-public class ClientCustomDAOImpl extends BaseCustomDaoImpl implements ClientCustomDAO {
+public class ClientCustomDAOImpl extends BaseCustomDAOImpl implements ClientCustomDAO {
 
     public ClientCustomDAOImpl(EntityManager em) {
         super(em);

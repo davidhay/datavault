@@ -34,9 +34,6 @@ public class VaultDAOIT extends BaseReuseDatabaseTest {
   @Autowired
   VaultDAO dao;
 
-  @Autowired
-  JdbcTemplate template;
-
   @Test
   void testWriteThenRead() {
     Vault review1 = getVault1();
@@ -121,7 +118,6 @@ public class VaultDAOIT extends BaseReuseDatabaseTest {
   }
 
   long count() {
-     return template.queryForObject(
-          "select count(*) from Vaults", Long.class);
+     return dao.count();
   }
 }

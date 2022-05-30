@@ -6,10 +6,9 @@ import org.datavaultplatform.common.model.User;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
-import org.springframework.transaction.annotation.Transactional;
 
-@Transactional
-public class UserCustomDAOImpl extends BaseCustomDaoImpl implements UserCustomDAO {
+
+public class UserCustomDAOImpl extends BaseCustomDAOImpl implements UserCustomDAO {
 
     public UserCustomDAOImpl(EntityManager em) {
         super(em);

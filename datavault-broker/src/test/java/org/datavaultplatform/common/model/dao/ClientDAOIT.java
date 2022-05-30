@@ -32,9 +32,6 @@ public class ClientDAOIT extends BaseReuseDatabaseTest {
   @Autowired
   ClientDAO dao;
 
-  @Autowired
-  JdbcTemplate template;
-
   @Test
   void testWriteThenRead() {
     Client Client1 = getClient1();

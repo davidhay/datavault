@@ -3,7 +3,7 @@ package org.datavaultplatform.common.model.dao.custom;
 import java.util.List;
 import org.datavaultplatform.common.model.PendingVault;
 
-public interface PendingVaultCustomDAO {
+public interface PendingVaultCustomDAO extends BaseCustomDAO {
 
     List<PendingVault> list(String userId, String sort, String order, String offset, String maxResult);
 

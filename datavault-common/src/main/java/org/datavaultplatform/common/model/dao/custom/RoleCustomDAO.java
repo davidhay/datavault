@@ -5,7 +5,7 @@ import java.util.List;
 import org.datavaultplatform.common.model.RoleModel;
 import org.datavaultplatform.common.model.RoleType;
 
-public interface RoleCustomDAO  {
+public interface RoleCustomDAO extends BaseCustomDAO {
 
     void storeSpecialRoles();
 

@@ -5,12 +5,11 @@ import javax.persistence.EntityManager;
 import lombok.extern.slf4j.Slf4j;
 import org.datavaultplatform.common.model.PendingDataCreator;
 import org.hibernate.Session;
-import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
-@Transactional
+
 public class PendingDataCreatorCustomDAOImpl
-    extends BaseCustomDaoImpl implements PendingDataCreatorCustomDAO {
+    extends BaseCustomDAOImpl implements PendingDataCreatorCustomDAO {
 
     public PendingDataCreatorCustomDAOImpl(EntityManager em) {
         super(em);

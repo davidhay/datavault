@@ -32,9 +32,6 @@ public class DataCreatorDAOIT extends BaseReuseDatabaseTest {
   @Autowired
   DataCreatorDAO dao;
 
-  @Autowired
-  JdbcTemplate template;
-
   @Test
   void testWriteThenRead() {
     DataCreator dc1 = getDataCreator1();

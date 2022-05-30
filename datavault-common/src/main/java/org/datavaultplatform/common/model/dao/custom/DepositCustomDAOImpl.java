@@ -14,10 +14,8 @@ import org.hibernate.Session;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
-import org.springframework.transaction.annotation.Transactional;
 
-@Transactional
-public class DepositCustomDAOImpl extends BaseCustomDaoImpl implements DepositCustomDAO {
+public class DepositCustomDAOImpl extends BaseCustomDAOImpl implements DepositCustomDAO {
 
     public DepositCustomDAOImpl(EntityManager em) {
         super(em);

@@ -32,9 +32,6 @@ public class PendingDataCreatorDAOIT extends BaseReuseDatabaseTest {
   @Autowired
   PendingDataCreatorDAO dao;
 
-  @Autowired
-  JdbcTemplate template;
-
   @Test
   void testWriteThenRead() {
     PendingDataCreator pdc1 = getPendingDataCreator1();

@@ -11,10 +11,9 @@ import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
-import org.springframework.transaction.annotation.Transactional;
 
-@Transactional
-public class GroupCustomDAOImpl extends BaseCustomDaoImpl implements GroupCustomDAO {
+
+public class GroupCustomDAOImpl extends BaseCustomDAOImpl implements GroupCustomDAO {
 
     public GroupCustomDAOImpl(EntityManager em) {
         super(em);

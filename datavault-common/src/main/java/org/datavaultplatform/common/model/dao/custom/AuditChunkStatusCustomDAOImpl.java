@@ -11,10 +11,8 @@ import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
-import org.springframework.transaction.annotation.Transactional;
 
-@Transactional
-public class AuditChunkStatusCustomDAOImpl extends BaseCustomDaoImpl implements
+public class AuditChunkStatusCustomDAOImpl extends BaseCustomDAOImpl implements
     AuditChunkStatusCustomDAO {
 
     public AuditChunkStatusCustomDAOImpl(EntityManager em) {

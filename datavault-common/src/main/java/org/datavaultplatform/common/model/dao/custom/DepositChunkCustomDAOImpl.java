@@ -6,10 +6,8 @@ import org.datavaultplatform.common.model.DepositChunk;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Order;
-import org.springframework.transaction.annotation.Transactional;
 
-@Transactional
-public class DepositChunkCustomDAOImpl extends BaseCustomDaoImpl implements
+public class DepositChunkCustomDAOImpl extends BaseCustomDAOImpl implements
     DepositChunkCustomDAO {
 
     public DepositChunkCustomDAOImpl(EntityManager em) {

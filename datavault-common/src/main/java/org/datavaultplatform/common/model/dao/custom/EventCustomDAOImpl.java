@@ -8,10 +8,9 @@ import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
-import org.springframework.transaction.annotation.Transactional;
 
-@Transactional
-public class EventCustomDAOImpl extends BaseCustomDaoImpl implements EventCustomDAO {
+
+public class EventCustomDAOImpl extends BaseCustomDAOImpl implements EventCustomDAO {
 
     public EventCustomDAOImpl(EntityManager em) {
         super(em);

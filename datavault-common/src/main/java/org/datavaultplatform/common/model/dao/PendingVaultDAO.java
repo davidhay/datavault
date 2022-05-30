@@ -5,7 +5,7 @@ import org.datavaultplatform.common.model.dao.custom.PendingVaultCustomDAO;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-@Transactional
 @Repository
+@Transactional
 public interface PendingVaultDAO extends BaseDAO<PendingVault>, PendingVaultCustomDAO {
 }

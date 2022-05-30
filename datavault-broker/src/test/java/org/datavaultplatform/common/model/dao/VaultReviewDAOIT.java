@@ -34,9 +34,6 @@ public class VaultReviewDAOIT extends BaseReuseDatabaseTest {
   @Autowired
   VaultReviewDAO dao;
 
-  @Autowired
-  JdbcTemplate template;
-
   @Test
   void testWriteThenRead() {
     VaultReview review1 = getVaultReview1();

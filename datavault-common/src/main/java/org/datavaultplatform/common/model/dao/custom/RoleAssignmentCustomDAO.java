@@ -5,7 +5,7 @@ import java.util.Set;
 import org.datavaultplatform.common.model.Permission;
 import org.datavaultplatform.common.model.RoleAssignment;
 
-public interface RoleAssignmentCustomDAO {
+public interface RoleAssignmentCustomDAO extends BaseCustomDAO {
 
     boolean roleAssignmentExists(RoleAssignment roleAssignment);
 

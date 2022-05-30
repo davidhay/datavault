@@ -1,9 +1,7 @@
 package org.datavaultplatform.broker.services;
 
-import javax.transaction.Transactional;
 import org.datavaultplatform.common.model.ArchiveStore;
 import org.datavaultplatform.common.model.dao.ArchiveStoreDAO;
-import org.datavaultplatform.common.model.dao.custom.ArchiveStoreCustomDAO;
 
 import java.util.HashMap;
 import java.util.List;
@@ -12,7 +10,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
-@Transactional
 public class ArchiveStoreService {
 
     private final String optionsDir;

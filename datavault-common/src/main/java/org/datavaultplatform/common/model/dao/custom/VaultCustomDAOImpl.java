@@ -13,10 +13,9 @@ import org.hibernate.Session;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
-import org.springframework.transaction.annotation.Transactional;
 
-@Transactional
-public class VaultCustomDAOImpl extends BaseCustomDaoImpl implements VaultCustomDAO {
+
+public class VaultCustomDAOImpl extends BaseCustomDAOImpl implements VaultCustomDAO {
 
     public VaultCustomDAOImpl(EntityManager em) {
         super(em);

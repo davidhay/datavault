@@ -6,8 +6,8 @@ import org.datavaultplatform.common.model.dao.custom.DepositCustomDAO;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-@Transactional
 @Repository
+@Transactional
 public interface DepositChunkDAO extends BaseDAO<DepositChunk>, DepositCustomDAO {
 
   @Override

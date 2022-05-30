@@ -35,9 +35,6 @@ public class RoleAssignmentDAOIT extends BaseReuseDatabaseTest {
   @Autowired
   RoleDAO roleDAO;
 
-  @Autowired
-  JdbcTemplate template;
-
   private RoleModel role1;
   private RoleModel role2;
 
@@ -122,9 +119,8 @@ public class RoleAssignmentDAOIT extends BaseReuseDatabaseTest {
     return result;
   }
 
-  int count() {
-     return template.queryForObject(
-          "select count(*) from Role_assignments", Integer.class);
+  long count() {
+     return dao.count();
   }
 
   @BeforeEach

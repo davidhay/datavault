@@ -26,7 +26,7 @@ public abstract class BaseReuseDatabaseTest  {
   InitialiseDatabase initialiseDatabase;
 
   @Autowired
-  JdbcTemplate template;
+  protected JdbcTemplate template;
 
   @BeforeAll
   public static void beforeAll() {

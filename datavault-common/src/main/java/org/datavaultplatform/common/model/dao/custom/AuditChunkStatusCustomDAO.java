@@ -7,7 +7,7 @@ import org.datavaultplatform.common.model.AuditChunkStatus;
 import org.datavaultplatform.common.model.Deposit;
 import org.datavaultplatform.common.model.DepositChunk;
 
-public interface AuditChunkStatusCustomDAO {
+public interface AuditChunkStatusCustomDAO extends BaseCustomDAO {
 
     List<AuditChunkStatus> findByAudit(Audit audit);
 

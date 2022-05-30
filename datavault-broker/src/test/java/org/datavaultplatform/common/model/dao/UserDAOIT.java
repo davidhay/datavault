@@ -31,9 +31,6 @@ public class UserDAOIT extends BaseReuseDatabaseTest {
   @Autowired
   UserDAO dao;
 
-  @Autowired
-  JdbcTemplate template;
-
   @Test
   void testWriteThenRead() {
     User user1 = getUser1();

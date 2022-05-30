@@ -31,9 +31,6 @@ public class RetentionPolicyDAOIT extends BaseReuseDatabaseTest {
   @Autowired
   RetentionPolicyDAO dao;
 
-  @Autowired
-  JdbcTemplate template;
-
   @Test
   void testWriteThenRead() {
     RetentionPolicy retentionPolicy1 = getRetentionPolicy1();

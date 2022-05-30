@@ -5,7 +5,7 @@ import org.datavaultplatform.common.model.dao.custom.UserCustomDAO;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-@Transactional
 @Repository
+@Transactional
 public interface UserDAO extends BaseDAO<User>, UserCustomDAO {
 }

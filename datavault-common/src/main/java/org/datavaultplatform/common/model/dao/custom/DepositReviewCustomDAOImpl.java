@@ -6,10 +6,9 @@ import org.datavaultplatform.common.model.DepositReview;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
-import org.springframework.transaction.annotation.Transactional;
 
-@Transactional
-public class DepositReviewCustomDAOImpl extends BaseCustomDaoImpl implements
+
+public class DepositReviewCustomDAOImpl extends BaseCustomDAOImpl implements
     DepositReviewCustomDAO {
 
     public DepositReviewCustomDAOImpl( EntityManager em ) {

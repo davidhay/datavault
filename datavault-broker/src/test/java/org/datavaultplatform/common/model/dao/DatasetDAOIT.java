@@ -31,9 +31,6 @@ public class DatasetDAOIT extends BaseReuseDatabaseTest {
   @Autowired
   DatasetDAO dao;
 
-  @Autowired
-  JdbcTemplate template;
-
   @Test
   void testWriteThenRead() {
     Dataset dataset1 = getDataset1();

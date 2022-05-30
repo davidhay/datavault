@@ -5,7 +5,7 @@ import java.util.List;
 import org.datavaultplatform.common.model.Deposit;
 import org.datavaultplatform.common.model.DepositChunk;
 
-public interface DepositCustomDAO {
+public interface DepositCustomDAO extends BaseCustomDAO {
 
     List<Deposit> list(String query, String userId, String sort, String order, int offset, int maxResult);
 

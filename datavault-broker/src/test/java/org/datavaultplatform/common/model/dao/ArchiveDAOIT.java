@@ -31,8 +31,6 @@ public class ArchiveDAOIT extends BaseReuseDatabaseTest {
   @Autowired
   ArchiveDAO dao;
 
-  @Autowired
-  JdbcTemplate template;
 
   @Test
   void testWriteThenRead() {

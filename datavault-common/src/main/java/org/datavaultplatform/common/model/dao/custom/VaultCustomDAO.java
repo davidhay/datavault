@@ -1,12 +1,13 @@
 package org.datavaultplatform.common.model.dao.custom;
 
+import com.fasterxml.jackson.databind.ser.Serializers.Base;
 import java.util.List;
 
 import org.datavaultplatform.common.model.Vault;
 import org.springframework.transaction.annotation.Transactional;
 
-@Transactional
-public interface VaultCustomDAO {
+
+public interface VaultCustomDAO extends BaseCustomDAO {
 
     void saveOrUpdateVault(Vault vault);
 

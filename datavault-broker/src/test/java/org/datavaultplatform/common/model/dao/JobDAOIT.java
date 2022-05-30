@@ -31,9 +31,6 @@ public class JobDAOIT extends BaseReuseDatabaseTest {
   @Autowired
   JobDAO dao;
 
-  @Autowired
-  JdbcTemplate template;
-
   @Test
   void testWriteThenRead() {
     Job job1 = getJob1();

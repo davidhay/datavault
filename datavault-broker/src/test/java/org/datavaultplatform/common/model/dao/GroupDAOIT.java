@@ -31,9 +31,6 @@ public class GroupDAOIT extends BaseReuseDatabaseTest {
   @Autowired
   GroupDAO dao;
 
-  @Autowired
-  JdbcTemplate template;
-
   @Test
   void testWriteThenRead() {
     Group job1 = getGroup1();

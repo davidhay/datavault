@@ -6,10 +6,9 @@ import org.datavaultplatform.common.model.VaultReview;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
-import org.springframework.transaction.annotation.Transactional;
 
-@Transactional
-public class VaultReviewCustomDAOImpl extends BaseCustomDaoImpl implements
+
+public class VaultReviewCustomDAOImpl extends BaseCustomDAOImpl implements
     VaultReviewCustomDAO {
 
     public VaultReviewCustomDAOImpl(EntityManager em) {
