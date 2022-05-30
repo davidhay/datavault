@@ -286,27 +286,6 @@
             <skipTests>${skip.unit.tests}</skipTests>
             <excludedGroups>slow,org.datavaultplatform.test.TSMTest</excludedGroups>
           </configuration>
-          <executions>
-            <execution>
-              <phase>test</phase>
-              <goals>
-                <goal>test</goal>
-              </goals>
-              <configuration>
-                <testNGArtifactName>none:none</testNGArtifactName>
-              </configuration>
-            </execution>
-            <execution>
-              <id>test-testng</id>
-              <phase>test</phase>
-              <goals>
-                <goal>test</goal>
-              </goals>
-              <configuration>
-                <junitArtifactName>none:none</junitArtifactName>
-              </configuration>
-            </execution>
-          </executions>
         </plugin>
         <plugin>
           <groupId>org.owasp</groupId>
@@ -348,6 +327,48 @@
           <plugin>
             <groupId>org.owasp</groupId>
             <artifactId>dependency-check-maven</artifactId>
+          </plugin>
+        </plugins>
+      </build>
+      <dependencies>
+        <dependency>
+          <groupId>org.testng</groupId>
+          <artifactId>testng</artifactId>
+          <scope>test</scope>
+        </dependency>
+      </dependencies>
+    </profile>
+    <profile>
+      <id>ide</id>
+      <!-- this profile adds the testng dependency so that it will be added to your IDEs classpath
+           and alow the FT test classes to compile -->
+      <!-- NOTE : this has only been tested with intellij not eclipse -->
+      <dependencies>
+        <dependency>
+          <groupId>org.testng</groupId>
+          <artifactId>testng</artifactId>
+          <scope>test</scope>
+        </dependency>
+      </dependencies>
+    </profile>
+    <profile>
+      <id>cicd</id>
+      <activation><activeByDefault>true</activeByDefault></activation>
+      <!-- the 'cicd' profile does 2 things:
+      1) does NOT include testng dependency
+      2) excludes FT classes which use testng from tests
+      If we include testng dependency - this causes problems running other unit and integration tests
+      -->
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <configuration>
+              <testExcludes>
+                <testExclude>**/*FT.java</testExclude>
+              </testExcludes>
+            </configuration>
           </plugin>
         </plugins>
       </build>
