@@ -64,14 +64,6 @@ public class PermissionCustomDAOImpl extends BaseCustomDAOImpl implements
     }
 
     @Override
-    public List<PermissionModel> findAll() {
-        Session session = this.getCurrentSession();
-        Criteria criteria = session.createCriteria(PermissionModel.class);
-        List<PermissionModel> permissions = criteria.list();
-        return permissions;
-    }
-
-    @Override
     public List<PermissionModel> findByType(PermissionModel.PermissionType type) {
         Session session = getCurrentSession();
         Criteria criteria = session.createCriteria(PermissionModel.class);

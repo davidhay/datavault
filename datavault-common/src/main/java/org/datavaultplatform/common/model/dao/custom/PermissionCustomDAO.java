@@ -14,7 +14,5 @@ public interface PermissionCustomDAO extends BaseCustomDAO {
 
     PermissionModel find(Permission permission);
 
-    Collection<PermissionModel> findAll();
-
     List<PermissionModel> findByType(PermissionModel.PermissionType type);
 }
