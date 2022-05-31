@@ -1,9 +1,14 @@
 package org.datavaultplatform.common.model.dao;
 
+import static org.datavaultplatform.broker.test.TestUtils.NOW;
+import static org.datavaultplatform.broker.test.TestUtils.ONE_WEEK_AGO;
+import static org.datavaultplatform.broker.test.TestUtils.TWO_WEEKS_AGO;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.datavaultplatform.broker.app.DataVaultBrokerApp;
 import org.datavaultplatform.broker.test.AddTestProperties;
@@ -52,10 +57,12 @@ public class AuditChunkStatusDAOIT extends BaseReuseDatabaseTest {
   }
 
   @Test
-  void testList() {
+  void testListIsSortedByAscendingTimestamp() {
     AuditChunkStatus auditChunkStatus1 = getAuditChunkStatus1();
 
     AuditChunkStatus auditChunkStatus2 = getAuditChunkStatus2();
+
+    AuditChunkStatus auditChunkStatus3 = getAuditChunkStatus3();
 
     dao.save(auditChunkStatus1);
     assertNotNull(auditChunkStatus1.getID());
@@ -65,12 +72,24 @@ public class AuditChunkStatusDAOIT extends BaseReuseDatabaseTest {
     assertNotNull(auditChunkStatus2.getID());
     assertEquals(2, count());
 
-    List<AuditChunkStatus> items = dao.findAll();
-    assertEquals(2, items.size());
+    dao.save(auditChunkStatus3);
+    assertNotNull(auditChunkStatus3.getID());
+    assertEquals(3, count());
+
+    List<AuditChunkStatus> items = dao.list();
+    assertEquals(3, items.size());
     assertEquals(1, items.stream().filter(dr -> dr.getID().equals(auditChunkStatus1.getID())).count());
     assertEquals(1, items.stream().filter(dr -> dr.getID().equals(auditChunkStatus2.getID())).count());
-  }
+    assertEquals(1, items.stream().filter(dr -> dr.getID().equals(auditChunkStatus3.getID())).count());
 
+    // The AuditChunkStatus should be ordered by Ascending Timestamp
+    assertEquals(
+        Arrays.asList(
+            auditChunkStatus3.getID(),
+            auditChunkStatus1.getID(),
+            auditChunkStatus2.getID()),
+        items.stream().map(AuditChunkStatus::getID).collect(Collectors.toList()));
+  }
 
   @Test
   void testUpdate() {
@@ -99,15 +118,25 @@ public class AuditChunkStatusDAOIT extends BaseReuseDatabaseTest {
 
   private AuditChunkStatus getAuditChunkStatus1() {
     AuditChunkStatus result = new AuditChunkStatus();
+    result.setTimestamp(ONE_WEEK_AGO);
     result.setNote("111");
     return result;
   }
 
   private AuditChunkStatus getAuditChunkStatus2() {
     AuditChunkStatus result = new AuditChunkStatus();
+    result.setTimestamp(NOW);
     result.setNote("222");
     return result;
   }
+
+  private AuditChunkStatus getAuditChunkStatus3() {
+    AuditChunkStatus result = new AuditChunkStatus();
+    result.setTimestamp(TWO_WEEKS_AGO);
+    result.setNote("333");
+    return result;
+  }
+
 
   long count() {
     return dao.count();

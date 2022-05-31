@@ -1,9 +1,9 @@
 package org.datavaultplatform.common.model.dao;
 
+import static org.datavaultplatform.broker.test.TestUtils.NOW;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import java.util.Date;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.datavaultplatform.broker.app.DataVaultBrokerApp;
@@ -27,8 +27,6 @@ import org.springframework.test.context.TestPropertySource;
     "broker.scheduled.enabled=false"
 })
 public class VaultReviewDAOIT extends BaseReuseDatabaseTest {
-
-  final Date now = new Date();
 
   @Autowired
   VaultReviewDAO dao;
@@ -101,14 +99,14 @@ public class VaultReviewDAOIT extends BaseReuseDatabaseTest {
   private VaultReview getVaultReview1() {
     VaultReview result = new VaultReview();
     result.setComment("review-1");
-    result.setCreationTime(now);
+    result.setCreationTime(NOW);
     return result;
   }
 
   private VaultReview getVaultReview2() {
     VaultReview result = new VaultReview();
     result.setComment("review-2");
-    result.setCreationTime(now);
+    result.setCreationTime(NOW);
     return result;
   }
 

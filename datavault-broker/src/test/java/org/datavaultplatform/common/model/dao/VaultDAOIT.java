@@ -1,10 +1,14 @@
 package org.datavaultplatform.common.model.dao;
 
+import static org.datavaultplatform.broker.test.TestUtils.NOW;
+import static org.datavaultplatform.broker.test.TestUtils.ONE_WEEK_AGO;
+import static org.datavaultplatform.broker.test.TestUtils.TWO_WEEKS_AGO;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import java.util.Date;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.datavaultplatform.broker.app.DataVaultBrokerApp;
 import org.datavaultplatform.broker.test.AddTestProperties;
@@ -29,7 +33,6 @@ import org.springframework.test.context.TestPropertySource;
 })
 public class VaultDAOIT extends BaseReuseDatabaseTest {
 
-  static final Date NOW = new Date();
 
   @Autowired
   VaultDAO dao;
@@ -56,10 +59,12 @@ public class VaultDAOIT extends BaseReuseDatabaseTest {
   }
 
   @Test
-  void testList() {
+  void testListIsSortedByCreationTimeAscending() {
     Vault vault1 = getVault1();
 
     Vault vault2 = getVault2();
+
+    Vault vault3 = getVault3();
 
     dao.save(vault1);
     assertEquals(1, count());
@@ -67,10 +72,22 @@ public class VaultDAOIT extends BaseReuseDatabaseTest {
     dao.save(vault2);
     assertEquals(2, count());
 
+    dao.save(vault3);
+    assertEquals(3, count());
+
     List<Vault> items = dao.list();
-    assertEquals(2, items.size());
+    assertEquals(3, items.size());
     assertEquals(1, items.stream().filter(dr -> dr.getID().equals(vault1.getID())).count());
     assertEquals(1, items.stream().filter(dr -> dr.getID().equals(vault2.getID())).count());
+    assertEquals(1, items.stream().filter(dr -> dr.getID().equals(vault3.getID())).count());
+
+    // The Vaults should be ordered by Ascending Creation Time
+    assertEquals(
+        Arrays.asList(
+            vault3.getID(),
+            vault1.getID(),
+            vault2.getID()),
+        items.stream().map(Vault::getID).collect(Collectors.toList()));
   }
 
 
@@ -115,7 +132,7 @@ public class VaultDAOIT extends BaseReuseDatabaseTest {
     result.setContact("contact-1");
     result.setName("vault-1");
     result.setReviewDate(NOW);
-    result.setCreationTime(NOW);
+    result.setCreationTime(ONE_WEEK_AGO);
     return result;
   }
 
@@ -125,6 +142,15 @@ public class VaultDAOIT extends BaseReuseDatabaseTest {
     result.setName("vault-2");
     result.setReviewDate(NOW);
     result.setCreationTime(NOW);
+    return result;
+  }
+
+  static Vault getVault3() {
+    Vault result = new Vault();
+    result.setContact("contact-2");
+    result.setName("vault-2");
+    result.setReviewDate(NOW);
+    result.setCreationTime(TWO_WEEKS_AGO);
     return result;
   }
 

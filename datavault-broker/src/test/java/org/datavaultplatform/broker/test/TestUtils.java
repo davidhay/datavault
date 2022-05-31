@@ -2,23 +2,27 @@ package org.datavaultplatform.broker.test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 import java.nio.charset.StandardCharsets;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import org.assertj.core.util.Arrays;
-import org.checkerframework.checker.units.qual.K;
 import org.junit.function.ThrowingRunnable;
-import org.junit.jupiter.api.Assertions;
 
 public abstract class TestUtils {
+
+  public static final Date NOW = new Date();
+  public static final Date ONE_WEEK_AGO = new Date(
+      Instant.ofEpochMilli(NOW.getTime()).minus(7, ChronoUnit.DAYS).toEpochMilli());
+  public static final Date TWO_WEEKS_AGO = new Date(Instant.ofEpochMilli(NOW.getTime()).minus(14, ChronoUnit.DAYS).toEpochMilli());
+
 
   public static <T extends Exception> void checkException(Class<T> exceptionClass, String message, ThrowingRunnable runnable) {
     T ex = assertThrows(exceptionClass, runnable);

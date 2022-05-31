@@ -1,11 +1,16 @@
 package org.datavaultplatform.common.model.dao;
 
+import static org.datavaultplatform.broker.test.TestUtils.NOW;
+import static org.datavaultplatform.broker.test.TestUtils.ONE_WEEK_AGO;
+import static org.datavaultplatform.broker.test.TestUtils.TWO_WEEKS_AGO;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.datavaultplatform.broker.app.DataVaultBrokerApp;
 import org.datavaultplatform.broker.test.AddTestProperties;
@@ -59,10 +64,12 @@ public class PendingVaultDAOIT extends BaseDatabaseTest {
   }
 
   @Test
-  void testList() {
+  void testListIsSortedByAscendingCreationTime() {
     PendingVault pendingVault1 = getPendingVault1();
 
     PendingVault pendingVault2 = getPendingVault2();
+
+    PendingVault pendingVault3 = getPendingVault3();
 
     dao.save(pendingVault1);
     assertNotNull(pendingVault1.getId());
@@ -72,12 +79,24 @@ public class PendingVaultDAOIT extends BaseDatabaseTest {
     assertNotNull(pendingVault2.getId());
     assertEquals(2, count());
 
-    List<PendingVault> items = dao.findAll();
-    assertEquals(2, items.size());
+    dao.save(pendingVault3);
+    assertNotNull(pendingVault3.getId());
+    assertEquals(3, count());
+
+    List<PendingVault> items = dao.list();
+    assertEquals(3, items.size());
     assertEquals(1, items.stream().filter(dr -> dr.getId().equals(pendingVault1.getId())).count());
     assertEquals(1, items.stream().filter(dr -> dr.getId().equals(pendingVault2.getId())).count());
-  }
+    assertEquals(1, items.stream().filter(dr -> dr.getId().equals(pendingVault3.getId())).count());
 
+    // The PendingVaults should be ordered by Ascending CreationTime
+    assertEquals(
+        Arrays.asList(
+            pendingVault3.getId(),
+            pendingVault1.getId(),
+            pendingVault2.getId()),
+        items.stream().map(PendingVault::getId).collect(Collectors.toList()));
+  }
 
   @Test
   void testUpdate() {
@@ -115,7 +134,7 @@ public class PendingVaultDAOIT extends BaseDatabaseTest {
     PendingVault pendingVault = new PendingVault();
     pendingVault.setName("111");
     pendingVault.setContact("contact-1");
-
+    pendingVault.setCreationTime(ONE_WEEK_AGO);
     return pendingVault;
   }
 
@@ -123,6 +142,15 @@ public class PendingVaultDAOIT extends BaseDatabaseTest {
     PendingVault pendingVault = new PendingVault();
     pendingVault.setName("222");
     pendingVault.setContact("contact-2");
+    pendingVault.setCreationTime(NOW);
+    return pendingVault;
+  }
+
+  private PendingVault getPendingVault3() {
+    PendingVault pendingVault = new PendingVault();
+    pendingVault.setName("333");
+    pendingVault.setContact("contact-3");
+    pendingVault.setCreationTime(TWO_WEEKS_AGO);
     return pendingVault;
   }
 

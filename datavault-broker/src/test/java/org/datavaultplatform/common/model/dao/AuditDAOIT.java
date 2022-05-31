@@ -1,9 +1,14 @@
 package org.datavaultplatform.common.model.dao;
 
+import static org.datavaultplatform.broker.test.TestUtils.NOW;
+import static org.datavaultplatform.broker.test.TestUtils.ONE_WEEK_AGO;
+import static org.datavaultplatform.broker.test.TestUtils.TWO_WEEKS_AGO;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.datavaultplatform.broker.app.DataVaultBrokerApp;
 import org.datavaultplatform.broker.test.AddTestProperties;
@@ -52,10 +57,12 @@ public class AuditDAOIT extends BaseReuseDatabaseTest {
   }
 
   @Test
-  void testList() {
+  void testListIsSortedByAscendingTimestamp() {
     Audit audit1 = getAudit1();
 
     Audit audit2 = getAudit2();
+
+    Audit audit3 = getAudit3();
 
     dao.save(audit1);
     assertNotNull(audit1.getID());
@@ -65,10 +72,23 @@ public class AuditDAOIT extends BaseReuseDatabaseTest {
     assertNotNull(audit2.getID());
     assertEquals(2, count());
 
-    List<Audit> items = dao.findAll();
-    assertEquals(2, items.size());
+    dao.save(audit3);
+    assertNotNull(audit3.getID());
+    assertEquals(3, count());
+
+    List<Audit> items = dao.list();
+    assertEquals(3, items.size());
     assertEquals(1, items.stream().filter(dr -> dr.getID().equals(audit1.getID())).count());
     assertEquals(1, items.stream().filter(dr -> dr.getID().equals(audit2.getID())).count());
+    assertEquals(1, items.stream().filter(dr -> dr.getID().equals(audit3.getID())).count());
+
+    // The Audit should be ordered by Ascending Timestamp
+    assertEquals(
+        Arrays.asList(
+            audit3.getID(),
+            audit1.getID(),
+            audit2.getID()),
+        items.stream().map(Audit::getID).collect(Collectors.toList()));
   }
 
 
@@ -100,12 +120,21 @@ public class AuditDAOIT extends BaseReuseDatabaseTest {
   private Audit getAudit1() {
     Audit result = new Audit();
     result.setNote("111");
+    result.setTimestamp(ONE_WEEK_AGO);
     return result;
   }
 
   private Audit getAudit2() {
     Audit result = new Audit();
     result.setNote("222");
+    result.setTimestamp(NOW);
+    return result;
+  }
+
+  private Audit getAudit3() {
+    Audit result = new Audit();
+    result.setNote("222");
+    result.setTimestamp(TWO_WEEKS_AGO);
     return result;
   }
 

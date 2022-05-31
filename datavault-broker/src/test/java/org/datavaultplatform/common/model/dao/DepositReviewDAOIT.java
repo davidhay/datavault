@@ -1,9 +1,9 @@
 package org.datavaultplatform.common.model.dao;
 
+import static org.datavaultplatform.broker.test.TestUtils.NOW;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import java.util.Date;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.datavaultplatform.broker.app.DataVaultBrokerApp;
@@ -31,8 +31,6 @@ public class DepositReviewDAOIT extends BaseReuseDatabaseTest {
   @Autowired
   DepositReviewDAO dao;
 
-  final Date now = new Date();
-
   @Test
   void testWriteThenRead() {
     DepositReview depositReview1 = getDepositReview1();
@@ -58,11 +56,11 @@ public class DepositReviewDAOIT extends BaseReuseDatabaseTest {
   void testList() {
     DepositReview depositReview1 = new DepositReview();
     depositReview1.setComment("dr1-comment");
-    depositReview1.setCreationTime(now);
+    depositReview1.setCreationTime(NOW);
 
     DepositReview depositReview2 = new DepositReview();
     depositReview2.setComment("dr2-comment");
-    depositReview2.setCreationTime(now);
+    depositReview2.setCreationTime(NOW);
 
     dao.save(depositReview1);
     assertNotNull(depositReview1.getId());
@@ -139,14 +137,14 @@ public class DepositReviewDAOIT extends BaseReuseDatabaseTest {
   DepositReview getDepositReview1() {
     DepositReview result = new DepositReview();
     result.setComment("dr1-comment");
-    result.setCreationTime(now);
+    result.setCreationTime(NOW);
     return result;
   }
 
   DepositReview getDepositReview2(){
     DepositReview result = new DepositReview();
     result.setComment("dr2-comment");
-    result.setCreationTime(now);
+    result.setCreationTime(NOW);
     return result;
   }
 }
