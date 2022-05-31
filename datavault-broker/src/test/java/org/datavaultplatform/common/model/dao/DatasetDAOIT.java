@@ -1,13 +1,18 @@
 package org.datavaultplatform.common.model.dao;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.datavaultplatform.broker.app.DataVaultBrokerApp;
 import org.datavaultplatform.broker.test.AddTestProperties;
 import org.datavaultplatform.broker.test.BaseReuseDatabaseTest;
+import org.datavaultplatform.broker.test.TestUtils;
 import org.datavaultplatform.common.model.Dataset;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -72,6 +77,18 @@ public class DatasetDAOIT extends BaseReuseDatabaseTest {
     assertEquals(1, items.stream().filter(dr -> dr.getID().equals(archive2.getID())).count());
   }
 
+  @Test
+  void testDatasetWithTransientContent() {
+    Dataset ds = getDatasetWithContent();
+    assertNotNull(ds.getContent());
+
+    dao.save(ds);
+
+    Dataset found = dao.findById(ds.getID()).get();
+    assertNotEquals(ds.getContent(), found.getContent());
+    assertNull(found.getContent());
+  }
+
 
   @Test
   void testUpdate() {
@@ -111,6 +128,15 @@ public class DatasetDAOIT extends BaseReuseDatabaseTest {
     ret.setID("ds-2");
     ret.setName("222");
     ret.setCrisId("crs-id-2");
+    return ret;
+  }
+
+  private Dataset getDatasetWithContent() {
+    Dataset ret = new Dataset();
+    ret.setID("ds-2");
+    ret.setName("222");
+    ret.setCrisId("crs-id-2");
+    ret.setContent(TestUtils.getRandomList().stream().collect(Collectors.joining(",")));
     return ret;
   }
 

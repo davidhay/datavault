@@ -1,13 +1,19 @@
 package org.datavaultplatform.common.model.dao;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertIterableEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import lombok.extern.slf4j.Slf4j;
 import org.datavaultplatform.broker.app.DataVaultBrokerApp;
 import org.datavaultplatform.broker.test.AddTestProperties;
 import org.datavaultplatform.broker.test.BaseReuseDatabaseTest;
+import org.datavaultplatform.broker.test.TestUtils;
 import org.datavaultplatform.common.model.Job;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -87,6 +93,17 @@ public class JobDAOIT extends BaseReuseDatabaseTest {
     assertEquals(job.getTaskClass(), found.getTaskClass());
   }
 
+  @Test
+  void testJobStatesBLOB() {
+    Job withStates = getJobWitStates();
+
+    dao.save(withStates);
+
+    Job withStatesFromDB = dao.findById(withStates.getID()).get();
+
+    assertIterableEquals(withStates.getStates(), withStatesFromDB.getStates());
+  }
+
   @BeforeEach
   void setup() {
     assertEquals(0, count());
@@ -108,6 +125,13 @@ public class JobDAOIT extends BaseReuseDatabaseTest {
     Job archive = new Job();
     archive.setTaskClass("222");
     return archive;
+  }
+
+  private Job getJobWitStates() {
+    Job job = new Job();
+    job.setTaskClass("333");
+    job.setStates(TestUtils.getRandomList());
+    return job;
   }
 
   long count() {

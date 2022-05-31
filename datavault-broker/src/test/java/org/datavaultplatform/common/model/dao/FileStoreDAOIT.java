@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.datavaultplatform.broker.app.DataVaultBrokerApp;
 import org.datavaultplatform.broker.test.AddTestProperties;
 import org.datavaultplatform.broker.test.BaseReuseDatabaseTest;
+import org.datavaultplatform.broker.test.TestUtils;
 import org.datavaultplatform.common.model.FileStore;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -87,6 +88,15 @@ public class FileStoreDAOIT extends BaseReuseDatabaseTest {
     assertEquals(archive1.getLabel(), found.getLabel());
   }
 
+  @Test
+  void testFileStorePropertiesBLOB(){
+    FileStore store = getFileStoreWithProperties();
+    dao.save(store);
+
+    FileStore found = dao.findById(store.getID()).get();
+    assertEquals(store.getProperties(), found.getProperties());
+  }
+
   @BeforeEach
   void setup() {
     assertEquals(0, count());
@@ -109,6 +119,14 @@ public class FileStoreDAOIT extends BaseReuseDatabaseTest {
     archive.setLabel("222");
     return archive;
   }
+
+  private FileStore getFileStoreWithProperties() {
+    FileStore store = new FileStore();
+    store.setLabel("222");
+    store.setProperties(TestUtils.getRandomMap());
+    return store;
+  }
+
 
   long count() {
     return dao.count();

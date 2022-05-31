@@ -5,10 +5,12 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.datavaultplatform.broker.app.DataVaultBrokerApp;
 import org.datavaultplatform.broker.test.AddTestProperties;
 import org.datavaultplatform.broker.test.BaseReuseDatabaseTest;
+import org.datavaultplatform.broker.test.TestUtils;
 import org.datavaultplatform.common.model.Vault;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -88,6 +90,17 @@ public class VaultDAOIT extends BaseReuseDatabaseTest {
     assertEquals(arc1.getName(), found.getName());
   }
 
+  @Test
+  void testVaultSnapshotBLOB(){
+
+    Vault vault = getVaultWithSnapshot();
+    dao.save(vault);
+
+    Vault found = dao.findById(vault.getID()).get();
+
+    assertEquals(vault.getSnapshot(), found.getSnapshot());
+  }
+
   @BeforeEach
   void setup() {
     assertEquals(0, count());
@@ -114,6 +127,16 @@ public class VaultDAOIT extends BaseReuseDatabaseTest {
     result.setName("vault-2");
     result.setReviewDate(NOW);
     result.setCreationTime(NOW);
+    return result;
+  }
+
+  static Vault getVaultWithSnapshot() {
+    Vault result = new Vault();
+    result.setContact("contact-3");
+    result.setName("vault-3");
+    result.setReviewDate(NOW);
+    result.setCreationTime(NOW);
+    result.setSnapshot(TestUtils.getRandomList().stream().collect(Collectors.joining(",")));
     return result;
   }
 

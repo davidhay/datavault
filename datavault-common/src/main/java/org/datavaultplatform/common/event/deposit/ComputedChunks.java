@@ -13,7 +13,7 @@ import org.datavaultplatform.common.event.Event;
 public class ComputedChunks extends Event {
     
     @Column(name="chunksDigest", columnDefinition="LONGBLOB")
-    public HashMap<Integer, String> chunksDigest;
+    public HashMap<Integer, String> chunksDigest = new HashMap<>();
     public String digestAlgorithm;
     
     public ComputedChunks() {

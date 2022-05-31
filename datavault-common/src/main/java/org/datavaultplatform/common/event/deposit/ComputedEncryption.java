@@ -3,6 +3,7 @@ package org.datavaultplatform.common.event.deposit;
 import java.util.HashMap;
 
 import javax.persistence.Entity;
+import javax.persistence.Lob;
 import javax.persistence.Table;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
@@ -13,15 +14,16 @@ import org.datavaultplatform.common.event.Event;
 public class ComputedEncryption extends Event {
     
     @Column(name="chunkIVs", columnDefinition="LONGBLOB")
-    public HashMap<Integer, byte[]> chunkIVs;
+    private HashMap<Integer, byte[]> chunkIVs = new HashMap<>();
     @Column(name="encChunkDigests", columnDefinition="LONGBLOB")
-    public HashMap<Integer, String> encChunkDigests;
-    public byte[] tarIV;
+    private HashMap<Integer, String> encChunkDigests = new HashMap<>();
+    @Lob
+    private byte[] tarIV;
     private String encTarDigest;
     private String aesMode;
     @Column(name="chunksDigest", columnDefinition="LONGBLOB")
-    public HashMap<Integer, String> chunksDigest;
-    public String digestAlgorithm;
+    private HashMap<Integer, String> chunksDigest = new HashMap<>();
+    private String digestAlgorithm;
     
     public ComputedEncryption() {
     }

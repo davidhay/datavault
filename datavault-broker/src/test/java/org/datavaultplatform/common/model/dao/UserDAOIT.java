@@ -4,10 +4,16 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Random;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import lombok.extern.slf4j.Slf4j;
 import org.datavaultplatform.broker.app.DataVaultBrokerApp;
 import org.datavaultplatform.broker.test.AddTestProperties;
 import org.datavaultplatform.broker.test.BaseReuseDatabaseTest;
+import org.datavaultplatform.broker.test.TestUtils;
 import org.datavaultplatform.common.model.User;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -113,6 +119,20 @@ public class UserDAOIT extends BaseReuseDatabaseTest {
 
   }
 
+  @Test
+  void testUserPropertiesBLOB() {
+
+    User user1 = getUserWithProperties();
+
+    dao.save(user1);
+
+    User found1 = dao.findById(user1.getID()).get();
+    assertEquals(user1.getProperties().keySet(), found1.getProperties().keySet());
+    for(String key : user1.getProperties().keySet()){
+      assertEquals(user1.getProperties().get(key), found1.getProperties().get(key));
+    }
+  }
+
   @BeforeEach
   void setup() {
     assertEquals(0, dao.count());
@@ -139,6 +159,16 @@ public class UserDAOIT extends BaseReuseDatabaseTest {
     user.setFirstname("firstname2");
     user.setLastname("lastname2");
     user.setEmail("user2@test.com");
+    return user;
+  }
+
+  private User getUserWithProperties() {
+    User user = new User();
+    user.setID("user3-user3");
+    user.setFirstname("firstname3");
+    user.setLastname("lastname3");
+    user.setEmail("user3@test.com");
+    user.setProperties(TestUtils.getRandomMap());
     return user;
   }
 

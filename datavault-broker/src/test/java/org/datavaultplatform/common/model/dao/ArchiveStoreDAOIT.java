@@ -91,6 +91,16 @@ public class ArchiveStoreDAOIT extends BaseDatabaseTest {
     assertEquals(archiveStore.getLabel(), found.getLabel());
   }
 
+  @Test
+  void testArchiveStorePropertiesBLOB() {
+    ArchiveStore store = getArchiveStoreWithProperties();
+    dao.save(store);
+
+    ArchiveStore found = dao.findById(store.getID()).get();
+
+    assertEquals(store.getProperties(), found.getProperties());
+  }
+
   @BeforeEach
   void setup() {
     assertEquals(0, count());
@@ -110,6 +120,13 @@ public class ArchiveStoreDAOIT extends BaseDatabaseTest {
   }
 
   private ArchiveStore getArchiveStore2() {
+    ArchiveStore archiveStore = new ArchiveStore();
+    archiveStore.setLabel("222");
+    archiveStore.setRetrieveEnabled(true);
+    return archiveStore;
+  }
+
+  private ArchiveStore getArchiveStoreWithProperties() {
     ArchiveStore archiveStore = new ArchiveStore();
     archiveStore.setLabel("222");
     archiveStore.setRetrieveEnabled(true);
