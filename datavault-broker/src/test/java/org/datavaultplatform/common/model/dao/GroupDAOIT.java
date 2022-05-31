@@ -14,7 +14,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.TestPropertySource;
 
 @SpringBootTest(classes = DataVaultBrokerApp.class)
@@ -33,23 +32,23 @@ public class GroupDAOIT extends BaseReuseDatabaseTest {
 
   @Test
   void testWriteThenRead() {
-    Group job1 = getGroup1();
+    Group group1 = getGroup1();
 
-    Group job2 = getGroup2();
+    Group group2 = getGroup2();
 
-    dao.save(job1);
-    assertNotNull(job1.getID());
+    dao.save(group1);
+    assertNotNull(group1.getID());
     assertEquals(1, count());
 
-    dao.save(job2);
-    assertNotNull(job2.getID());
+    dao.save(group2);
+    assertNotNull(group2.getID());
     assertEquals(2, count());
 
-    Group foundById1 = dao.findById(job1.getID()).get();
-    assertEquals(job1.getID(), foundById1.getID());
+    Group foundById1 = dao.findById(group1.getID()).get();
+    assertEquals(group1.getID(), foundById1.getID());
 
-    Group foundById2 = dao.findById(job2.getID()).get();
-    assertEquals(job2.getID(), foundById2.getID());
+    Group foundById2 = dao.findById(group2.getID()).get();
+    assertEquals(group2.getID(), foundById2.getID());
   }
 
   @Test
@@ -75,16 +74,16 @@ public class GroupDAOIT extends BaseReuseDatabaseTest {
 
   @Test
   void testUpdate() {
-    Group job = getGroup1();
+    Group group1 = getGroup1();
 
-    dao.save(job);
+    dao.save(group1);
 
-    job.setName("111-updated");
+    group1.setName("111-updated");
 
-    dao.update(job);
+    dao.update(group1);
 
-    Group found = dao.findById(job.getID()).get();
-    assertEquals(job.getName(), found.getName());
+    Group found = dao.findById(group1.getID()).get();
+    assertEquals(group1.getName(), found.getName());
   }
 
   @BeforeEach

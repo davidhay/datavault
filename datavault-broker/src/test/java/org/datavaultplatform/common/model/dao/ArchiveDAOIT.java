@@ -14,7 +14,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.TestPropertySource;
 
 @SpringBootTest(classes = DataVaultBrokerApp.class)
@@ -30,7 +29,6 @@ public class ArchiveDAOIT extends BaseReuseDatabaseTest {
 
   @Autowired
   ArchiveDAO dao;
-
 
   @Test
   void testWriteThenRead() {

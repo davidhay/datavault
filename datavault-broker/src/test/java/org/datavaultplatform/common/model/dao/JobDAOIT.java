@@ -4,11 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertIterableEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import java.util.Arrays;
 import java.util.List;
-import java.util.Random;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import lombok.extern.slf4j.Slf4j;
 import org.datavaultplatform.broker.app.DataVaultBrokerApp;
 import org.datavaultplatform.broker.test.AddTestProperties;
@@ -20,7 +16,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.TestPropertySource;
 
 @SpringBootTest(classes = DataVaultBrokerApp.class)
@@ -60,22 +55,22 @@ public class JobDAOIT extends BaseReuseDatabaseTest {
 
   @Test
   void testList() {
-    Job archive1 = getJob1();
+    Job job1 = getJob1();
 
-    Job archive2 = getJob2();
+    Job job2 = getJob2();
 
-    dao.save(archive1);
-    assertNotNull(archive1.getID());
+    dao.save(job1);
+    assertNotNull(job1.getID());
     assertEquals(1, count());
 
-    dao.save(archive2);
-    assertNotNull(archive2.getID());
+    dao.save(job2);
+    assertNotNull(job2.getID());
     assertEquals(2, count());
 
     List<Job> items = dao.findAll();
     assertEquals(2, items.size());
-    assertEquals(1, items.stream().filter(dr -> dr.getID().equals(archive1.getID())).count());
-    assertEquals(1, items.stream().filter(dr -> dr.getID().equals(archive2.getID())).count());
+    assertEquals(1, items.stream().filter(dr -> dr.getID().equals(job1.getID())).count());
+    assertEquals(1, items.stream().filter(dr -> dr.getID().equals(job2.getID())).count());
   }
 
 
@@ -95,13 +90,13 @@ public class JobDAOIT extends BaseReuseDatabaseTest {
 
   @Test
   void testJobStatesBLOB() {
-    Job withStates = getJobWitStates();
+    Job jobWitStates = getJobWitStates();
 
-    dao.save(withStates);
+    dao.save(jobWitStates);
 
-    Job withStatesFromDB = dao.findById(withStates.getID()).get();
+    Job withStatesFromDB = dao.findById(jobWitStates.getID()).get();
 
-    assertIterableEquals(withStates.getStates(), withStatesFromDB.getStates());
+    assertIterableEquals(jobWitStates.getStates(), withStatesFromDB.getStates());
   }
 
   @BeforeEach

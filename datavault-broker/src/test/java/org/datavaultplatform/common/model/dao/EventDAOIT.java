@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.nio.charset.StandardCharsets;
-import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.datavaultplatform.broker.app.DataVaultBrokerApp;
 import org.datavaultplatform.broker.test.AddTestProperties;
@@ -54,9 +53,9 @@ public class EventDAOIT extends BaseDatabaseTest {
 
     Event foundEvent = dao.findById(event.getID()).get();
     assertTrue(foundEvent instanceof Complete);
-    Complete foundCompletEevent = (Complete) foundEvent;
+    Complete foundCompleteEvent = (Complete) foundEvent;
 
-    assertEquals(event.getArchiveIds(), foundCompletEevent.getArchiveIds());
+    assertEquals(event.getArchiveIds(), foundCompleteEvent.getArchiveIds());
   }
 
   @Test
@@ -84,9 +83,9 @@ public class EventDAOIT extends BaseDatabaseTest {
 
     Event foundEvent = dao.findById(event.getID()).get();
     assertTrue(foundEvent instanceof UploadComplete);
-    UploadComplete foundCompletEevent = (UploadComplete) foundEvent;
+    UploadComplete foundCompleteEvent = (UploadComplete) foundEvent;
 
-    assertEquals(event.getArchiveIds(), foundCompletEevent.getArchiveIds());
+    assertEquals(event.getArchiveIds(), foundCompleteEvent.getArchiveIds());
   }
 
 
@@ -106,7 +105,7 @@ public class EventDAOIT extends BaseDatabaseTest {
   private ComputedEncryption getComputedEncryption() {
     ComputedEncryption event = new ComputedEncryption();
 
-    event.setTarIV(TestUtils.getRandomList().stream().collect(Collectors.joining(",")).getBytes(
+    event.setTarIV(String.join(",", TestUtils.getRandomList()).getBytes(
         StandardCharsets.UTF_8));
     event.setChunkIVs(TestUtils.getRandomMapIntegerKeyByteArrayValue());
     event.setEncChunkDigests(TestUtils.getRandomMapIntegerKey());

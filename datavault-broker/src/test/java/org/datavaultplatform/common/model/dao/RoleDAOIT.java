@@ -59,38 +59,38 @@ public class RoleDAOIT extends BaseDatabaseTest {
 
   @Test
   void testList() {
-    RoleModel RoleModel1 = getRoleModel1();
+    RoleModel roleModel1 = getRoleModel1();
 
-    RoleModel RoleModel2 = getRoleModel2();
+    RoleModel roleModel2 = getRoleModel2();
 
-    dao.save(RoleModel1);
+    dao.save(roleModel1);
     assertEquals(1, dao.count());
 
-    dao.save(RoleModel2);
+    dao.save(roleModel2);
     assertEquals(2, dao.count());
 
     List<RoleModel> items = dao.list();
     assertEquals(2, items.size());
-    assertEquals(1,items.stream().filter(dr -> dr.getId().equals(RoleModel1.getId())).count());
-    assertEquals(1,items.stream().filter(dr -> dr.getId().equals(RoleModel2.getId())).count());
+    assertEquals(1,items.stream().filter(dr -> dr.getId().equals(roleModel1.getId())).count());
+    assertEquals(1,items.stream().filter(dr -> dr.getId().equals(roleModel2.getId())).count());
   }
 
 
   @Test
   void testUpdate() {
 
-    RoleModel RoleModel1 = getRoleModel1();
+    RoleModel roleModel1 = getRoleModel1();
 
-    dao.save(RoleModel1);
+    dao.save(roleModel1);
 
-    RoleModel1.setName("RoleModel1.UPDATED");
+    roleModel1.setName("RoleModel1.UPDATED");
 
-    RoleModel found1 = dao.findById(RoleModel1.getId()).get();
+    RoleModel found1 = dao.findById(roleModel1.getId()).get();
     assertEquals("RoleModel1", found1.getName());
 
-    dao.update(RoleModel1);
+    dao.update(roleModel1);
 
-    RoleModel found2 = dao.findById(RoleModel1.getId()).get();
+    RoleModel found2 = dao.findById(roleModel1.getId()).get();
     assertEquals("RoleModel1.UPDATED", found2.getName());
 
   }
@@ -107,19 +107,19 @@ public class RoleDAOIT extends BaseDatabaseTest {
   }
 
   public static RoleModel getRoleModel1() {
-    RoleModel role = new RoleModel();
-    role.setName("RoleModel1");
-    role.setStatus("STATUS1");
-    role.setType(RoleType.VAULT);
-    return role;
+    RoleModel roleModel = new RoleModel();
+    roleModel.setName("RoleModel1");
+    roleModel.setStatus("STATUS1");
+    roleModel.setType(RoleType.VAULT);
+    return roleModel;
   }
 
   public static RoleModel getRoleModel2() {
-    RoleModel role = new RoleModel();
-    role.setName("RoleModel2");
-    role.setStatus("STATUS2");
-    role.setType(RoleType.SCHOOL);
-    return role;
+    RoleModel roleModel = new RoleModel();
+    roleModel.setName("RoleModel2");
+    roleModel.setStatus("STATUS2");
+    roleModel.setType(RoleType.SCHOOL);
+    return roleModel;
   }
 
 }

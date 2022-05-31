@@ -15,7 +15,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.TestPropertySource;
 
 @SpringBootTest(classes = DataVaultBrokerApp.class)
@@ -40,23 +39,23 @@ public class RoleAssignmentDAOIT extends BaseReuseDatabaseTest {
 
   @Test
   void testWriteThenRead() {
-    RoleAssignment review1 = getRoleAssignment1();
+    RoleAssignment roleAssignment1 = getRoleAssignment1();
 
-    RoleAssignment review2 = getRoleAssignment2();
+    RoleAssignment roleAssignment2 = getRoleAssignment2();
 
-    dao.save(review1);
-    assertNotNull(review1.getId());
+    dao.save(roleAssignment1);
+    assertNotNull(roleAssignment1.getId());
     assertEquals(1, count());
 
-    dao.save(review2);
-    assertNotNull(review2.getId());
+    dao.save(roleAssignment2);
+    assertNotNull(roleAssignment2.getId());
     assertEquals(2, count());
 
-    RoleAssignment foundById1 = dao.findById(review1.getId()).get();
-    assertEquals(review1.getId(), foundById1.getId());
+    RoleAssignment foundById1 = dao.findById(roleAssignment1.getId()).get();
+    assertEquals(roleAssignment1.getId(), foundById1.getId());
 
-    RoleAssignment foundById2 = dao.findById(review2.getId()).get();
-    assertEquals(review2.getId(), foundById2.getId());
+    RoleAssignment foundById2 = dao.findById(roleAssignment2.getId()).get();
+    assertEquals(roleAssignment2.getId(), foundById2.getId());
   }
 
   @Test
@@ -80,16 +79,16 @@ public class RoleAssignmentDAOIT extends BaseReuseDatabaseTest {
 
   @Test
   void testUpdate() {
-    RoleAssignment arc1 = getRoleAssignment1();
+    RoleAssignment roleAssignment1 = getRoleAssignment1();
 
-    dao.save(arc1);
+    dao.save(roleAssignment1);
 
-    arc1.setUserId("updated-user-id");
+    roleAssignment1.setUserId("updated-user-id");
 
-    dao.update(arc1);
+    dao.update(roleAssignment1);
 
-    RoleAssignment found = dao.findById(arc1.getId()).get();
-    assertEquals(arc1.getUserId(), found.getUserId());
+    RoleAssignment found = dao.findById(roleAssignment1.getId()).get();
+    assertEquals(roleAssignment1.getUserId(), found.getUserId());
   }
 
   @BeforeEach

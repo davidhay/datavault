@@ -15,7 +15,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.TestPropertySource;
 
 @SpringBootTest(classes = DataVaultBrokerApp.class)
@@ -34,58 +33,58 @@ public class ClientDAOIT extends BaseReuseDatabaseTest {
 
   @Test
   void testWriteThenRead() {
-    Client Client1 = getClient1();
+    Client client1 = getClient1();
 
-    Client Client2 = getClient2();
+    Client client2 = getClient2();
 
-    dao.save(Client1);
-    assertNotNull(Client1.getId());
+    dao.save(client1);
+    assertNotNull(client1.getId());
     assertEquals(1, count());
 
-    dao.save(Client2);
-    assertNotNull(Client2.getId());
+    dao.save(client2);
+    assertNotNull(client2.getId());
     assertEquals(2, count());
 
-    Client foundById1 = dao.findById(Client1.getId()).get();
-    assertEquals(Client1.getId(), foundById1.getId());
+    Client foundById1 = dao.findById(client1.getId()).get();
+    assertEquals(client1.getId(), foundById1.getId());
 
-    Client foundById2 = dao.findById(Client2.getId()).get();
-    assertEquals(Client2.getId(), foundById2.getId());
+    Client foundById2 = dao.findById(client2.getId()).get();
+    assertEquals(client2.getId(), foundById2.getId());
   }
 
   @Test
   void testList() {
-    Client audit1 = getClient1();
+    Client client1 = getClient1();
 
-    Client audit2 = getClient2();
+    Client client2 = getClient2();
 
-    dao.save(audit1);
-    assertNotNull(audit1.getId());
+    dao.save(client1);
+    assertNotNull(client1.getId());
     assertEquals(1, count());
 
-    dao.save(audit2);
-    assertNotNull(audit2.getId());
+    dao.save(client2);
+    assertNotNull(client2.getId());
     assertEquals(2, count());
 
     List<Client> items = dao.findAll();
     assertEquals(2, items.size());
-    assertEquals(1, items.stream().filter(dr -> dr.getId().equals(audit1.getId())).count());
-    assertEquals(1, items.stream().filter(dr -> dr.getId().equals(audit2.getId())).count());
+    assertEquals(1, items.stream().filter(dr -> dr.getId().equals(client1.getId())).count());
+    assertEquals(1, items.stream().filter(dr -> dr.getId().equals(client2.getId())).count());
   }
 
 
   @Test
   void testUpdate() {
-    Client audit1 = getClient1();
+    Client client1 = getClient1();
 
-    dao.save(audit1);
+    dao.save(client1);
 
-    audit1.setName("111-updated");
+    client1.setName("111-updated");
 
-    dao.update(audit1);
+    dao.update(client1);
 
-    Client found = dao.findById(audit1.getId()).get();
-    assertEquals(audit1.getName(), found.getName());
+    Client found = dao.findById(client1.getId()).get();
+    assertEquals(client1.getName(), found.getName());
   }
 
   @Test

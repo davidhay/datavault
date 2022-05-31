@@ -14,7 +14,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.TestPropertySource;
 
 @SpringBootTest(classes = DataVaultBrokerApp.class)
@@ -33,58 +32,58 @@ public class DataManagerDAOIT extends BaseReuseDatabaseTest {
 
   @Test
   void testWriteThenRead() {
-    DataManager dm1 = getDataManager1();
+    DataManager dataManager1 = getDataManager1();
 
-    DataManager dm2 = getDataManager2();
+    DataManager dataManager2 = getDataManager2();
 
-    dao.save(dm1);
-    assertNotNull(dm1.getID());
+    dao.save(dataManager1);
+    assertNotNull(dataManager1.getID());
     assertEquals(1, count());
 
-    dao.save(dm2);
-    assertNotNull(dm2.getID());
+    dao.save(dataManager2);
+    assertNotNull(dataManager2.getID());
     assertEquals(2, count());
 
-    DataManager foundById1 = dao.findById(dm1.getID()).get();
-    assertEquals(dm1.getID(), foundById1.getID());
+    DataManager foundById1 = dao.findById(dataManager1.getID()).get();
+    assertEquals(dataManager1.getID(), foundById1.getID());
 
-    DataManager foundById2 = dao.findById(dm2.getID()).get();
-    assertEquals(dm2.getID(), foundById2.getID());
+    DataManager foundById2 = dao.findById(dataManager2.getID()).get();
+    assertEquals(dataManager2.getID(), foundById2.getID());
   }
 
   @Test
   void testList() {
-    DataManager dm1 = getDataManager1();
+    DataManager dataManager1 = getDataManager1();
 
-    DataManager dm2 = getDataManager2();
+    DataManager dataManager2 = getDataManager2();
 
-    dao.save(dm1);
-    assertNotNull(dm1.getID());
+    dao.save(dataManager1);
+    assertNotNull(dataManager1.getID());
     assertEquals(1, count());
 
-    dao.save(dm2);
-    assertNotNull(dm2.getID());
+    dao.save(dataManager2);
+    assertNotNull(dataManager2.getID());
     assertEquals(2, count());
 
     List<DataManager> items = dao.findAll();
     assertEquals(2, items.size());
-    assertEquals(1, items.stream().filter(dr -> dr.getID().equals(dm1.getID())).count());
-    assertEquals(1, items.stream().filter(dr -> dr.getID().equals(dm2.getID())).count());
+    assertEquals(1, items.stream().filter(dr -> dr.getID().equals(dataManager1.getID())).count());
+    assertEquals(1, items.stream().filter(dr -> dr.getID().equals(dataManager2.getID())).count());
   }
 
 
   @Test
   void testUpdate() {
-    DataManager dm1 = getDataManager1();
+    DataManager dataManager1 = getDataManager1();
 
-    dao.save(dm1);
+    dao.save(dataManager1);
 
-    dm1.setUUN("111-updated");
+    dataManager1.setUUN("111-updated");
 
-    dao.update(dm1);
+    dao.update(dataManager1);
 
-    DataManager found = dao.findById(dm1.getID()).get();
-    assertEquals(dm1.getUUN(), found.getUUN());
+    DataManager found = dao.findById(dataManager1.getID()).get();
+    assertEquals(dataManager1.getUUN(), found.getUUN());
   }
 
   @BeforeEach
@@ -99,15 +98,15 @@ public class DataManagerDAOIT extends BaseReuseDatabaseTest {
   }
 
   private DataManager getDataManager1() {
-    DataManager dm = new DataManager();
-    dm.setUUN("111");
-    return dm;
+    DataManager dataManager = new DataManager();
+    dataManager.setUUN("111");
+    return dataManager;
   }
 
   private DataManager getDataManager2() {
-    DataManager dm = new DataManager();
-    dm.setUUN("222");
-    return dm;
+    DataManager dataManager = new DataManager();
+    dataManager.setUUN("222");
+    return dataManager;
   }
 
   long count() {

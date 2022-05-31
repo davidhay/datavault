@@ -15,7 +15,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.TestPropertySource;
 
 @SpringBootTest(classes = DataVaultBrokerApp.class)
@@ -29,63 +28,63 @@ import org.springframework.test.context.TestPropertySource;
 })
 public class VaultReviewDAOIT extends BaseReuseDatabaseTest {
 
-  Date now = new Date();
+  final Date now = new Date();
 
   @Autowired
   VaultReviewDAO dao;
 
   @Test
   void testWriteThenRead() {
-    VaultReview review1 = getVaultReview1();
+    VaultReview vaultReview1 = getVaultReview1();
 
-    VaultReview review2 = getVaultReview2();
+    VaultReview vaultReview2 = getVaultReview2();
 
-    dao.save(review1);
-    assertNotNull(review1.getId());
+    dao.save(vaultReview1);
+    assertNotNull(vaultReview1.getId());
     assertEquals(1, count());
 
-    dao.save(review2);
-    assertNotNull(review2.getId());
+    dao.save(vaultReview2);
+    assertNotNull(vaultReview2.getId());
     assertEquals(2, count());
 
-    VaultReview foundById1 = dao.findById(review1.getId()).get();
-    assertEquals(review1.getId(), foundById1.getId());
+    VaultReview foundById1 = dao.findById(vaultReview1.getId()).get();
+    assertEquals(vaultReview1.getId(), foundById1.getId());
 
-    VaultReview foundById2 = dao.findById(review2.getId()).get();
-    assertEquals(review2.getId(), foundById2.getId());
+    VaultReview foundById2 = dao.findById(vaultReview2.getId()).get();
+    assertEquals(vaultReview2.getId(), foundById2.getId());
   }
 
   @Test
   void testList() {
-    VaultReview arc1 = getVaultReview1();
+    VaultReview vaultReview1 = getVaultReview1();
 
-    VaultReview arc2 = getVaultReview2();
+    VaultReview vaultReview2 = getVaultReview2();
 
-    dao.save(arc1);
+    dao.save(vaultReview1);
     assertEquals(1, count());
 
-    dao.save(arc2);
+    dao.save(vaultReview2);
     assertEquals(2, count());
 
     List<VaultReview> items = dao.list();
     assertEquals(2, items.size());
-    assertEquals(1, items.stream().filter(dr -> dr.getId().equals(arc1.getId())).count());
-    assertEquals(1, items.stream().filter(dr -> dr.getId().equals(arc2.getId())).count());
+    assertEquals(1, items.stream().filter(dr -> dr.getId().equals(vaultReview1.getId())).count());
+    assertEquals(1, items.stream().filter(dr -> dr.getId().equals(vaultReview2.getId())).count());
   }
 
 
   @Test
   void testUpdate() {
-    VaultReview arc1 = getVaultReview1();
+    VaultReview vaultReview1 = getVaultReview1();
 
-    dao.save(arc1);
+    dao.save(vaultReview1);
 
-    arc1.setComment("updated-review-one");
+    vaultReview1.setComment("updated-review-one");
 
-    dao.update(arc1);
+    dao.update(vaultReview1);
 
-    VaultReview found = dao.findById(arc1.getId()).get();
-    assertEquals(arc1.getComment(), found.getComment());
+    VaultReview found = dao.findById(vaultReview1.getId()).get();
+    assertEquals(vaultReview1.getComment(), found.getComment());
   }
 
   @BeforeEach

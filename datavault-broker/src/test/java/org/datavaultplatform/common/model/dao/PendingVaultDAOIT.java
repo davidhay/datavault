@@ -60,44 +60,44 @@ public class PendingVaultDAOIT extends BaseDatabaseTest {
 
   @Test
   void testList() {
-    PendingVault group1 = getPendingVault1();
+    PendingVault pendingVault1 = getPendingVault1();
 
-    PendingVault group2 = getPendingVault2();
+    PendingVault pendingVault2 = getPendingVault2();
 
-    dao.save(group1);
-    assertNotNull(group1.getId());
+    dao.save(pendingVault1);
+    assertNotNull(pendingVault1.getId());
     assertEquals(1, count());
 
-    dao.save(group2);
-    assertNotNull(group2.getId());
+    dao.save(pendingVault2);
+    assertNotNull(pendingVault2.getId());
     assertEquals(2, count());
 
     List<PendingVault> items = dao.findAll();
     assertEquals(2, items.size());
-    assertEquals(1, items.stream().filter(dr -> dr.getId().equals(group1.getId())).count());
-    assertEquals(1, items.stream().filter(dr -> dr.getId().equals(group2.getId())).count());
+    assertEquals(1, items.stream().filter(dr -> dr.getId().equals(pendingVault1.getId())).count());
+    assertEquals(1, items.stream().filter(dr -> dr.getId().equals(pendingVault2.getId())).count());
   }
 
 
   @Test
   void testUpdate() {
-    PendingVault pv1 = getPendingVault1();
-    assertNull(pv1.getId());
-    dao.save(pv1);
-    assertNotNull(pv1.getId());
+    PendingVault pendingVault1 = getPendingVault1();
+    assertNull(pendingVault1.getId());
+    dao.save(pendingVault1);
+    assertNotNull(pendingVault1.getId());
 
     List<String> ids = template.query("select id from `PendingVaults`", (rs, rowNum) -> rs.getString(1));
-    assertEquals(pv1.getId(), ids.get(0));
+    assertEquals(pendingVault1.getId(), ids.get(0));
 
-    assertTrue(dao.findById(pv1.getId()).isPresent());
+    assertTrue(dao.findById(pendingVault1.getId()).isPresent());
     assertEquals(1, dao.count());
 
-    pv1.setName("111-updated");
+    pendingVault1.setName("111-updated");
 
-    dao.update(pv1);
+    dao.update(pendingVault1);
 
-    PendingVault found = dao.findById(pv1.getId()).get();
-    assertEquals(pv1.getName(), found.getName());
+    PendingVault found = dao.findById(pendingVault1.getId()).get();
+    assertEquals(pendingVault1.getName(), found.getName());
   }
 
   @BeforeEach

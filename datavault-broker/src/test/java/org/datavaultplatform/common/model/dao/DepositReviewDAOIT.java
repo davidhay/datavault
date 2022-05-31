@@ -15,7 +15,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.TestPropertySource;
 
 @SpringBootTest(classes = DataVaultBrokerApp.class)
@@ -32,95 +31,96 @@ public class DepositReviewDAOIT extends BaseReuseDatabaseTest {
   @Autowired
   DepositReviewDAO dao;
 
-  Date now = new Date();
+  final Date now = new Date();
 
   @Test
   void testWriteThenRead() {
-    DepositReview dr1 = getDR1();
+    DepositReview depositReview1 = getDepositReview1();
 
-    DepositReview dr2 = getDR2();
+    DepositReview depositReview2 = getDepositReview2();
 
-    dao.save(dr1);
-    assertNotNull(dr1.getId());
+    dao.save(depositReview1);
+    assertNotNull(depositReview1.getId());
     assertEquals(1, dao.count());
 
-    dao.save(dr2);
-    assertNotNull(dr2.getId());
+    dao.save(depositReview2);
+    assertNotNull(depositReview2.getId());
     assertEquals(2, dao.count());
 
-    DepositReview foundById1 = dao.findById(dr1.getId()).get();
-    assertEquals(dr1.getComment(), foundById1.getComment());
+    DepositReview foundById1 = dao.findById(depositReview1.getId()).get();
+    assertEquals(depositReview1.getComment(), foundById1.getComment());
 
-    DepositReview foundById2 = dao.findById(dr2.getId()).get();
-    assertEquals(dr2.getComment(), foundById2.getComment());
+    DepositReview foundById2 = dao.findById(depositReview2.getId()).get();
+    assertEquals(depositReview2.getComment(), foundById2.getComment());
   }
 
   @Test
   void testList() {
-    DepositReview dr1 = new DepositReview();
-    dr1.setComment("dr1-comment");
-    dr1.setCreationTime(now);
+    DepositReview depositReview1 = new DepositReview();
+    depositReview1.setComment("dr1-comment");
+    depositReview1.setCreationTime(now);
 
-    DepositReview dr2 = new DepositReview();
-    dr2.setComment("dr2-comment");
-    dr2.setCreationTime(now);
+    DepositReview depositReview2 = new DepositReview();
+    depositReview2.setComment("dr2-comment");
+    depositReview2.setCreationTime(now);
 
-    dao.save(dr1);
-    assertNotNull(dr1.getId());
+    dao.save(depositReview1);
+    assertNotNull(depositReview1.getId());
     assertEquals(1, dao.count());
 
-    dao.save(dr2);
-    assertNotNull(dr2.getId());
+    dao.save(depositReview2);
+    assertNotNull(depositReview2.getId());
     assertEquals(2, dao.count());
 
     List<DepositReview> items = dao.list();
     assertEquals(2, items.size());
-    assertEquals(1,items.stream().filter(dr -> dr.getId().equals(dr1.getId())).count());
-    assertEquals(1,items.stream().filter(dr -> dr.getId().equals(dr2.getId())).count());
+    assertEquals(1, items.stream().filter(dr -> dr.getId().equals(depositReview1.getId())).count());
+    assertEquals(1, items.stream().filter(dr -> dr.getId().equals(depositReview2.getId())).count());
   }
+
 
   @Test
   void testSearch() {
 
-    DepositReview dr1 = getDR1();
-    dao.save(dr1);
-    assertNotNull(dr1.getId());
+    DepositReview depositReview1 = getDepositReview1();
+    dao.save(depositReview1);
+    assertNotNull(depositReview1.getId());
     assertEquals(1, dao.count());
 
-    DepositReview dr2 = getDR2();
-    dao.save(dr2);
-    assertNotNull(dr2.getId());
+    DepositReview depositReview2 = getDepositReview2();
+    dao.save(depositReview2);
+    assertNotNull(depositReview2.getId());
     assertEquals(2, dao.count());
 
     {
-      String search1 = dr1.getId().split("-")[0];
+      String search1 = depositReview1.getId().split("-")[0];
       List<DepositReview> items1 = dao.search(search1);
       assertEquals(1, items1.size());
-      assertEquals(1, items1.stream().filter(dr -> dr.getId().equals(dr1.getId())).count());
+      assertEquals(1, items1.stream().filter(dr -> dr.getId().equals(depositReview1.getId())).count());
     }
     {
-      String search2 = dr2.getId().split("-")[0];
+      String search2 = depositReview2.getId().split("-")[0];
       List<DepositReview> items2 = dao.search(search2);
       assertEquals(1, items2.size());
-      assertEquals(1, items2.stream().filter(dr -> dr.getId().equals(dr2.getId())).count());
+      assertEquals(1, items2.stream().filter(dr -> dr.getId().equals(depositReview2.getId())).count());
     }
   }
 
   @Test
   void testUpdate() {
 
-    DepositReview dr1 = getDR1();
+    DepositReview depositReview = getDepositReview1();
 
-    dao.save(dr1);
+    dao.save(depositReview);
 
-    dr1.setComment("dr1-comment-updated");
+    depositReview.setComment("dr1-comment-updated");
 
-    DepositReview found1 = dao.findById(dr1.getId()).get();
+    DepositReview found1 = dao.findById(depositReview.getId()).get();
     assertEquals("dr1-comment", found1.getComment());
 
-    dao.update(dr1);
+    dao.update(depositReview);
 
-    DepositReview found2 = dao.findById(dr1.getId()).get();
+    DepositReview found2 = dao.findById(depositReview.getId()).get();
     assertEquals("dr1-comment-updated", found2.getComment());
 
   }
@@ -136,14 +136,14 @@ public class DepositReviewDAOIT extends BaseReuseDatabaseTest {
     assertEquals(0, dao.count());
   }
 
-  DepositReview getDR1() {
+  DepositReview getDepositReview1() {
     DepositReview result = new DepositReview();
     result.setComment("dr1-comment");
     result.setCreationTime(now);
     return result;
   }
 
-  DepositReview getDR2(){
+  DepositReview getDepositReview2(){
     DepositReview result = new DepositReview();
     result.setComment("dr2-comment");
     result.setCreationTime(now);

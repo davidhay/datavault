@@ -15,7 +15,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.TestPropertySource;
 
 @SpringBootTest(classes = DataVaultBrokerApp.class)
@@ -34,43 +33,43 @@ public class PendingDataCreatorDAOIT extends BaseReuseDatabaseTest {
 
   @Test
   void testWriteThenRead() {
-    PendingDataCreator pdc1 = getPendingDataCreator1();
+    PendingDataCreator pendingDataCreator1 = getPendingDataCreator1();
 
-    PendingDataCreator pdc2 = getPendingDataCreator2();
+    PendingDataCreator pendingDataCreator2 = getPendingDataCreator2();
 
-    dao.save(pdc1);
-    assertNotNull(pdc1.getId());
+    dao.save(pendingDataCreator1);
+    assertNotNull(pendingDataCreator1.getId());
     assertEquals(1, count());
 
-    dao.save(pdc2);
-    assertNotNull(pdc2.getId());
+    dao.save(pendingDataCreator2);
+    assertNotNull(pendingDataCreator2.getId());
     assertEquals(2, count());
 
-    PendingDataCreator foundById1 = dao.findById(pdc1.getId()).get();
-    assertEquals(pdc1.getId(), foundById1.getId());
+    PendingDataCreator foundById1 = dao.findById(pendingDataCreator1.getId()).get();
+    assertEquals(pendingDataCreator1.getId(), foundById1.getId());
 
-    PendingDataCreator foundById2 = dao.findById(pdc2.getId()).get();
-    assertEquals(pdc2.getId(), foundById2.getId());
+    PendingDataCreator foundById2 = dao.findById(pendingDataCreator2.getId()).get();
+    assertEquals(pendingDataCreator2.getId(), foundById2.getId());
   }
 
   @Test
   void testList() {
-    PendingDataCreator archive1 = getPendingDataCreator1();
+    PendingDataCreator pendingDataCreator1 = getPendingDataCreator1();
 
-    PendingDataCreator archive2 = getPendingDataCreator2();
+    PendingDataCreator pendingDataCreator2 = getPendingDataCreator2();
 
-    dao.save(archive1);
-    assertNotNull(archive1.getId());
+    dao.save(pendingDataCreator1);
+    assertNotNull(pendingDataCreator1.getId());
     assertEquals(1, count());
 
-    dao.save(archive2);
-    assertNotNull(archive2.getId());
+    dao.save(pendingDataCreator2);
+    assertNotNull(pendingDataCreator2.getId());
     assertEquals(2, count());
 
     List<PendingDataCreator> items = dao.findAll();
     assertEquals(2, items.size());
-    assertEquals(1, items.stream().filter(dr -> dr.getId().equals(archive1.getId())).count());
-    assertEquals(1, items.stream().filter(dr -> dr.getId().equals(archive2.getId())).count());
+    assertEquals(1, items.stream().filter(dr -> dr.getId().equals(pendingDataCreator1.getId())).count());
+    assertEquals(1, items.stream().filter(dr -> dr.getId().equals(pendingDataCreator2.getId())).count());
   }
 
 
@@ -117,20 +116,20 @@ public class PendingDataCreatorDAOIT extends BaseReuseDatabaseTest {
 
   @Test
   void testSaveList(){
-    PendingDataCreator pdc1 = getPendingDataCreator1();
+    PendingDataCreator pendingDataCreator1 = getPendingDataCreator1();
 
-    PendingDataCreator pdc2 = getPendingDataCreator2();
+    PendingDataCreator pendingDataCreator2 = getPendingDataCreator2();
 
-    dao.save(Arrays.asList(pdc1,pdc2));
+    dao.save(Arrays.asList(pendingDataCreator1,pendingDataCreator2));
 
-    assertNotNull(pdc1.getId());
-    assertNotNull(pdc2.getId());
+    assertNotNull(pendingDataCreator1.getId());
+    assertNotNull(pendingDataCreator2.getId());
     assertEquals(2, count());
 
-    PendingDataCreator found1 = dao.findById(pdc1.getId()).get();
-    PendingDataCreator found2 = dao.findById(pdc2.getId()).get();
+    PendingDataCreator found1 = dao.findById(pendingDataCreator1.getId()).get();
+    PendingDataCreator found2 = dao.findById(pendingDataCreator2.getId()).get();
 
-    assertEquals(pdc1.getName(), found1.getName());
-    assertEquals(pdc2.getName(), found2.getName());
+    assertEquals(pendingDataCreator1.getName(), found1.getName());
+    assertEquals(pendingDataCreator2.getName(), found2.getName());
   }
 }

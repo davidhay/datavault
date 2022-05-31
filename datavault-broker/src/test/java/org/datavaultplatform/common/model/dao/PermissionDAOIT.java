@@ -62,37 +62,37 @@ public class PermissionDAOIT extends BaseDatabaseTest {
 
   @Test
   void testList() {
-    PermissionModel audit1 = getPermissionModel1();
+    PermissionModel permissionModel1 = getPermissionModel1();
 
-    PermissionModel audit2 = getPermissionModel2();
+    PermissionModel permissionModel2 = getPermissionModel2();
 
-    dao.save(audit1);
-    assertNotNull(audit1.getId());
+    dao.save(permissionModel1);
+    assertNotNull(permissionModel1.getId());
     assertEquals(1, count());
 
-    dao.save(audit2);
-    assertNotNull(audit2.getId());
+    dao.save(permissionModel2);
+    assertNotNull(permissionModel2.getId());
     assertEquals(2, count());
 
     List<PermissionModel> items = dao.findAll();
     assertEquals(2, items.size());
-    assertEquals(1, items.stream().filter(dr -> dr.getId().equals(audit1.getId())).count());
-    assertEquals(1, items.stream().filter(dr -> dr.getId().equals(audit2.getId())).count());
+    assertEquals(1, items.stream().filter(dr -> dr.getId().equals(permissionModel1.getId())).count());
+    assertEquals(1, items.stream().filter(dr -> dr.getId().equals(permissionModel2.getId())).count());
   }
 
 
   @Test
   void testUpdate() {
-    PermissionModel audit1 = getPermissionModel1();
+    PermissionModel permissionModel1 = getPermissionModel1();
 
-    dao.save(audit1);
+    dao.save(permissionModel1);
 
-    audit1.setLabel("111-updated");
+    permissionModel1.setLabel("111-updated");
 
-    dao.update(audit1);
+    dao.update(permissionModel1);
 
-    PermissionModel found = dao.findById(audit1.getId()).get();
-    assertEquals(audit1.getLabel(), found.getLabel());
+    PermissionModel found = dao.findById(permissionModel1.getId()).get();
+    assertEquals(permissionModel1.getLabel(), found.getLabel());
   }
 
 

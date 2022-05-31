@@ -14,7 +14,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.TestPropertySource;
 
 @SpringBootTest(classes = DataVaultBrokerApp.class)
@@ -33,23 +32,23 @@ public class AuditDAOIT extends BaseReuseDatabaseTest {
 
   @Test
   void testWriteThenRead() {
-    Audit Audit1 = getAudit1();
+    Audit audit1 = getAudit1();
 
-    Audit Audit2 = getAudit2();
+    Audit audit2 = getAudit2();
 
-    dao.save(Audit1);
-    assertNotNull(Audit1.getID());
+    dao.save(audit1);
+    assertNotNull(audit1.getID());
     assertEquals(1, count());
 
-    dao.save(Audit2);
-    assertNotNull(Audit2.getID());
+    dao.save(audit2);
+    assertNotNull(audit2.getID());
     assertEquals(2, count());
 
-    Audit foundById1 = dao.findById(Audit1.getID()).get();
-    assertEquals(Audit1.getID(), foundById1.getID());
+    Audit foundById1 = dao.findById(audit1.getID()).get();
+    assertEquals(audit1.getID(), foundById1.getID());
 
-    Audit foundById2 = dao.findById(Audit2.getID()).get();
-    assertEquals(Audit2.getID(), foundById2.getID());
+    Audit foundById2 = dao.findById(audit2.getID()).get();
+    assertEquals(audit2.getID(), foundById2.getID());
   }
 
   @Test

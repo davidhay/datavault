@@ -2,6 +2,7 @@ package org.datavaultplatform.broker.test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -12,7 +13,10 @@ import java.util.Random;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.assertj.core.util.Arrays;
+import org.checkerframework.checker.units.qual.K;
 import org.junit.function.ThrowingRunnable;
+import org.junit.jupiter.api.Assertions;
 
 public abstract class TestUtils {
 

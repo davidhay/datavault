@@ -14,7 +14,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.TestPropertySource;
 
 @SpringBootTest(classes = DataVaultBrokerApp.class)
@@ -54,37 +53,37 @@ public class AuditChunkStatusDAOIT extends BaseReuseDatabaseTest {
 
   @Test
   void testList() {
-    AuditChunkStatus AuditChunkStatus1 = getAuditChunkStatus1();
+    AuditChunkStatus auditChunkStatus1 = getAuditChunkStatus1();
 
-    AuditChunkStatus AuditChunkStatus2 = getAuditChunkStatus2();
+    AuditChunkStatus auditChunkStatus2 = getAuditChunkStatus2();
 
-    dao.save(AuditChunkStatus1);
-    assertNotNull(AuditChunkStatus1.getID());
+    dao.save(auditChunkStatus1);
+    assertNotNull(auditChunkStatus1.getID());
     assertEquals(1, count());
 
-    dao.save(AuditChunkStatus2);
-    assertNotNull(AuditChunkStatus2.getID());
+    dao.save(auditChunkStatus2);
+    assertNotNull(auditChunkStatus2.getID());
     assertEquals(2, count());
 
     List<AuditChunkStatus> items = dao.findAll();
     assertEquals(2, items.size());
-    assertEquals(1, items.stream().filter(dr -> dr.getID().equals(AuditChunkStatus1.getID())).count());
-    assertEquals(1, items.stream().filter(dr -> dr.getID().equals(AuditChunkStatus2.getID())).count());
+    assertEquals(1, items.stream().filter(dr -> dr.getID().equals(auditChunkStatus1.getID())).count());
+    assertEquals(1, items.stream().filter(dr -> dr.getID().equals(auditChunkStatus2.getID())).count());
   }
 
 
   @Test
   void testUpdate() {
-    AuditChunkStatus AuditChunkStatus1 = getAuditChunkStatus1();
+    AuditChunkStatus auditChunkStatus1 = getAuditChunkStatus1();
 
-    dao.save(AuditChunkStatus1);
+    dao.save(auditChunkStatus1);
 
-    AuditChunkStatus1.setNote("111-updated");
+    auditChunkStatus1.setNote("111-updated");
 
-    dao.update(AuditChunkStatus1);
+    dao.update(auditChunkStatus1);
 
-    AuditChunkStatus found = dao.findById(AuditChunkStatus1.getID()).get();
-    assertEquals(AuditChunkStatus1.getNote(), found.getNote());
+    AuditChunkStatus found = dao.findById(auditChunkStatus1.getID()).get();
+    assertEquals(auditChunkStatus1.getNote(), found.getNote());
   }
 
   @BeforeEach

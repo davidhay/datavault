@@ -15,7 +15,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.TestPropertySource;
 
 @SpringBootTest(classes = DataVaultBrokerApp.class)
@@ -34,58 +33,58 @@ public class DataCreatorDAOIT extends BaseReuseDatabaseTest {
 
   @Test
   void testWriteThenRead() {
-    DataCreator dc1 = getDataCreator1();
+    DataCreator dataCreator1 = getDataCreator1();
 
-    DataCreator dc2 = getDataCreator2();
+    DataCreator dataCreator2 = getDataCreator2();
 
-    dao.save(dc1);
-    assertNotNull(dc1.getId());
+    dao.save(dataCreator1);
+    assertNotNull(dataCreator1.getId());
     assertEquals(1, count());
 
-    dao.save(dc2);
-    assertNotNull(dc2.getId());
+    dao.save(dataCreator2);
+    assertNotNull(dataCreator2.getId());
     assertEquals(2, count());
 
-    DataCreator foundById1 = dao.findById(dc1.getId()).get();
-    assertEquals(dc1.getId(), foundById1.getId());
+    DataCreator foundById1 = dao.findById(dataCreator1.getId()).get();
+    assertEquals(dataCreator1.getId(), foundById1.getId());
 
-    DataCreator foundById2 = dao.findById(dc2.getId()).get();
-    assertEquals(dc2.getId(), foundById2.getId());
+    DataCreator foundById2 = dao.findById(dataCreator2.getId()).get();
+    assertEquals(dataCreator2.getId(), foundById2.getId());
   }
 
   @Test
   void testList() {
-    DataCreator archive1 = getDataCreator1();
+    DataCreator dataCreator1 = getDataCreator1();
 
-    DataCreator archive2 = getDataCreator2();
+    DataCreator dataCreator2 = getDataCreator2();
 
-    dao.save(archive1);
-    assertNotNull(archive1.getId());
+    dao.save(dataCreator1);
+    assertNotNull(dataCreator1.getId());
     assertEquals(1, count());
 
-    dao.save(archive2);
-    assertNotNull(archive2.getId());
+    dao.save(dataCreator2);
+    assertNotNull(dataCreator2.getId());
     assertEquals(2, count());
 
     List<DataCreator> items = dao.findAll();
     assertEquals(2, items.size());
-    assertEquals(1, items.stream().filter(dr -> dr.getId().equals(archive1.getId())).count());
-    assertEquals(1, items.stream().filter(dr -> dr.getId().equals(archive2.getId())).count());
+    assertEquals(1, items.stream().filter(dr -> dr.getId().equals(dataCreator1.getId())).count());
+    assertEquals(1, items.stream().filter(dr -> dr.getId().equals(dataCreator2.getId())).count());
   }
 
 
   @Test
   void testUpdate() {
-    DataCreator archive1 = getDataCreator1();
+    DataCreator dataCreator = getDataCreator1();
 
-    dao.save(archive1);
+    dao.save(dataCreator);
 
-    archive1.setName("111-updated");
+    dataCreator.setName("111-updated");
 
-    dao.update(archive1);
+    dao.update(dataCreator);
 
-    DataCreator found = dao.findById(archive1.getId()).get();
-    assertEquals(archive1.getName(), found.getName());
+    DataCreator found = dao.findById(dataCreator.getId()).get();
+    assertEquals(dataCreator.getName(), found.getName());
   }
 
   @BeforeEach
@@ -100,15 +99,15 @@ public class DataCreatorDAOIT extends BaseReuseDatabaseTest {
   }
 
   private DataCreator getDataCreator1() {
-    DataCreator archive = new DataCreator();
-    archive.setName("111");
-    return archive;
+    DataCreator dataCreator = new DataCreator();
+    dataCreator.setName("111");
+    return dataCreator;
   }
 
   private DataCreator getDataCreator2() {
-    DataCreator archive = new DataCreator();
-    archive.setName("222");
-    return archive;
+    DataCreator dataCreator = new DataCreator();
+    dataCreator.setName("222");
+    return dataCreator;
   }
 
   long count() {

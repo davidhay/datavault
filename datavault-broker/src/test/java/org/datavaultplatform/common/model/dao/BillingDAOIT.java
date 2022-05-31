@@ -16,7 +16,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.TestPropertySource;
 
 @SpringBootTest(classes = DataVaultBrokerApp.class)
@@ -41,58 +40,58 @@ public class BillingDAOIT extends BaseReuseDatabaseTest {
 
   @Test
   void testWriteThenRead() {
-    BillingInfo BillingInfo1 = getBillingInfo1(v1);
+    BillingInfo billingInfo1 = getBillingInfo1(v1);
 
-    BillingInfo BillingInfo2 = getBillingInfo2(v2);
+    BillingInfo billingInfo2 = getBillingInfo2(v2);
 
-    dao.save(BillingInfo1);
-    assertNotNull(BillingInfo1.getID());
+    dao.save(billingInfo1);
+    assertNotNull(billingInfo1.getID());
     assertEquals(1, count());
 
-    dao.save(BillingInfo2);
-    assertNotNull(BillingInfo2.getID());
+    dao.save(billingInfo2);
+    assertNotNull(billingInfo2.getID());
     assertEquals(2, count());
 
-    BillingInfo foundById1 = dao.findById(BillingInfo1.getID()).get();
-    assertEquals(BillingInfo1.getID(), foundById1.getID());
+    BillingInfo foundById1 = dao.findById(billingInfo1.getID()).get();
+    assertEquals(billingInfo1.getID(), foundById1.getID());
 
-    BillingInfo foundById2 = dao.findById(BillingInfo2.getID()).get();
-    assertEquals(BillingInfo2.getID(), foundById2.getID());
+    BillingInfo foundById2 = dao.findById(billingInfo2.getID()).get();
+    assertEquals(billingInfo2.getID(), foundById2.getID());
   }
 
   @Test
   void testList() {
-    BillingInfo archive1 = getBillingInfo1(v1);
+    BillingInfo billingInfo1 = getBillingInfo1(v1);
 
-    BillingInfo archive2 = getBillingInfo2(v2);
+    BillingInfo billingInfo2 = getBillingInfo2(v2);
 
-    dao.save(archive1);
-    assertNotNull(archive1.getID());
+    dao.save(billingInfo1);
+    assertNotNull(billingInfo1.getID());
     assertEquals(1, count());
 
-    dao.save(archive2);
-    assertNotNull(archive2.getID());
+    dao.save(billingInfo2);
+    assertNotNull(billingInfo2.getID());
     assertEquals(2, count());
 
     List<BillingInfo> items = dao.findAll();
     assertEquals(2, items.size());
-    assertEquals(1, items.stream().filter(dr -> dr.getID().equals(archive1.getID())).count());
-    assertEquals(1, items.stream().filter(dr -> dr.getID().equals(archive2.getID())).count());
+    assertEquals(1, items.stream().filter(dr -> dr.getID().equals(billingInfo1.getID())).count());
+    assertEquals(1, items.stream().filter(dr -> dr.getID().equals(billingInfo2.getID())).count());
   }
 
 
   @Test
   void testUpdate() {
-    BillingInfo BillingInfo = getBillingInfo1(v1);
+    BillingInfo billingInfo = getBillingInfo1(v1);
 
-    dao.save(BillingInfo);
+    dao.save(billingInfo);
 
-    BillingInfo.setSpecialComments("111-updated");
+    billingInfo.setSpecialComments("111-updated");
 
-    dao.update(BillingInfo);
+    dao.update(billingInfo);
 
-    BillingInfo found = dao.findById(BillingInfo.getID()).get();
-    assertEquals(BillingInfo.getSpecialComments(), found.getSpecialComments());
+    BillingInfo found = dao.findById(billingInfo.getID()).get();
+    assertEquals(billingInfo.getSpecialComments(), found.getSpecialComments());
   }
 
   @BeforeEach
@@ -110,23 +109,23 @@ public class BillingDAOIT extends BaseReuseDatabaseTest {
   }
 
   private BillingInfo getBillingInfo1(Vault vault) {
-    BillingInfo archive = new BillingInfo();
-    archive.setSpecialComments("111");
-    archive.setBillingType(Billing_Type.BUDGET_CODE);
+    BillingInfo billingInfo = new BillingInfo();
+    billingInfo.setSpecialComments("111");
+    billingInfo.setBillingType(Billing_Type.BUDGET_CODE);
 
-    archive.setVault(vault);
-    vault.setBillinginfo(archive);
-    return archive;
+    billingInfo.setVault(vault);
+    vault.setBillinginfo(billingInfo);
+    return billingInfo;
   }
 
   private BillingInfo getBillingInfo2(Vault vault) {
-    BillingInfo archive = new BillingInfo();
-    archive.setSpecialComments("222");
-    archive.setBillingType(Billing_Type.GRANT_FUNDING);
+    BillingInfo billingInfo = new BillingInfo();
+    billingInfo.setSpecialComments("222");
+    billingInfo.setBillingType(Billing_Type.GRANT_FUNDING);
 
-    archive.setVault(vault);
-    vault.setBillinginfo(archive);
-    return archive;
+    billingInfo.setVault(vault);
+    vault.setBillinginfo(billingInfo);
+    return billingInfo;
   }
 
   long count() {

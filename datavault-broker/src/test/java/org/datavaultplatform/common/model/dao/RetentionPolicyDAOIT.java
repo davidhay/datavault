@@ -1,7 +1,7 @@
 package org.datavaultplatform.common.model.dao;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
@@ -14,7 +14,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.TestPropertySource;
 
 @SpringBootTest(classes = DataVaultBrokerApp.class)
@@ -38,11 +37,11 @@ public class RetentionPolicyDAOIT extends BaseReuseDatabaseTest {
     RetentionPolicy retentionPolicy2 = getRetentionPolicy2();
 
     dao.save(retentionPolicy1);
-    assertNotNull(retentionPolicy1.getID());
+    assertTrue(retentionPolicy1.getID() > 0);
     assertEquals(1, count());
 
     dao.save(retentionPolicy2);
-    assertNotNull(retentionPolicy2.getID());
+    assertTrue(retentionPolicy2.getID() > 0);
     assertEquals(2, count());
 
     RetentionPolicy foundById1 = dao.findById(retentionPolicy1.getID()).get();
@@ -54,22 +53,22 @@ public class RetentionPolicyDAOIT extends BaseReuseDatabaseTest {
 
   @Test
   void testList() {
-    RetentionPolicy archive1 = getRetentionPolicy1();
+    RetentionPolicy retentionPolicy1 = getRetentionPolicy1();
 
-    RetentionPolicy archive2 = getRetentionPolicy2();
+    RetentionPolicy retentionPolicy2 = getRetentionPolicy2();
 
-    dao.save(archive1);
-    assertNotNull(archive1.getID());
+    dao.save(retentionPolicy1);
+    assertTrue(retentionPolicy1.getID() > 0);
     assertEquals(1, count());
 
-    dao.save(archive2);
-    assertNotNull(archive2.getID());
+    dao.save(retentionPolicy2);
+    assertTrue(retentionPolicy2.getID() > 0);
     assertEquals(2, count());
 
     List<RetentionPolicy> items = dao.findAll();
     assertEquals(2, items.size());
-    assertEquals(1, items.stream().filter(dr -> dr.getID() == archive1.getID()).count());
-    assertEquals(1, items.stream().filter(dr -> dr.getID() == archive2.getID()).count());
+    assertEquals(1, items.stream().filter(dr -> dr.getID() == retentionPolicy1.getID()).count());
+    assertEquals(1, items.stream().filter(dr -> dr.getID() == retentionPolicy2.getID()).count());
   }
 
 

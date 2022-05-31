@@ -37,58 +37,58 @@ public class ArchiveStoreDAOIT extends BaseDatabaseTest {
 
   @Test
   void testWriteThenRead() {
-    ArchiveStore as1 = getArchiveStore1();
+    ArchiveStore archiveStore1 = getArchiveStore1();
 
-    ArchiveStore as2 = getArchiveStore2();
+    ArchiveStore archiveStore2 = getArchiveStore2();
 
-    dao.save(as1);
-    assertNotNull(as1.getID());
+    dao.save(archiveStore1);
+    assertNotNull(archiveStore1.getID());
     assertEquals(1, count());
 
-    dao.save(as2);
-    assertNotNull(as2.getID());
+    dao.save(archiveStore2);
+    assertNotNull(archiveStore2.getID());
     assertEquals(2, count());
 
-    ArchiveStore foundById1 = dao.findById(as1.getID()).get();
-    assertEquals(as1.getID(), foundById1.getID());
+    ArchiveStore foundById1 = dao.findById(archiveStore1.getID()).get();
+    assertEquals(archiveStore1.getID(), foundById1.getID());
 
-    ArchiveStore foundById2 = dao.findById(as2.getID()).get();
-    assertEquals(as2.getID(), foundById2.getID());
+    ArchiveStore foundById2 = dao.findById(archiveStore2.getID()).get();
+    assertEquals(archiveStore2.getID(), foundById2.getID());
   }
 
   @Test
   void testList() {
-    ArchiveStore ArchiveStore1 = getArchiveStore1();
+    ArchiveStore archiveStore1 = getArchiveStore1();
 
-    ArchiveStore ArchiveStore2 = getArchiveStore2();
+    ArchiveStore archiveStore2 = getArchiveStore2();
 
-    dao.save(ArchiveStore1);
-    assertNotNull(ArchiveStore1.getID());
+    dao.save(archiveStore1);
+    assertNotNull(archiveStore1.getID());
     assertEquals(1, count());
 
-    dao.save(ArchiveStore2);
-    assertNotNull(ArchiveStore2.getID());
+    dao.save(archiveStore2);
+    assertNotNull(archiveStore2.getID());
     assertEquals(2, count());
 
     List<ArchiveStore> items = dao.findAll();
     assertEquals(2, items.size());
-    assertEquals(1, items.stream().filter(dr -> dr.getID().equals(ArchiveStore1.getID())).count());
-    assertEquals(1, items.stream().filter(dr -> dr.getID().equals(ArchiveStore2.getID())).count());
+    assertEquals(1, items.stream().filter(dr -> dr.getID().equals(archiveStore1.getID())).count());
+    assertEquals(1, items.stream().filter(dr -> dr.getID().equals(archiveStore2.getID())).count());
   }
 
 
   @Test
   void testUpdate() {
-    ArchiveStore archiveStore = getArchiveStore1();
+    ArchiveStore store = getArchiveStore1();
 
-    dao.save(archiveStore);
+    dao.save(store);
 
-    archiveStore.setLabel("111-updated");
+    store.setLabel("111-updated");
 
-    dao.update(archiveStore);
+    dao.update(store);
 
-    ArchiveStore found = dao.findById(archiveStore.getID()).get();
-    assertEquals(archiveStore.getLabel(), found.getLabel());
+    ArchiveStore found = dao.findById(store.getID()).get();
+    assertEquals(store.getLabel(), found.getLabel());
   }
 
   @Test
@@ -140,19 +140,19 @@ public class ArchiveStoreDAOIT extends BaseDatabaseTest {
   @Test
   void testFindForRetrieval(){
 
-    ArchiveStore as1 = getArchiveStore1();
+    ArchiveStore archiveStore1 = getArchiveStore1();
 
-    ArchiveStore as2 = getArchiveStore2();
+    ArchiveStore archiveStore2 = getArchiveStore2();
 
-    dao.save(as1);
-    assertNotNull(as1.getID());
+    dao.save(archiveStore1);
+    assertNotNull(archiveStore1.getID());
     assertEquals(1, count());
 
-    dao.save(as2);
-    assertNotNull(as2.getID());
+    dao.save(archiveStore2);
+    assertNotNull(archiveStore2.getID());
     assertEquals(2, count());
 
     ArchiveStore result = dao.findForRetrieval();
-    assertEquals(as2.getID(), result.getID());
+    assertEquals(archiveStore2.getID(), result.getID());
   }
 }
