@@ -66,7 +66,7 @@ public class ClientDAOIT extends BaseReuseDatabaseTest {
     assertNotNull(client2.getId());
     assertEquals(2, count());
 
-    List<Client> items = dao.findAll();
+    List<Client> items = dao.list();
     assertEquals(2, items.size());
     assertEquals(1, items.stream().filter(dr -> dr.getId().equals(client1.getId())).count());
     assertEquals(1, items.stream().filter(dr -> dr.getId().equals(client2.getId())).count());

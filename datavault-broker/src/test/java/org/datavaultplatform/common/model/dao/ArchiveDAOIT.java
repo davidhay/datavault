@@ -65,7 +65,7 @@ public class ArchiveDAOIT extends BaseReuseDatabaseTest {
     assertNotNull(archive2.getId());
     assertEquals(2, count());
 
-    List<Archive> items = dao.findAll();
+    List<Archive> items = dao.list();
     assertEquals(2, items.size());
     assertEquals(1, items.stream().filter(dr -> dr.getId().equals(archive1.getId())).count());
     assertEquals(1, items.stream().filter(dr -> dr.getId().equals(archive2.getId())).count());

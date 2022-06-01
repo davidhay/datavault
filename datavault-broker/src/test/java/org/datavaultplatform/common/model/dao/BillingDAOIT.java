@@ -73,7 +73,7 @@ public class BillingDAOIT extends BaseReuseDatabaseTest {
     assertNotNull(billingInfo2.getID());
     assertEquals(2, count());
 
-    List<BillingInfo> items = dao.findAll();
+    List<BillingInfo> items = dao.list();
     assertEquals(2, items.size());
     assertEquals(1, items.stream().filter(dr -> dr.getID().equals(billingInfo1.getID())).count());
     assertEquals(1, items.stream().filter(dr -> dr.getID().equals(billingInfo2.getID())).count());

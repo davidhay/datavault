@@ -66,7 +66,7 @@ public class PendingDataCreatorDAOIT extends BaseReuseDatabaseTest {
     assertNotNull(pendingDataCreator2.getId());
     assertEquals(2, count());
 
-    List<PendingDataCreator> items = dao.findAll();
+    List<PendingDataCreator> items = dao.list();
     assertEquals(2, items.size());
     assertEquals(1, items.stream().filter(dr -> dr.getId().equals(pendingDataCreator1.getId())).count());
     assertEquals(1, items.stream().filter(dr -> dr.getId().equals(pendingDataCreator2.getId())).count());

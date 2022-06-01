@@ -74,7 +74,7 @@ public class PermissionDAOIT extends BaseDatabaseTest {
     assertNotNull(permissionModel2.getId());
     assertEquals(2, count());
 
-    List<PermissionModel> items = dao.findAll();
+    List<PermissionModel> items = dao.list();
     assertEquals(2, items.size());
     assertEquals(1, items.stream().filter(dr -> dr.getId().equals(permissionModel1.getId())).count());
     assertEquals(1, items.stream().filter(dr -> dr.getId().equals(permissionModel2.getId())).count());

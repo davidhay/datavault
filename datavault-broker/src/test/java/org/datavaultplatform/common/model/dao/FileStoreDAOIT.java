@@ -66,7 +66,7 @@ public class FileStoreDAOIT extends BaseReuseDatabaseTest {
     assertNotNull(fileStore2.getID());
     assertEquals(2, count());
 
-    List<FileStore> items = dao.findAll();
+    List<FileStore> items = dao.list();
     assertEquals(2, items.size());
     assertEquals(1, items.stream().filter(dr -> dr.getID().equals(fileStore1.getID())).count());
     assertEquals(1, items.stream().filter(dr -> dr.getID().equals(fileStore2.getID())).count());

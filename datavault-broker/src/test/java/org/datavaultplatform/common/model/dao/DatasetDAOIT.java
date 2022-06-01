@@ -68,7 +68,7 @@ public class DatasetDAOIT extends BaseReuseDatabaseTest {
     assertNotNull(dataset2.getID());
     assertEquals(2, count());
 
-    List<Dataset> items = dao.findAll();
+    List<Dataset> items = dao.list();
     assertEquals(2, items.size());
     assertEquals(1, items.stream().filter(dr -> dr.getID().equals(dataset1.getID())).count());
     assertEquals(1, items.stream().filter(dr -> dr.getID().equals(dataset2.getID())).count());

@@ -65,7 +65,7 @@ public class DataManagerDAOIT extends BaseReuseDatabaseTest {
     assertNotNull(dataManager2.getID());
     assertEquals(2, count());
 
-    List<DataManager> items = dao.findAll();
+    List<DataManager> items = dao.list();
     assertEquals(2, items.size());
     assertEquals(1, items.stream().filter(dr -> dr.getID().equals(dataManager1.getID())).count());
     assertEquals(1, items.stream().filter(dr -> dr.getID().equals(dataManager2.getID())).count());

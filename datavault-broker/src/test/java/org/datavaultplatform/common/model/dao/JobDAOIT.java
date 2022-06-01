@@ -67,7 +67,7 @@ public class JobDAOIT extends BaseReuseDatabaseTest {
     assertNotNull(job2.getID());
     assertEquals(2, count());
 
-    List<Job> items = dao.findAll();
+    List<Job> items = dao.list();
     assertEquals(2, items.size());
     assertEquals(1, items.stream().filter(dr -> dr.getID().equals(job1.getID())).count());
     assertEquals(1, items.stream().filter(dr -> dr.getID().equals(job2.getID())).count());

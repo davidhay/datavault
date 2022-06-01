@@ -70,7 +70,7 @@ public class ArchiveStoreDAOIT extends BaseDatabaseTest {
     assertNotNull(archiveStore2.getID());
     assertEquals(2, count());
 
-    List<ArchiveStore> items = dao.findAll();
+    List<ArchiveStore> items = dao.list();
     assertEquals(2, items.size());
     assertEquals(1, items.stream().filter(dr -> dr.getID().equals(archiveStore1.getID())).count());
     assertEquals(1, items.stream().filter(dr -> dr.getID().equals(archiveStore2.getID())).count());
