@@ -12,7 +12,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 public abstract class BaseRabbitTCTest extends BaseRabbitTest {
 
   @Container
-  private static RabbitMQContainer RABBIT = new RabbitMQContainer(
+  private static final RabbitMQContainer RABBIT = new RabbitMQContainer(
       "rabbitmq:3.10.0-management-alpine").withExposedPorts(5672,15672);
 
   @DynamicPropertySource

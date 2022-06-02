@@ -86,7 +86,7 @@ public abstract class BaseEmailServiceTest {
   @Autowired
   EmailService emailService;
 
-  private static Map<String, Object> TEMPLATE_MODEL = new HashMap<String, Object>() {{
+  private static final Map<String, Object> TEMPLATE_MODEL = new HashMap<String, Object>() {{
     put("audit-id", "aud-id-001");
     put("timestamp", "timestamp-002");
     put("chunk-id", "chunk-id-003");
@@ -109,7 +109,7 @@ public abstract class BaseEmailServiceTest {
       + "</html>";
 
   @Container
-  private static GenericContainer<?> MAILHOG_CONTAINER = new GenericContainer<>(MAILHOG_IMAGE_NAME)
+  private static final GenericContainer<?> MAILHOG_CONTAINER = new GenericContainer<>(MAILHOG_IMAGE_NAME)
       .withExposedPorts(PORT_SMTP, PORT_HTTP);
 
   public static void setupMailProperties(DynamicPropertyRegistry registry) {

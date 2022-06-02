@@ -19,7 +19,7 @@ import org.springframework.test.context.DynamicPropertySource;
 public class EmailServiceIT extends BaseEmailServiceTest {
 
 
-  private static Map<String, Object> TEMPLATE_MODEL = new HashMap<String, Object>() {{
+  private static final Map<String, Object> TEMPLATE_MODEL = new HashMap<String, Object>() {{
     put("audit-id", "aud-id-001");
     put("timestamp", "timestamp-002");
     put("chunk-id", "chunk-id-003");

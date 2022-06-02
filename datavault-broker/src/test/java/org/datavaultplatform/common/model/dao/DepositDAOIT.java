@@ -4,11 +4,9 @@ import static org.datavaultplatform.broker.test.TestUtils.NOW;
 import static org.datavaultplatform.broker.test.TestUtils.ONE_YEAR_AGO;
 import static org.datavaultplatform.broker.test.TestUtils.THREE_YEARS_AGO;
 import static org.datavaultplatform.broker.test.TestUtils.TWO_YEARS_AGO;
-import static org.datavaultplatform.broker.test.TestUtils.datePlus;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
@@ -116,7 +114,7 @@ public class DepositDAOIT extends BaseReuseDatabaseTest {
 
     List<Deposit> completed = dao.completed();
     assertEquals(
-        new HashSet(Arrays.asList(deposit1.getID(),deposit3.getID())),
+        new HashSet<>(Arrays.asList(deposit1.getID(),deposit3.getID())),
         completed.stream().map(Deposit::getID).collect(Collectors.toSet()));
   }
 

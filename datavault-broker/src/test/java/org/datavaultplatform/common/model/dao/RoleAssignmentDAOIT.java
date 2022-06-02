@@ -414,7 +414,7 @@ public class RoleAssignmentDAOIT extends BaseReuseDatabaseTest {
   private void checkUserHasPermission(List<Permission> permissionsToCheck, String userId, Permission... expectedUserPermissions) {
 
     //check we don't have permissions we're NOT meant to have
-    List<Permission> doesNotHavePermissions = new ArrayList(permissionsToCheck);
+    List<Permission> doesNotHavePermissions = new ArrayList<>(permissionsToCheck);
     Arrays.stream(expectedUserPermissions).forEach( expectedPermission ->
         doesNotHavePermissions.remove(expectedPermission)
     );
