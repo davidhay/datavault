@@ -12,8 +12,6 @@ import org.datavaultplatform.broker.app.DataVaultBrokerApp;
 import org.datavaultplatform.broker.test.AddTestProperties;
 import org.datavaultplatform.broker.test.BaseReuseDatabaseTest;
 import org.datavaultplatform.broker.test.TestUtils;
-import org.datavaultplatform.common.event.Event;
-import org.datavaultplatform.common.model.PermissionModel;
 import org.datavaultplatform.common.model.Retrieve;
 import org.datavaultplatform.common.model.Retrieve.Status;
 import org.junit.jupiter.api.AfterEach;
@@ -108,13 +106,13 @@ public class RetrieveDAOIT extends BaseReuseDatabaseTest {
     assertEquals(4, items.size());
 
     List<Retrieve> inProg = dao.inProgress();
-    checkOrderOfRetriveIds(inProg, retrieve4, retrieve2);
+    checkOrderOfRetrives(inProg, retrieve4, retrieve2);
   }
 
-  void checkOrderOfRetriveIds(Collection<Retrieve> actual, Retrieve... expected){
+  void checkOrderOfRetrives(Collection<Retrieve> actual, Retrieve... expected){
     assertEquals(
-        Arrays.stream(expected).map(Retrieve::getID).collect(Collectors.toList()),
-        actual.stream().map(Retrieve::getID).collect(Collectors.toList()));
+        Arrays.stream(expected).map(Retrieve::getNote).collect(Collectors.toList()),
+        actual.stream().map(Retrieve::getNote).collect(Collectors.toList()));
   }
 
 
@@ -161,7 +159,7 @@ public class RetrieveDAOIT extends BaseReuseDatabaseTest {
     result.setHasExternalRecipients(false);
     result.setNote("note-4");
     result.setStatus(Status.IN_PROGRESS);
-    result.setTimestamp(TestUtils.TWO_YEARS_AGO);
+    result.setTimestamp(TestUtils.THREE_YEARS_AGO);
     return result;
   }
 
