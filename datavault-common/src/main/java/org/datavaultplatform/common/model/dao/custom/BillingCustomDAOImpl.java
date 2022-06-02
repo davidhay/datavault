@@ -65,24 +65,17 @@ public class BillingCustomDAOImpl extends BaseCustomDAOImpl implements BillingCu
     return vaults;
   }
 
-  @Override
-  public Long getTotalNumberOfVaults() {
-    Session session = this.getCurrentSession();
-    Criteria criteria = session.createCriteria(BillingInfo.class);
-    criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
-    criteria.setProjection(Projections.rowCount());
-    Long totalNoOfRows = (Long) criteria.uniqueResult();
-
-    session.close();
-    return totalNoOfRows;
-  }
   /**
    * Retrieve Total NUmber of rows after applying the filter
    */
   public Long getTotalNumberOfVaults(String query) {
     Session session = this.getCurrentSession();
     Criteria criteria = session.createCriteria(BillingInfo.class);
-    criteria.add(Restrictions.or(Restrictions.ilike("id", "%" + query + "%"), Restrictions.ilike("name", "%" + query + "%"), Restrictions.ilike("description", "%" + query + "%")));
+    criteria.add(
+        Restrictions.or(
+            Restrictions.ilike("id", "%" + query + "%"),
+            Restrictions.ilike("contactName", "%" + query + "%"),
+            Restrictions.ilike("description", "%" + query + "%")));
     criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
     criteria.setProjection(Projections.rowCount());
     Long totalNoOfRows = (Long) criteria.uniqueResult();

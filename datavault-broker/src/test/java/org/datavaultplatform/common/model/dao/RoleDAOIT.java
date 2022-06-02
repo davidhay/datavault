@@ -1,8 +1,10 @@
 package org.datavaultplatform.common.model.dao;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+import java.util.Arrays;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.datavaultplatform.broker.app.DataVaultBrokerApp;
@@ -10,6 +12,7 @@ import org.datavaultplatform.broker.test.AddTestProperties;
 import org.datavaultplatform.broker.test.BaseDatabaseTest;
 import org.datavaultplatform.common.model.RoleModel;
 import org.datavaultplatform.common.model.RoleType;
+import org.datavaultplatform.common.util.RoleUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -95,6 +98,21 @@ public class RoleDAOIT extends BaseDatabaseTest {
 
   }
 
+  @Test
+  void testIsAdmin() {
+    RoleModel roleModel1 = getRoleModel1();
+    RoleModel roleModel2 = getRoleModel2();
+    RoleModel roleModel3 = getRoleModel3isAdminRole();
+
+    dao.saveAll(Arrays.asList(roleModel1, roleModel2, roleModel3));
+
+    RoleModel isAdminRole = dao.getIsAdmin();
+
+    assertNotEquals(roleModel1, isAdminRole);
+    assertNotEquals(roleModel2, isAdminRole);
+    assertEquals(roleModel3, isAdminRole);
+  }
+
   @BeforeEach
   void setup() {
     assertEquals(0, dao.count());
@@ -102,6 +120,8 @@ public class RoleDAOIT extends BaseDatabaseTest {
 
   @AfterEach
   void cleanup() {
+    //template.execute("delete from `Role_Permission`");
+    //template.execute("delete from `Permission`");
     template.execute("delete from `Roles`");
     assertEquals(0, dao.count());
   }
@@ -119,6 +139,14 @@ public class RoleDAOIT extends BaseDatabaseTest {
     roleModel.setName("RoleModel2");
     roleModel.setStatus("STATUS2");
     roleModel.setType(RoleType.SCHOOL);
+    return roleModel;
+  }
+
+  public static RoleModel getRoleModel3isAdminRole() {
+    RoleModel roleModel = new RoleModel();
+    roleModel.setName(RoleUtils.IS_ADMIN_ROLE_NAME);
+    roleModel.setStatus("STATUS3");
+    roleModel.setType(RoleType.VAULT);
     return roleModel;
   }
 

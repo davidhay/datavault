@@ -24,6 +24,4 @@ public interface DepositCustomDAO extends BaseCustomDAO {
     List<Deposit> getDepositsWaitingForAudit(Date olderThanDate);
 
     Long size(String userId);
-
-    List<DepositChunk> list(String sort);
 }

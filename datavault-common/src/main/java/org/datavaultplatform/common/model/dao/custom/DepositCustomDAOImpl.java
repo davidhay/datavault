@@ -100,7 +100,9 @@ public class DepositCustomDAOImpl extends BaseCustomDAOImpl implements DepositCu
             return 0;
         }
         Criteria criteria = criteriaBuilder.build();
-        criteria.add(Restrictions.and(Restrictions.ne("status", Deposit.Status.NOT_STARTED), Restrictions.ne("status", Deposit.Status.COMPLETE)));
+        criteria.add(Restrictions.and(
+            Restrictions.ne("status", Deposit.Status.NOT_STARTED),
+            Restrictions.ne("status", Deposit.Status.COMPLETE)));
         criteria.setProjection(Projections.rowCount());
         Long count = (Long) criteria.uniqueResult();
         return count.intValue();
@@ -110,7 +112,9 @@ public class DepositCustomDAOImpl extends BaseCustomDAOImpl implements DepositCu
     public List<Deposit> inProgress() {
         Session session = this.getCurrentSession();
         Criteria criteria = session.createCriteria(Deposit.class);
-        criteria.add(Restrictions.and(Restrictions.ne("status", Deposit.Status.NOT_STARTED), Restrictions.ne("status", Deposit.Status.COMPLETE)));
+        criteria.add(Restrictions.and(
+            Restrictions.ne("status", Deposit.Status.NOT_STARTED),
+            Restrictions.ne("status", Deposit.Status.COMPLETE)));
         List<Deposit> deposits = criteria.list();
         return deposits;
     }
@@ -184,23 +188,5 @@ public class DepositCustomDAOImpl extends BaseCustomDAOImpl implements DepositCu
 
         List<Deposit> deposits = criteria.list();
         return deposits;
-    }
-
-    @Override
-    public List<DepositChunk> list(String sort) {
-        Session session = this.getCurrentSession();
-        Criteria criteria = session.createCriteria(DepositChunk.class);
-        // See if there is a valid sort option
-        if ("id".equals(sort)) {
-            criteria.addOrder(Order.asc("id"));
-        } else if ("status".equals(sort)) {
-            criteria.addOrder(Order.asc("status"));
-        } else {
-            criteria.addOrder(Order.asc("creationTime"));
-        }
-
-        List<DepositChunk> chunks = criteria.list();
-        session.close();
-        return chunks;
     }
 }

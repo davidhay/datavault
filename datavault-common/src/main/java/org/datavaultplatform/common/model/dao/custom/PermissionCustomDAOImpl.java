@@ -54,6 +54,9 @@ public class PermissionCustomDAOImpl extends BaseCustomDAOImpl implements
         }
     }
 
+    /*
+    TODO : BUG ? looks wrong - the 'id' must be the same as the permission name ? why not match on the 'permission' column?
+     */
     @Override
     public PermissionModel find(Permission permission) {
         Session session = this.getCurrentSession();

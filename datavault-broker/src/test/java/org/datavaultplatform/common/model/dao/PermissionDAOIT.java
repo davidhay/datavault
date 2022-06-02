@@ -2,13 +2,19 @@ package org.datavaultplatform.common.model.dao;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.datavaultplatform.broker.app.DataVaultBrokerApp;
 import org.datavaultplatform.broker.config.MockServicesConfig;
 import org.datavaultplatform.broker.test.AddTestProperties;
 import org.datavaultplatform.broker.test.BaseDatabaseTest;
+import org.datavaultplatform.common.event.Event;
 import org.datavaultplatform.common.model.Permission;
 import org.datavaultplatform.common.model.PermissionModel;
 import org.datavaultplatform.common.model.PermissionModel.PermissionType;
@@ -95,6 +101,53 @@ public class PermissionDAOIT extends BaseDatabaseTest {
     assertEquals(permissionModel1.getLabel(), found.getLabel());
   }
 
+  @Test
+  void testFind() {
+
+    PermissionModel permissionModel1 = getPermissionModel1();
+    PermissionModel permissionModel2 = getPermissionModel2();
+
+    dao.save(permissionModel1);
+    dao.save(permissionModel2);
+
+    assertEquals(2, dao.count());
+
+    PermissionModel found1 = dao.find(Permission.CAN_MANAGE_VAULTS);
+    assertEquals(permissionModel1.getId(), found1.getId());
+
+    PermissionModel found2 = dao.find(Permission.CAN_MANAGE_DEPOSITS);
+    assertEquals(permissionModel2.getId(), found2.getId());
+
+    PermissionModel found3 = dao.find(Permission.CAN_MANAGE_ARCHIVE_STORES);
+    assertNull(found3);
+  }
+
+  @Test
+  void testFindByType() {
+
+    PermissionModel permissionModel1 = getPermissionModel1();
+    PermissionModel permissionModel2 = getPermissionModel2();
+
+    dao.save(permissionModel1);
+    dao.save(permissionModel2);
+
+    assertEquals(2, dao.count());
+
+    List<PermissionModel> found1 = dao.findByType(PermissionType.VAULT);
+    checkSamePermissionModelIds(found1, permissionModel1);
+
+    List<PermissionModel> found2 = dao.findByType(PermissionType.SCHOOL);
+    checkSamePermissionModelIds(found2, permissionModel2);
+
+    List<PermissionModel> found3 = dao.findByType(PermissionType.ADMIN);
+    assertTrue(found3.isEmpty());
+  }
+
+  void checkSamePermissionModelIds(Collection<PermissionModel> actual, PermissionModel... expected){
+    assertEquals(
+        Arrays.stream(expected).map(PermissionModel::getId).sorted().collect(Collectors.toList()),
+        actual.stream().map(PermissionModel::getId).sorted().collect(Collectors.toList()));
+  }
 
   @BeforeEach
   void setup() {
@@ -109,7 +162,7 @@ public class PermissionDAOIT extends BaseDatabaseTest {
 
   private PermissionModel getPermissionModel1() {
     PermissionModel result = new PermissionModel();
-    result.setId("CLIENT-1");
+    result.setId(Permission.CAN_MANAGE_VAULTS.name());
     result.setLabel("LABEL-1");
     result.setPermission(Permission.CAN_MANAGE_VAULTS);
     result.setType(PermissionType.VAULT);
@@ -118,7 +171,7 @@ public class PermissionDAOIT extends BaseDatabaseTest {
 
   private PermissionModel getPermissionModel2() {
     PermissionModel result = new PermissionModel();
-    result.setId("CLIENT-2");
+    result.setId(Permission.CAN_MANAGE_DEPOSITS.name());
     result.setLabel("LABEL-2");
     result.setPermission(Permission.CAN_MANAGE_DEPOSITS);
     result.setType(PermissionType.SCHOOL);

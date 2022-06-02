@@ -5,6 +5,9 @@ import static org.junit.Assert.assertThrows;
 
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Date;
@@ -19,10 +22,21 @@ import org.junit.function.ThrowingRunnable;
 public abstract class TestUtils {
 
   public static final Date NOW = new Date();
-  public static final Date ONE_WEEK_AGO = new Date(
-      Instant.ofEpochMilli(NOW.getTime()).minus(7, ChronoUnit.DAYS).toEpochMilli());
-  public static final Date TWO_WEEKS_AGO = new Date(Instant.ofEpochMilli(NOW.getTime()).minus(14, ChronoUnit.DAYS).toEpochMilli());
+  public static final Date ONE_WEEK_AGO = datePlus(NOW, -7, ChronoUnit.DAYS);
+  public static final Date TWO_WEEKS_AGO = datePlus(NOW, -14, ChronoUnit.DAYS);
 
+  public static final Date ONE_YEAR_AGO = datePlus(NOW, -1, ChronoUnit.YEARS);
+
+  public static final Date TWO_YEARS_AGO = datePlus(NOW, -2, ChronoUnit.YEARS);
+
+  public static final Date THREE_YEARS_AGO = datePlus(NOW, -3, ChronoUnit.YEARS);
+
+  public static Date datePlus(Date date, int amt, ChronoUnit unit) {
+    Instant ins = Instant.ofEpochMilli(date.getTime());
+    LocalDateTime local = LocalDateTime.ofInstant(ins, ZoneId.of("UTC"));
+    LocalDateTime result = local.plus(amt, unit);
+    return new Date(result.toInstant(ZoneOffset.UTC).toEpochMilli());
+  }
 
   public static <T extends Exception> void checkException(Class<T> exceptionClass, String message, ThrowingRunnable runnable) {
     T ex = assertThrows(exceptionClass, runnable);

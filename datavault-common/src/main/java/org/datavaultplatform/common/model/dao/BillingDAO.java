@@ -14,4 +14,9 @@ public interface BillingDAO extends BaseDAO<BillingInfo>, BillingCustomDAO {
   default List<BillingInfo> list() {
     return findAll();
   }
+
+  default long getTotalNumberOfVaults() {
+    return count();
+  }
+
 }

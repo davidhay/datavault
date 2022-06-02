@@ -94,6 +94,7 @@ public class Deposit {
     @ApiObjectField(description = "Status of the Deposit", allowedvalues={"NOT_STARTED", "IN_PROGRESS", "COMPLETE"})
     private Status status;
 
+    // THE ORDER OF THESE ENUM VALUES IS IMPORTANT. DO NOT CHANGE.
     public enum Status {
         NOT_STARTED,
         IN_PROGRESS,

@@ -38,6 +38,8 @@ public class BillingDAOIT extends BaseReuseDatabaseTest {
   Vault v1;
   Vault v2;
 
+  Vault v3;
+
   @Test
   void testWriteThenRead() {
     BillingInfo billingInfo1 = getBillingInfo1(v1);
@@ -77,6 +79,8 @@ public class BillingDAOIT extends BaseReuseDatabaseTest {
     assertEquals(2, items.size());
     assertEquals(1, items.stream().filter(dr -> dr.getID().equals(billingInfo1.getID())).count());
     assertEquals(1, items.stream().filter(dr -> dr.getID().equals(billingInfo2.getID())).count());
+
+    assertEquals(2, dao.getTotalNumberOfVaults());
   }
 
 
@@ -99,6 +103,7 @@ public class BillingDAOIT extends BaseReuseDatabaseTest {
     assertEquals(0, count());
     v1 = vaultDAO.save(VaultDAOIT.getVault1());
     v2 = vaultDAO.save(VaultDAOIT.getVault2());
+    v3 = vaultDAO.save(VaultDAOIT.getVault3());
   }
 
   @AfterEach

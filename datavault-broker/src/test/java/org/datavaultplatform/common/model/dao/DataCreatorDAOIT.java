@@ -74,6 +74,22 @@ public class DataCreatorDAOIT extends BaseReuseDatabaseTest {
 
 
   @Test
+  void testSaveAll() {
+    DataCreator dataCreator1 = getDataCreator1();
+    DataCreator dataCreator2 = getDataCreator2();
+
+    assertEquals(0, count());
+
+    dao.save(Arrays.asList(dataCreator1, dataCreator2));
+
+    assertEquals(2, count());
+    List<DataCreator> items = dao.list();
+    assertEquals(2, items.size());
+    assertEquals(1, items.stream().filter(dr -> dr.getId().equals(dataCreator1.getId())).count());
+    assertEquals(1, items.stream().filter(dr -> dr.getId().equals(dataCreator2.getId())).count());
+  }
+
+  @Test
   void testUpdate() {
     DataCreator dataCreator = getDataCreator1();
 
