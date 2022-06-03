@@ -14,6 +14,9 @@ import org.datavaultplatform.broker.app.DataVaultBrokerApp;
 import org.datavaultplatform.broker.test.AddTestProperties;
 import org.datavaultplatform.broker.test.BaseReuseDatabaseTest;
 import org.datavaultplatform.broker.test.TestUtils;
+import org.datavaultplatform.common.model.Group;
+import org.datavaultplatform.common.model.Permission;
+import org.datavaultplatform.common.model.User;
 import org.datavaultplatform.common.model.Vault;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -36,6 +39,21 @@ public class VaultDAOIT extends BaseReuseDatabaseTest {
 
   @Autowired
   VaultDAO dao;
+
+  @Autowired
+  UserDAO userDAO;
+
+  @Autowired
+  GroupDAO groupDAO;
+
+  @Autowired
+  RoleDAO roleDAO;
+
+  @Autowired
+  RoleAssignmentDAO roleAssignmentDAO;
+
+  @Autowired
+  PermissionDAO permissionDAO;
 
   @Test
   void testWriteThenRead() {
@@ -125,6 +143,44 @@ public class VaultDAOIT extends BaseReuseDatabaseTest {
   void cleanup() {
     template.execute("delete from `Vaults`");
     assertEquals(0, count());
+  }
+
+  @Test
+  void testGetTotalNumberOfVaults() {
+
+    Vault v1 = getVault1();
+    Vault v2 = getVault2();
+    Vault v3 = getVault3();
+
+    String schoolId = "lfcs-id";
+
+    Group group = new Group();
+    group.setID(schoolId);
+    group.setName("LFCS");
+    group.setEnabled(true);
+    groupDAO.save(group);
+
+    v1.setGroup(group);
+    v2.setGroup(group);
+    v3.setGroup(group);
+
+    dao.save(v1);
+    dao.save(v2);
+    dao.save(v3);
+
+    assertEquals(3, dao.count());
+    createTestUser("denied1", schoolId);
+    assertEquals(0, dao.getTotalNumberOfVaults("denied1"));
+
+    createTestUser("allowed", schoolId, Permission.CAN_MANAGE_VAULTS );
+    assertEquals(3, dao.getTotalNumberOfVaults("allowed"));
+
+    createTestUser("denied2", schoolId, Permission.CAN_MANAGE_DEPOSITS );
+    assertEquals(0, dao.getTotalNumberOfVaults("denied2"));
+  }
+
+  private User createTestUser(String userId, String schoolId, Permission... permissions){
+    return TestUtils.createUserWithPermissions(userDAO, permissionDAO, roleDAO, roleAssignmentDAO,  userId, schoolId, permissions);
   }
 
   static  Vault getVault1() {
