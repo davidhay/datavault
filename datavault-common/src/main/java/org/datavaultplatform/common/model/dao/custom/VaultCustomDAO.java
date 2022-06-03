@@ -9,8 +9,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 public interface VaultCustomDAO extends BaseCustomDAO {
 
-    void saveOrUpdateVault(Vault vault);
-
     List<Vault> list(String userId, String sort, String order, String offset, String maxResult);
 
     List<Vault> search(String userId, String query, String sort, String order, String offset, String maxResult);

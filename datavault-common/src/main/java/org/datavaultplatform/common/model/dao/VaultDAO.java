@@ -16,4 +16,8 @@ public interface VaultDAO extends BaseDAO<Vault>, VaultCustomDAO {
   default List<Vault> list() {
     return findAll(Sort.by(Order.asc("creationTime")));
   }
+
+  default void saveOrUpdateVault(Vault vault){
+    save(vault);
+  }
 }

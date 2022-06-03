@@ -22,13 +22,6 @@ public class VaultCustomDAOImpl extends BaseCustomDAOImpl implements VaultCustom
     }
 
 
-    @Override
-    public void saveOrUpdateVault(Vault vault) {        
-        Session session = this.getCurrentSession();
-        session.saveOrUpdate(vault);
-    }
-
-
     @SuppressWarnings("unchecked")
     @Override
     public List<Vault> list(String userId, String sort, String order, String offset, String maxResult) {
