@@ -8,7 +8,7 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 @DirtiesContext
-@Testcontainers
+@Testcontainers(disabledWithoutDocker = true)
 public abstract class BaseDatabaseTest {
 
   @Container

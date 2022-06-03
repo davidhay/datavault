@@ -29,7 +29,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
     "broker.rabbit.enabled=false",
     "broker.initialise.enabled=false",
     "broker.database.enabled=false"})
-@Testcontainers
+@Testcontainers(disabledWithoutDocker = true)
 @Import(MockServicesConfig.class) //spring security relies on services
 /*
  The LDAPService is defined in datavault-commons but we have to test it in broker because are not just testing LDAPService functionality

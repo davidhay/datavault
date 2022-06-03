@@ -14,10 +14,12 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
+import org.springframework.test.context.junit.jupiter.EnabledIf;
 import org.testcontainers.containers.MySQLContainer;
 
 @Slf4j
 @DirtiesContext
+@EnabledIf("#{T(org.testcontainers.DockerClientFactory).instance().isDockerAvailable()}")
 public abstract class BaseReuseDatabaseTest  {
 
   // This container is once per class - not once per method. Methods can 'dirty' the database.

@@ -32,7 +32,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
  See https://hub.docker.com/r/mailhog/mailhog
  */
 @SpringBootTest(classes = DataVaultBrokerApp.class)
-@Testcontainers
+@Testcontainers(disabledWithoutDocker = true)
 @TestPropertySource(properties = {
     "broker.email.enabled=true",
     "broker.controllers.enabled=false",

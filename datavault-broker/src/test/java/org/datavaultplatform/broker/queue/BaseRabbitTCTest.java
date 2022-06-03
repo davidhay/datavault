@@ -7,7 +7,7 @@ import org.testcontainers.containers.RabbitMQContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
-@Testcontainers
+@Testcontainers(disabledWithoutDocker = true)
 @Slf4j
 public abstract class BaseRabbitTCTest extends BaseRabbitTest {
 
