@@ -67,7 +67,8 @@ public abstract class BaseReuseDatabaseTest  {
     try {
       template.execute(String.format("delete from %s", tableName));
     } catch (DataAccessException ex) {
-      log.error("oops " + ex.getMessage());
+      // errors are expected when we try and delete tables without regard to Foreign Key Constaints
+      log.debug("oops " + ex.getMessage());
     }
   }
 
