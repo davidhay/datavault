@@ -524,7 +524,7 @@ public class RoleAssignmentDAOIT extends BaseReuseDatabaseTest {
   void beforeEach() {
     this.role1 = roleDAO.save(RoleDAOIT.getRoleModel1());
     this.role2 = roleDAO.save(RoleDAOIT.getRoleModel2());
-    this.role3isAdmimRole = roleDAO.save(RoleDAOIT.getRoleModel3isAdminRole());
+    this.role3isAdmimRole = roleDAO.save(RoleDAOIT.getRoleModel3isAdminRoleName());
 
     PermissionModel pm1 = getPm1();
     PermissionModel pm2 = getPm2();
