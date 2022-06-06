@@ -15,17 +15,14 @@ public class DepositChunkCustomDAOImpl extends BaseCustomDAOImpl implements
     }
 
     @SuppressWarnings("unchecked")
-    @Override
     public List<DepositChunk> list(String sort) {
         Session session = this.getCurrentSession();
         Criteria criteria = session.createCriteria(DepositChunk.class);
         // See if there is a valid sort option
         if ("id".equals(sort)) {
             criteria.addOrder(Order.asc("id"));
-        } else if ("status".equals(sort)) {
-            criteria.addOrder(Order.asc("status"));
         } else {
-            criteria.addOrder(Order.asc("creationTime"));
+            criteria.addOrder(Order.asc("chunkNum"));
         }
 
         List<DepositChunk> chunks = criteria.list();

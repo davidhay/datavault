@@ -97,4 +97,8 @@ public class DepositChunk {
     public Deposit getDeposit() {
         return deposit;
     }
+
+    public void setDeposit(Deposit deposit){
+        this.deposit = deposit;
+    }
 }

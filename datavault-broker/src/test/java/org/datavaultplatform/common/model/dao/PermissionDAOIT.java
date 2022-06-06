@@ -17,6 +17,8 @@ import org.datavaultplatform.broker.test.BaseDatabaseTest;
 import org.datavaultplatform.common.model.Permission;
 import org.datavaultplatform.common.model.PermissionModel;
 import org.datavaultplatform.common.model.PermissionModel.PermissionType;
+import org.datavaultplatform.common.model.RoleModel;
+import org.datavaultplatform.common.model.RoleType;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -40,6 +42,9 @@ public class PermissionDAOIT extends BaseDatabaseTest {
 
   @Autowired
   PermissionDAO dao;
+
+  @Autowired
+  RoleDAO roleDAO;
 
   @Autowired
   JdbcTemplate template;
@@ -155,6 +160,8 @@ public class PermissionDAOIT extends BaseDatabaseTest {
 
   @AfterEach
   void cleanup() {
+    template.execute("delete from `Role_permissions`");
+    template.execute("delete from `Roles`");
     template.execute("delete from `Permissions`");
     assertEquals(0, count());
   }
@@ -179,5 +186,71 @@ public class PermissionDAOIT extends BaseDatabaseTest {
 
   long count() {
     return dao.count();
+  }
+
+
+  @Test
+  void testSynchronisePermissions() {
+    int expected = Permission.values().length;
+
+    assertEquals(0, dao.count());
+    dao.synchronisePermissions();
+    assertEquals(expected, dao.count());
+
+    RoleModel role1 = new RoleModel();
+    role1.setName("role1");
+    role1.setStatus("okay");
+    role1.setType(RoleType.VAULT);
+    roleDAO.save(role1);
+
+    RoleModel role2 = new RoleModel();
+    role2.setName("role2");
+    role2.setStatus("okay");
+    role2.setType(RoleType.VAULT);
+    roleDAO.save(role2);
+
+    RoleModel role3 = new RoleModel();
+    role3.setName("role3");
+    role3.setStatus("okay");
+    role3.setType(RoleType.VAULT);
+    roleDAO.save(role3);
+
+    //the ids on the Permission enums become the database ids for PermissionModel
+    assertEquals(
+        Arrays.stream(Permission.values()).map(Permission::getId).collect(Collectors.toSet()),
+        dao.findAll().stream().map(PermissionModel::getId).collect(Collectors.toSet()));
+
+    int updated1 = template.update("insert into `Permissions` (id,label,type,permission) values (?,?,?,?)","extra1","label-extra1",PermissionType.VAULT,"extra1perm");
+    int updated2 = template.update("insert into `Permissions` (id,label,type,permission) values (?,?,?,?)","extra2","label-extra2",PermissionType.SCHOOL,"extra2perm");
+    int updated3 = template.update("insert into `Permissions` (id,label,type,permission) values (?,?,?,?)","extra3","label-extra3",PermissionType.ADMIN,"extra3perm");
+    assertEquals(1, updated1);
+    assertEquals(1, updated2);
+    assertEquals(1, updated3);
+    assertEquals(expected+3, dao.count());
+
+    int updated4 = template.update("insert into `Role_permissions` (role_id,permission_id) values (?,?)",role1.getId(), "extra1");
+    int updated5 = template.update("insert into `Role_permissions` (role_id,permission_id) values (?,?)",role1.getId(), "extra2");
+    int updated6 = template.update("insert into `Role_permissions` (role_id,permission_id) values (?,?)",role1.getId(), "extra3");
+
+    assertEquals(1, updated4);
+    assertEquals(1, updated5);
+    assertEquals(1, updated6);
+    assertEquals(3, roleDAO.count());
+
+    assertEquals(3, template.queryForObject("select count(*) from `Role_permissions`",Long.class));
+
+    int updated7 = template.update("delete from `Permissions` where id = ?",
+        Permission.ASSIGN_SCHOOL_VAULT_ROLES.getId());
+    assertEquals(1, updated7);
+
+    assertEquals(expected+2, dao.count());
+    dao.synchronisePermissions();
+
+    //the extra Permissions and associated entries in Role_Permissions should have been deleted
+    //and the deleted permission should be re-inserted
+    assertEquals(expected, count());
+    assertEquals(3, roleDAO.count());
+    assertEquals(0, template.queryForObject("select count(*) from `Role_permissions`", Long.class));
+    assertEquals(Permission.ASSIGN_SCHOOL_VAULT_ROLES, dao.findById(Permission.ASSIGN_SCHOOL_VAULT_ROLES.getId()).get().getPermission());
   }
 }

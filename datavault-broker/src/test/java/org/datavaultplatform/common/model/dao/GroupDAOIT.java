@@ -11,6 +11,7 @@ import org.datavaultplatform.broker.app.DataVaultBrokerApp;
 import org.datavaultplatform.broker.test.AddTestProperties;
 import org.datavaultplatform.broker.test.BaseReuseDatabaseTest;
 import org.datavaultplatform.common.model.Group;
+import org.datavaultplatform.common.model.Permission;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -141,4 +142,71 @@ public class GroupDAOIT extends BaseReuseDatabaseTest {
   long count() {
     return dao.count();
   }
+
+
+  @Test
+  void testCountByUser() {
+    String schoolId1 = "lfcs-id-1";
+    String schoolId2 = "lfcs-id-2";
+    String schoolId3 = "lfcs-id-3";
+
+    Group group1 = getGroup1();
+    group1.setID(schoolId1);
+
+    Group group2 = getGroup2();
+    group2.setID(schoolId2);
+
+    Group group3 = getGroup3();
+    group3.setID(schoolId3);
+
+    dao.save(group1);
+    dao.save(group2);
+    dao.save(group3);
+    assertEquals(3, dao.count());
+
+    createTestUser("denied1", schoolId1);
+    createTestUser("allowed1", schoolId1, Permission.CAN_VIEW_SCHOOL_ROLE_ASSIGNMENTS);
+    assertEquals(0, dao.count("denied1"));
+    assertEquals(1, dao.count("allowed1"));
+
+    createTestUser("denied2", schoolId2);
+    createTestUser("allowed2", schoolId2, Permission.CAN_VIEW_SCHOOL_ROLE_ASSIGNMENTS);
+    assertEquals(0, dao.count("denied2"));
+    assertEquals(1, dao.count("allowed2"));
+  }
+
+
+  @Test
+  void testListByUser(){
+    String schoolId1 = "lfcs-id-1";
+    String schoolId2 = "lfcs-id-2";
+    String schoolId3 = "lfcs-id-3";
+
+    Group group1 = getGroup1();
+    group1.setID(schoolId1);
+
+    Group group2 = getGroup2();
+    group2.setID(schoolId2);
+
+    Group group3 = getGroup3();
+    group3.setID(schoolId3);
+
+    dao.save(group1);
+    dao.save(group2);
+    dao.save(group3);
+    assertEquals(3, dao.count());
+
+    createTestUser("denied1", schoolId1);
+    createTestUser("allowed1", schoolId1, Permission.CAN_VIEW_SCHOOL_ROLE_ASSIGNMENTS);
+    assertEquals(0, dao.list("denied1").size());
+    assertEquals(1, dao.list("allowed1").size());
+    assertEquals(group1.getID(), dao.list("allowed1").get(0).getID());
+
+    createTestUser("denied2", schoolId2);
+    createTestUser("allowed2", schoolId2, Permission.CAN_VIEW_SCHOOL_ROLE_ASSIGNMENTS);
+    assertEquals(0, dao.list("denied2").size());
+    assertEquals(1, dao.list("allowed2").size());
+    assertEquals(group2.getID(), dao.list("allowed2").get(0).getID());
+  }
+
 }

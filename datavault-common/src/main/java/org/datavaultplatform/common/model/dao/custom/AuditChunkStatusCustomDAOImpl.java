@@ -24,14 +24,16 @@ public class AuditChunkStatusCustomDAOImpl extends BaseCustomDAOImpl implements
         return findBy("audit", audit);
     }
 
+    /*
     @Override
     public List<AuditChunkStatus> findByDeposit(Deposit deposit){
         return findBy("depositChunk_deposit", deposit);
     }
+     */
 
     @Override
-    public List<AuditChunkStatus> findByDepositChunk(String depositChunkId){
-        return findBy("depositChunk_id", depositChunkId);
+    public List<AuditChunkStatus> findByDepositChunk(DepositChunk depositChunk){
+        return findBy("depositChunk", depositChunk);
     }
 
     public List<AuditChunkStatus> findBy(String propertyName, Object value){

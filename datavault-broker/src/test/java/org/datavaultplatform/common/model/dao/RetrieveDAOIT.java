@@ -12,8 +12,14 @@ import org.datavaultplatform.broker.app.DataVaultBrokerApp;
 import org.datavaultplatform.broker.test.AddTestProperties;
 import org.datavaultplatform.broker.test.BaseReuseDatabaseTest;
 import org.datavaultplatform.broker.test.TestUtils;
+import org.datavaultplatform.common.model.Deposit;
+import org.datavaultplatform.common.model.DepositChunk;
+import org.datavaultplatform.common.model.Group;
+import org.datavaultplatform.common.model.Permission;
 import org.datavaultplatform.common.model.Retrieve;
 import org.datavaultplatform.common.model.Retrieve.Status;
+import org.datavaultplatform.common.model.User;
+import org.datavaultplatform.common.model.Vault;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -34,6 +40,15 @@ public class RetrieveDAOIT extends BaseReuseDatabaseTest {
 
   @Autowired
   RetrieveDAO dao;
+
+  @Autowired
+  GroupDAO groupDAO;
+
+  @Autowired
+  DepositDAO depositDAO;
+
+  @Autowired
+  VaultDAO vaultDAO;
 
   @Test
   void testWriteThenRead() {
@@ -123,7 +138,11 @@ public class RetrieveDAOIT extends BaseReuseDatabaseTest {
 
   @AfterEach
   void cleanup() {
+    template.execute("delete from `Users`");
     template.execute("delete from `Retrieves`");
+    template.execute("delete from `Deposits`");
+    template.execute("delete from `Vaults`");
+    template.execute("delete from `Groups`");
     assertEquals(0, count());
   }
 
@@ -165,5 +184,205 @@ public class RetrieveDAOIT extends BaseReuseDatabaseTest {
 
   long count() {
     return dao.count();
+  }
+
+  @Test
+  void testCountByUser() {
+
+    String schoolId = "lfcs-id";
+
+    createTestUser("denied", schoolId);
+    createTestUser("allowed", schoolId, Permission.CAN_VIEW_RETRIEVES);
+
+    Group group = new Group();
+    group.setID(schoolId);
+    group.setName("LFCS");
+    group.setEnabled(true);
+    groupDAO.save(group);
+
+    Vault vault = new Vault();
+    vault.setName("vault-1");
+    vault.setGroup(group);
+    vault.setContact("James Bond");
+    vault.setReviewDate(TestUtils.NOW);
+    vaultDAO.save(vault);
+
+    Deposit deposit = new Deposit();
+    deposit.setName("deposit-1");
+    deposit.setVault(vault);
+    deposit.setHasPersonalData(false);
+    depositDAO.save(deposit);
+
+    Retrieve ret1 = getRetrieve1();
+    ret1.setDeposit(deposit);
+    Retrieve ret2 = getRetrieve2();
+    ret2.setDeposit(deposit);
+    Retrieve ret3 = getRetrieve3();
+    ret3.setDeposit(deposit);
+
+    dao.save(ret1);
+    dao.save(ret2);
+    dao.save(ret3);
+
+    assertEquals(3, count());
+
+    assertEquals(0, dao.count("denied"));
+    assertEquals(3, dao.count("allowed"));
+  }
+  @Test
+  void testListByUser() {
+
+    String schoolId = "lfcs-id";
+
+    createTestUser("denied", schoolId);
+    createTestUser("allowed", schoolId, Permission.CAN_VIEW_RETRIEVES);
+
+    Group group = new Group();
+    group.setID(schoolId);
+    group.setName("LFCS");
+    group.setEnabled(true);
+    groupDAO.save(group);
+
+    Vault vault = new Vault();
+    vault.setName("vault-1");
+    vault.setGroup(group);
+    vault.setContact("James Bond");
+    vault.setReviewDate(TestUtils.NOW);
+    vaultDAO.save(vault);
+
+    Deposit deposit = new Deposit();
+    deposit.setName("deposit-1");
+    deposit.setVault(vault);
+    deposit.setHasPersonalData(false);
+    depositDAO.save(deposit);
+
+    Retrieve ret1 = getRetrieve1();
+    ret1.setDeposit(deposit);
+    ret1.setTimestamp(TestUtils.NOW);
+    Retrieve ret2 = getRetrieve2();
+    ret2.setDeposit(deposit);
+    ret2.setTimestamp(TestUtils.TWO_YEARS_AGO);
+    Retrieve ret3 = getRetrieve3();
+    ret3.setDeposit(deposit);
+    ret3.setTimestamp(TestUtils.ONE_YEAR_AGO);
+
+    dao.save(ret1);
+    dao.save(ret2);
+    dao.save(ret3);
+
+    assertEquals(3, count());
+
+    assertEquals(0, dao.list("denied").size());
+
+    //the returned Retrieves should be sorted by ascending timestamp
+    assertEquals(
+        Arrays.asList(ret2.getID(), ret3.getID(), ret1.getID())
+        , dao.list("allowed").stream().map(Retrieve::getID).collect(Collectors.toList()));
+  }
+
+  @Test
+  void testInProgressCountByUser(){
+    String schoolId = "lfcs-id";
+
+    createTestUser("denied", schoolId);
+    createTestUser("allowed", schoolId, Permission.CAN_VIEW_IN_PROGRESS);
+
+    Group group = new Group();
+    group.setID(schoolId);
+    group.setName("LFCS");
+    group.setEnabled(true);
+    groupDAO.save(group);
+
+    Vault vault = new Vault();
+    vault.setName("vault-1");
+    vault.setGroup(group);
+    vault.setContact("James Bond");
+    vault.setReviewDate(TestUtils.NOW);
+    vaultDAO.save(vault);
+
+    Deposit deposit = new Deposit();
+    deposit.setName("deposit-1");
+    deposit.setVault(vault);
+    deposit.setHasPersonalData(false);
+    depositDAO.save(deposit);
+
+    Retrieve ret1 = getRetrieve1();
+    ret1.setDeposit(deposit);
+    ret1.setStatus(Status.IN_PROGRESS);
+
+    Retrieve ret2 = getRetrieve2();
+    ret2.setDeposit(deposit);
+    ret2.setStatus(Status.NOT_STARTED);
+
+    Retrieve ret3 = getRetrieve3();
+    ret3.setDeposit(deposit);
+    ret3.setStatus(Status.COMPLETE);
+
+    dao.save(ret1);
+    dao.save(ret2);
+    dao.save(ret3);
+
+    assertEquals(3, count());
+
+    assertEquals(0, dao.list("denied").size());
+
+    // can't be COMPLETE or NOT_STARTED
+    assertEquals(1
+        , dao.inProgressCount("allowed"));
+  }
+  @Test
+  void testQueueCount(){
+    String schoolId = "lfcs-id";
+
+    createTestUser("denied", schoolId);
+    createTestUser("allowed", schoolId, Permission.CAN_VIEW_QUEUES);
+
+    Group group = new Group();
+    group.setID(schoolId);
+    group.setName("LFCS");
+    group.setEnabled(true);
+    groupDAO.save(group);
+
+    Vault vault = new Vault();
+    vault.setName("vault-1");
+    vault.setGroup(group);
+    vault.setContact("James Bond");
+    vault.setReviewDate(TestUtils.NOW);
+    vaultDAO.save(vault);
+
+    Deposit deposit = new Deposit();
+    deposit.setName("deposit-1");
+    deposit.setVault(vault);
+    deposit.setHasPersonalData(false);
+    depositDAO.save(deposit);
+
+    Retrieve ret1 = getRetrieve1();
+    ret1.setDeposit(deposit);
+    ret1.setStatus(Status.IN_PROGRESS);
+
+    Retrieve ret2 = getRetrieve2();
+    ret2.setDeposit(deposit);
+    ret2.setStatus(Status.NOT_STARTED);
+
+    Retrieve ret3 = getRetrieve3();
+    ret3.setDeposit(deposit);
+    ret3.setStatus(Status.COMPLETE);
+
+    Retrieve ret4 = getRetrieve4();
+    ret4.setDeposit(deposit);
+    ret4.setStatus(Status.NOT_STARTED);
+
+    dao.save(ret1);
+    dao.save(ret2);
+    dao.save(ret3);
+    dao.save(ret4);
+
+    assertEquals(4, count());
+
+    assertEquals(0, dao.queueCount("denied"));
+
+    //we want to count those queued - or NOT_STARTED
+    assertEquals(2
+        , dao.queueCount("allowed"));
   }
 }

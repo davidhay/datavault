@@ -47,7 +47,9 @@ public class BillingCustomDAOImpl extends BaseCustomDAOImpl implements BillingCu
   public List<BillingInfo> search(String query, String sort, String order, String offset, String maxResult) {
     Session session = this.getCurrentSession();
     Criteria criteria = session.createCriteria(BillingInfo.class);
-    criteria.add(Restrictions.or(Restrictions.ilike("id", "%" + query + "%"), Restrictions.ilike("name", "%" + query + "%"), Restrictions.ilike("description", "%" + query + "%")));
+    criteria.add(Restrictions.or(
+        Restrictions.ilike("id", "%" + query + "%"),
+        Restrictions.ilike("contactName", "%" + query + "%")));
     criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
 
     if(order.equals("desc")){
@@ -55,7 +57,7 @@ public class BillingCustomDAOImpl extends BaseCustomDAOImpl implements BillingCu
     } else {
       criteria.addOrder(Order.asc(sort));
     }
-    if((offset != null && maxResult != null) || !maxResult.equals("0")) {
+    if((offset != null && maxResult != null) && !maxResult.equals("0")) {
       criteria.setMaxResults(Integer.valueOf(maxResult));
       criteria.setFirstResult(Integer.valueOf(offset));
     }
