@@ -3,7 +3,6 @@ package org.datavaultplatform.common.model.dao;
 import java.util.List;
 import org.datavaultplatform.common.model.AuditChunkStatus;
 import org.datavaultplatform.common.model.Deposit;
-import org.datavaultplatform.common.model.DepositChunk;
 import org.datavaultplatform.common.model.dao.custom.AuditChunkStatusCustomDAO;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Order;

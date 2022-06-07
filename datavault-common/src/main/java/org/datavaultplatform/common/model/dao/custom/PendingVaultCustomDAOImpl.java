@@ -35,8 +35,8 @@ public class PendingVaultCustomDAOImpl extends BaseCustomDAOImpl implements
         order(sort, order, criteria);
         
         if((offset != null && maxResult != null) && !maxResult.equals("0")) {
-        	criteria.setMaxResults(Integer.parseInt(maxResult));
-        	criteria.setFirstResult(Integer.parseInt(offset));
+        	criteria.setMaxResults(Integer.valueOf(maxResult));
+        	criteria.setFirstResult(Integer.valueOf(offset));
         }
 
         List<PendingVault> vaults = criteria.list();
@@ -109,8 +109,8 @@ public class PendingVaultCustomDAOImpl extends BaseCustomDAOImpl implements
 
         order(sort, order, criteria);
         if((offset != null && maxResult != null) && !maxResult.equals("0")) {
-        	criteria.setMaxResults(Integer.parseInt(maxResult));
-        	criteria.setFirstResult(Integer.parseInt(offset));
+        	criteria.setMaxResults(Integer.valueOf(maxResult));
+        	criteria.setFirstResult(Integer.valueOf(offset));
         }
 
         List<PendingVault> vaults = criteria.list();

@@ -24,7 +24,6 @@ public class RoleCustomDAOImpl extends BaseCustomDAOImpl implements RoleCustomDA
     @Override
     public void storeSpecialRoles() {
         Session session = this.getCurrentSession();
-
         ensureIsAdminExists(session);
         ensureDataOwnerExists(session);
         ensureDepositorExists(session);
@@ -195,7 +194,6 @@ public class RoleCustomDAOImpl extends BaseCustomDAOImpl implements RoleCustomDA
         criteria.add(Restrictions.eq("name", RoleUtils.IS_ADMIN_ROLE_NAME));
         RoleModel role = (RoleModel) criteria.uniqueResult();
         populateAssignedUserCount(session, role);
-        
         return role;
     }
 
@@ -206,7 +204,6 @@ public class RoleCustomDAOImpl extends BaseCustomDAOImpl implements RoleCustomDA
         criteria.add(Restrictions.eq("name", RoleUtils.DATA_OWNER_ROLE_NAME));
         RoleModel role = (RoleModel) criteria.uniqueResult();
         populateAssignedUserCount(session, role);
-        
         return role;
     }
 
@@ -217,7 +214,6 @@ public class RoleCustomDAOImpl extends BaseCustomDAOImpl implements RoleCustomDA
         criteria.add(Restrictions.eq("name", RoleUtils.DEPOSITOR_ROLE_NAME));
         RoleModel role = (RoleModel) criteria.uniqueResult();
         populateAssignedUserCount(session, role);
-        
         return role;
     }
 
@@ -228,7 +224,6 @@ public class RoleCustomDAOImpl extends BaseCustomDAOImpl implements RoleCustomDA
         criteria.add(Restrictions.eq("name", RoleUtils.VAULT_CREATOR_ROLE_NAME));
         RoleModel role = (RoleModel) criteria.uniqueResult();
         populateAssignedUserCount(session, role);
-        
         return role;
     }
 
@@ -239,7 +234,6 @@ public class RoleCustomDAOImpl extends BaseCustomDAOImpl implements RoleCustomDA
         criteria.add(Restrictions.eq("name", RoleUtils.NOMINATED_DATA_MANAGER_ROLE_NAME));
         RoleModel role = (RoleModel) criteria.uniqueResult();
         populateAssignedUserCount(session, role);
-        
         return role;
     }
 
@@ -251,7 +245,6 @@ public class RoleCustomDAOImpl extends BaseCustomDAOImpl implements RoleCustomDA
         for (RoleModel role : roles) {
             populateAssignedUserCount(session, role);
         }
-
         return roles;
     }
 
@@ -264,7 +257,6 @@ public class RoleCustomDAOImpl extends BaseCustomDAOImpl implements RoleCustomDA
         for (RoleModel role : roles) {
             populateAssignedUserCount(session, role);
         }
-        
         return roles;
     }
 
@@ -280,7 +272,6 @@ public class RoleCustomDAOImpl extends BaseCustomDAOImpl implements RoleCustomDA
         for (RoleModel role : roles) {
             populateAssignedUserCount(session, role);
         }
-        
         return roles;
     }
 }

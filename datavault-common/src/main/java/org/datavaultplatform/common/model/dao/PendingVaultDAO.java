@@ -1,7 +1,6 @@
 package org.datavaultplatform.common.model.dao;
 
 import java.util.List;
-import org.datavaultplatform.common.model.Group;
 import org.datavaultplatform.common.model.PendingVault;
 import org.datavaultplatform.common.model.dao.custom.PendingVaultCustomDAO;
 import org.springframework.data.domain.Sort;

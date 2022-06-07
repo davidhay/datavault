@@ -5,7 +5,6 @@ import java.util.Date;
 import java.util.List;
 import javax.persistence.EntityManager;
 import org.datavaultplatform.common.model.Deposit;
-import org.datavaultplatform.common.model.DepositChunk;
 import org.datavaultplatform.common.model.Permission;
 import org.datavaultplatform.common.model.dao.SchoolPermissionCriteriaBuilder;
 import org.datavaultplatform.common.util.DaoUtils;
@@ -100,9 +99,7 @@ public class DepositCustomDAOImpl extends BaseCustomDAOImpl implements DepositCu
             return 0;
         }
         Criteria criteria = criteriaBuilder.build();
-        criteria.add(Restrictions.and(
-            Restrictions.ne("status", Deposit.Status.NOT_STARTED),
-            Restrictions.ne("status", Deposit.Status.COMPLETE)));
+        criteria.add(Restrictions.and(Restrictions.ne("status", Deposit.Status.NOT_STARTED), Restrictions.ne("status", Deposit.Status.COMPLETE)));
         criteria.setProjection(Projections.rowCount());
         Long count = (Long) criteria.uniqueResult();
         return count.intValue();
@@ -112,9 +109,7 @@ public class DepositCustomDAOImpl extends BaseCustomDAOImpl implements DepositCu
     public List<Deposit> inProgress() {
         Session session = this.getCurrentSession();
         Criteria criteria = session.createCriteria(Deposit.class);
-        criteria.add(Restrictions.and(
-            Restrictions.ne("status", Deposit.Status.NOT_STARTED),
-            Restrictions.ne("status", Deposit.Status.COMPLETE)));
+        criteria.add(Restrictions.and(Restrictions.ne("status", Deposit.Status.NOT_STARTED), Restrictions.ne("status", Deposit.Status.COMPLETE)));
         List<Deposit> deposits = criteria.list();
         return deposits;
     }

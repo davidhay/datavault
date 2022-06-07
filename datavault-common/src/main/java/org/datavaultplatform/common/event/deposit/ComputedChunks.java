@@ -3,10 +3,7 @@ package org.datavaultplatform.common.event.deposit;
 import java.util.HashMap;
 
 import javax.persistence.Entity;
-import javax.persistence.Table;
 import javax.persistence.Column;
-import javax.persistence.DiscriminatorColumn;
-import javax.persistence.DiscriminatorType;
 import org.datavaultplatform.common.event.Event;
 
 @Entity

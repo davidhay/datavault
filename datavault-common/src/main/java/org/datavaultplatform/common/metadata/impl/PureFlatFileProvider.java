@@ -9,8 +9,6 @@ import java.util.Map;
 
 import org.datavaultplatform.common.model.Dataset;
 
-import com.amazonaws.util.CollectionUtils;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.LineIterator;
 import org.datavaultplatform.common.metadata.Provider;

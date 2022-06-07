@@ -68,9 +68,7 @@ public class RetrieveCustomDAOImpl extends BaseCustomDAOImpl implements Retrieve
             return 0;
         }
         Criteria criteria = criteriaBuilder.build();
-        criteria.add(Restrictions.and(
-            Restrictions.ne("status", Retrieve.Status.NOT_STARTED),
-            Restrictions.ne("status", Retrieve.Status.COMPLETE)));
+        criteria.add(Restrictions.and(Restrictions.ne("status", Retrieve.Status.NOT_STARTED), Restrictions.ne("status", Retrieve.Status.COMPLETE)));
         criteria.setProjection(Projections.rowCount());
         Long count = (Long) criteria.uniqueResult();
         return count.intValue();

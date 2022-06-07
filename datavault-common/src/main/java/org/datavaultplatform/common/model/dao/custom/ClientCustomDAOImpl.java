@@ -1,13 +1,11 @@
 package org.datavaultplatform.common.model.dao.custom;
 
 import javax.persistence.EntityManager;
-import lombok.extern.slf4j.Slf4j;
 import org.datavaultplatform.common.model.Client;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 
-@Slf4j
 public class ClientCustomDAOImpl extends BaseCustomDAOImpl implements ClientCustomDAO {
 
     public ClientCustomDAOImpl(EntityManager em) {

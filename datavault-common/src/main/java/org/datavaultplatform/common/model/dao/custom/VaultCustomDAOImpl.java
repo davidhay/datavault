@@ -35,8 +35,8 @@ public class VaultCustomDAOImpl extends BaseCustomDAOImpl implements VaultCustom
 
         order(sort, order, criteria);
         if((offset != null && maxResult != null) && !maxResult.equals("0")) {
-        	criteria.setMaxResults(Integer.parseInt(maxResult));
-        	criteria.setFirstResult(Integer.parseInt(offset));
+        	criteria.setMaxResults(Integer.valueOf(maxResult));
+        	criteria.setFirstResult(Integer.valueOf(offset));
         }
 
         List<Vault> vaults = criteria.list();
@@ -62,8 +62,8 @@ public class VaultCustomDAOImpl extends BaseCustomDAOImpl implements VaultCustom
 
         order(sort, order, criteria);
         if((offset != null && maxResult != null) && !maxResult.equals("0")) {
-        	criteria.setMaxResults(Integer.parseInt(maxResult));
-        	criteria.setFirstResult(Integer.parseInt(offset));
+        	criteria.setMaxResults(Integer.valueOf(maxResult));
+        	criteria.setFirstResult(Integer.valueOf(offset));
         }
 
         List<Vault> vaults = criteria.list();
@@ -152,10 +152,7 @@ public class VaultCustomDAOImpl extends BaseCustomDAOImpl implements VaultCustom
         }
         Criteria criteria = criteriaBuilder.build();
         if (query != null && !query.equals("")) {
-            criteria.add(Restrictions.or(
-                Restrictions.ilike("id", "%" + query + "%"),
-                Restrictions.ilike("name", "%" + query + "%"),
-                Restrictions.ilike("description", "%" + query + "%")));
+            criteria.add(Restrictions.or(Restrictions.ilike("id", "%" + query + "%"), Restrictions.ilike("name", "%" + query + "%"), Restrictions.ilike("description", "%" + query + "%")));
         }
         criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
         criteria.setProjection(Projections.rowCount());
