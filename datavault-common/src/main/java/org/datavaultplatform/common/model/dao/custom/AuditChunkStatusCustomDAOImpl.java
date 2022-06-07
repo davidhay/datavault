@@ -5,7 +5,6 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import org.datavaultplatform.common.model.Audit;
 import org.datavaultplatform.common.model.AuditChunkStatus;
-import org.datavaultplatform.common.model.Deposit;
 import org.datavaultplatform.common.model.DepositChunk;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
@@ -23,13 +22,6 @@ public class AuditChunkStatusCustomDAOImpl extends BaseCustomDAOImpl implements
     public List<AuditChunkStatus> findByAudit(Audit audit){
         return findBy("audit", audit);
     }
-
-    /*
-    @Override
-    public List<AuditChunkStatus> findByDeposit(Deposit deposit){
-        return findBy("depositChunk_deposit", deposit);
-    }
-     */
 
     @Override
     public List<AuditChunkStatus> findByDepositChunk(DepositChunk depositChunk){

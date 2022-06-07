@@ -282,7 +282,7 @@ public class AuditChunkStatusDAOIT extends BaseReuseDatabaseTest {
   }
 
   @Test
-  void testFindBy() {
+  void testFindByMultiple() {
 
     AuditChunkStatus item1 = getAuditChunkStatus1();
     item1.setStatus(Status.COMPLETE);
@@ -342,6 +342,40 @@ public class AuditChunkStatusDAOIT extends BaseReuseDatabaseTest {
       }
     }).stream().map(AuditChunkStatus::getID).collect(Collectors.toSet()));
   }
+
+  @Test
+  void testFindBySingle() {
+
+    AuditChunkStatus item1 = getAuditChunkStatus1();
+    item1.setStatus(Status.COMPLETE);
+    item1.setNote("noteA");
+    item1.setTimestamp(TestUtils.TWO_YEARS_AGO);
+    dao.save(item1);
+
+    AuditChunkStatus item2 = getAuditChunkStatus2();
+    item2.setStatus(Status.ERROR);
+    item2.setNote("noteA");
+    dao.save(item2);
+
+    AuditChunkStatus item3 = getAuditChunkStatus3();
+    item3.setTimestamp(TestUtils.ONE_YEAR_AGO);
+    item3.setStatus(Status.IN_PROGRESS);
+    item3.setNote("noteB");
+    dao.save(item3);
+
+    assertEquals(3, dao.findAll().size());
+
+    assertEquals(item1.getID(), dao.findBy("status", Status.COMPLETE).get(0).getID());
+
+    assertEquals(item2.getID(), dao.findBy("status", Status.ERROR).get(0).getID());
+
+    assertEquals(item3.getID(), dao.findBy("status", Status.IN_PROGRESS).get(0).getID());
+
+    assertEquals(new HashSet<>(Arrays.asList(item1.getID(), item2.getID())), dao.findBy("note", "noteA").stream().map(AuditChunkStatus::getID).collect(Collectors.toSet()));
+
+    assertEquals(new HashSet<>(Arrays.asList(item3.getID())), dao.findBy("note", "noteB").stream().map(AuditChunkStatus::getID).collect(Collectors.toSet()));
+  }
+
   @Test
   void testFindByDepositChunkId() {
 

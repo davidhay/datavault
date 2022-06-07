@@ -2,11 +2,8 @@ package org.datavaultplatform.common.model.dao.custom;
 
 import java.util.List;
 import javax.persistence.EntityManager;
-import lombok.extern.slf4j.Slf4j;
 import org.datavaultplatform.common.model.PendingDataCreator;
 import org.hibernate.Session;
-
-@Slf4j
 
 public class PendingDataCreatorCustomDAOImpl
     extends BaseCustomDAOImpl implements PendingDataCreatorCustomDAO {

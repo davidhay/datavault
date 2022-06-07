@@ -9,5 +9,5 @@ public interface BillingCustomDAO extends BaseCustomDAO {
 
   List<BillingInfo> search(String query, String sort, String order, String offset, String maxResult);
 
-  //Long getTotalNumberOfVaults(String query);
+  Long countByQuery(String query);
 }

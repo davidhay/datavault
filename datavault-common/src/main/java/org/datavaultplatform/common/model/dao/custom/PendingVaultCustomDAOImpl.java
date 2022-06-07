@@ -12,13 +12,9 @@ import org.hibernate.Session;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 
 public class PendingVaultCustomDAOImpl extends BaseCustomDAOImpl implements
     PendingVaultCustomDAO {
-    private static final Logger LOGGER = LoggerFactory.getLogger(PendingVaultCustomDAOImpl.class);
 
     public PendingVaultCustomDAOImpl(EntityManager em) {
         super(em);
@@ -38,7 +34,7 @@ public class PendingVaultCustomDAOImpl extends BaseCustomDAOImpl implements
         
         order(sort, order, criteria);
         
-        if((offset != null && maxResult != null) || !maxResult.equals("0")) {
+        if((offset != null && maxResult != null) && !maxResult.equals("0")) {
         	criteria.setMaxResults(Integer.parseInt(maxResult));
         	criteria.setFirstResult(Integer.parseInt(offset));
         }
@@ -112,7 +108,7 @@ public class PendingVaultCustomDAOImpl extends BaseCustomDAOImpl implements
         criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
 
         order(sort, order, criteria);
-        if((offset != null && maxResult != null) || !maxResult.equals("0")) {
+        if((offset != null && maxResult != null) && !maxResult.equals("0")) {
         	criteria.setMaxResults(Integer.parseInt(maxResult));
         	criteria.setFirstResult(Integer.parseInt(offset));
         }

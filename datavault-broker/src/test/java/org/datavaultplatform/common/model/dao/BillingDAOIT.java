@@ -210,4 +210,34 @@ public class BillingDAOIT extends BaseReuseDatabaseTest {
       assertEquals(billingInfo2, items8.get(0));
     }
   }
+
+  @Test
+  void testCountByQuery() {
+    BillingInfo billingInfo1 = getBillingInfo1(v1);
+    billingInfo1.setContactName("contactName1");
+    billingInfo1.setProjectTitle("AAA");
+
+    BillingInfo billingInfo2 = getBillingInfo2(v2);
+    billingInfo2.setContactName("contactName12");
+    billingInfo2.setProjectTitle("BBB");
+
+    BillingInfo billingInfo3 = getBillingInfo2(v3);
+    billingInfo3.setProjectTitle("CCC");
+    billingInfo3.setContactName("contactName123");
+
+    dao.save(billingInfo1);
+    dao.save(billingInfo2);
+    dao.save(billingInfo3);
+
+    assertEquals(0, dao.countByQuery(null));
+    assertEquals(3, dao.countByQuery(""));
+    assertEquals(0, dao.countByQuery("XXX"));
+
+    assertEquals(1, dao.countByQuery(billingInfo1.getID()));
+    assertEquals(billingInfo1, dao.search(billingInfo1.getID(),"projectTitle","asc",null, null).get(0));
+
+    assertEquals(2, dao.countByQuery("contactName12"));
+    assertEquals(billingInfo3, dao.search("contactName12","projectTitle","desc",null, null).get(0));
+    assertEquals(billingInfo2, dao.search("contactName12","projectTitle","desc",null, null).get(1));
+  }
 }

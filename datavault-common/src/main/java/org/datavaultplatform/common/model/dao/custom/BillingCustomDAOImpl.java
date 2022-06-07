@@ -9,12 +9,8 @@ import org.hibernate.Session;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class BillingCustomDAOImpl extends BaseCustomDAOImpl implements BillingCustomDAO {
-
-  private static final Logger LOGGER = LoggerFactory.getLogger(BillingCustomDAOImpl.class);
 
   public BillingCustomDAOImpl(EntityManager em) {
       super(em);
@@ -70,14 +66,14 @@ public class BillingCustomDAOImpl extends BaseCustomDAOImpl implements BillingCu
   /**
    * Retrieve Total NUmber of rows after applying the filter
    */
-  public Long getTotalNumberOfVaults(String query) {
+  @Override
+  public Long countByQuery(String query) {
     Session session = this.getCurrentSession();
     Criteria criteria = session.createCriteria(BillingInfo.class);
     criteria.add(
         Restrictions.or(
             Restrictions.ilike("id", "%" + query + "%"),
-            Restrictions.ilike("contactName", "%" + query + "%"),
-            Restrictions.ilike("description", "%" + query + "%")));
+            Restrictions.ilike("contactName", "%" + query + "%")));
     criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
     criteria.setProjection(Projections.rowCount());
     Long totalNoOfRows = (Long) criteria.uniqueResult();

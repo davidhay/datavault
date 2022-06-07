@@ -14,6 +14,8 @@ public interface AuditChunkStatusCustomDAO extends BaseCustomDAO {
 
     List<AuditChunkStatus> findBy(HashMap<String, Object> properties);
 
+    List<AuditChunkStatus> findBy(String propertyName, Object propertyValue);
+
     AuditChunkStatus getLastChunkAuditTime(DepositChunk chunk);
 
 }
