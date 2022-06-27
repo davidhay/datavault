@@ -13,8 +13,19 @@ import org.jsondoc.core.annotation.ApiObjectField;
 @ApiObject(name = "DepositChunk")
 @Entity
 @Table(name="DepositChunks")
+@NamedEntityGraph(
+    name=DepositChunk.EG_DEPOSIT_CHUNK,
+    attributeNodes = @NamedAttributeNode(value = DepositChunk_.DEPOSIT, subgraph = "subDeposit"),
+    subgraphs = @NamedSubgraph(
+        name="subDeposit",
+        attributeNodes = {
+            @NamedAttributeNode(Deposit_.USER),
+            @NamedAttributeNode(Deposit_.VAULT)
+   })
+)
 public class DepositChunk {
 
+    public static final String EG_DEPOSIT_CHUNK = "eg.DepositChunk.1";
     // Deposit Identifier
     @Id
     @ApiObjectField(description = "Universally Unique Identifier for the Deposit Path", name="Deposit Path")

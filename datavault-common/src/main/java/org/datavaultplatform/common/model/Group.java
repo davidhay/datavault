@@ -12,8 +12,10 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Entity
 @Table(name="Groups")
+@NamedEntityGraph(name=Group.EG_GROUP)
 public class Group {
-    
+
+    public static final String EG_GROUP = "eg.Group.1";
     // Group Identifier (not a UUID)
     @Id
     @Pattern(regexp = "[a-zA-Z0-9-_/ ]+")

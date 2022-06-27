@@ -10,7 +10,13 @@ import java.util.HashMap;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Entity
 @Table(name="FileStores")
+@NamedEntityGraph(
+    name=FileStore.EG_FILE_STORE,
+    attributeNodes = @NamedAttributeNode(FileStore_.USER)
+)
 public class FileStore {
+
+    public static final String EG_FILE_STORE = "eg.FileStore.1";
 
     // Storage Identifier
     @Id

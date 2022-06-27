@@ -13,7 +13,9 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Entity
 @Table(name="ArchiveStores")
+@NamedEntityGraph(name=ArchiveStore.EG_ARCHIVE_STORE)
 public class ArchiveStore {
+    public static final String EG_ARCHIVE_STORE = "eg.ArchiveStore.1";
 
     // Storage Identifier
     @Id

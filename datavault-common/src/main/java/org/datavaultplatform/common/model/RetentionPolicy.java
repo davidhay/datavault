@@ -9,6 +9,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.NamedEntityGraph;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
@@ -22,7 +23,9 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Entity
 @Table(name="RetentionPolicies")
+@NamedEntityGraph(name=RetentionPolicy.EG_RETENTION_POLICY)
 public class RetentionPolicy {
+    public static final String EG_RETENTION_POLICY = "eg.RetentionPolicy.1";
     // RetentionPolicy Id
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -12,8 +12,31 @@ import java.util.Date;
 @ApiObject(name = "DepositReview")
 @Entity
 @Table(name="DepositReviews")
+@NamedEntityGraph(
+    name=DepositReview.EG_DEPOSIT_REVIEW,
+    attributeNodes = {
+        @NamedAttributeNode(value = DepositReview_.DEPOSIT, subgraph = "subDeposit"),
+        @NamedAttributeNode(value = DepositReview_.VAULT_REVIEW, subgraph = "subVaultReview")
+    },
+    subgraphs = {
+        @NamedSubgraph(
+            name = "subDeposit",
+            attributeNodes = {
+                @NamedAttributeNode(Deposit_.USER),
+                @NamedAttributeNode(Deposit_.VAULT)
+            }
+        ),
+        @NamedSubgraph(
+            name = "subVaultReview",
+            attributeNodes = {
+                @NamedAttributeNode(VaultReview_.VAULT)
+            }
+        )
+    }
+)
 public class DepositReview  {
 
+    public static final String EG_DEPOSIT_REVIEW = "eg.DepositReview.1";
     // Deposit Identifier
     @Id
     @GeneratedValue(generator = "uuid")

@@ -12,8 +12,20 @@ import java.util.Date;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Entity
 @Table(name="AuditChunkStatus")
+@NamedEntityGraph(
+    name=AuditChunkStatus.EG_AUDIT_CHUNK_STATUS,
+    attributeNodes = {
+        @NamedAttributeNode(AuditChunkStatus_.AUDIT),
+        @NamedAttributeNode(value = AuditChunkStatus_.DEPOSIT_CHUNK, subgraph = "subDepositChunk")
+    },
+    subgraphs = @NamedSubgraph(
+        name="subDepositChunk",
+        attributeNodes = @NamedAttributeNode(DepositChunk_.DEPOSIT)
+    )
+)
 public class AuditChunkStatus {
 
+    public static final String EG_AUDIT_CHUNK_STATUS = "eg.AuditChunkStatus.1";
     // Deposit Identifier
     @Id
     @GeneratedValue(generator = "uuid")

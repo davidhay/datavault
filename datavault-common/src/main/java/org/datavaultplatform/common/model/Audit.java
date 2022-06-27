@@ -12,8 +12,10 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Entity
 @Table(name="Audits")
+@NamedEntityGraph(name=Audit.EG_AUDIT)
 public class Audit {
 
+    public static final String EG_AUDIT = "eg.Audit.1";
     // Deposit Identifier
     @Id
     @GeneratedValue(generator = "uuid")

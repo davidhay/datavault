@@ -10,8 +10,10 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Entity
 @Table(name="Users")
+@NamedEntityGraph(name=User.EG_USER)
 public class User {
     // User Identifier (not a UUID)
+    public static final String EG_USER = "eg.User.1";
     @Id
     @Column(name = "id", unique = true, length = 36)
     private String id;

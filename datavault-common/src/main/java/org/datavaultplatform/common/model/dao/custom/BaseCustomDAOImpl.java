@@ -1,10 +1,14 @@
 package org.datavaultplatform.common.model.dao.custom;
 
+import java.util.List;
+import javax.persistence.EntityGraph;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaQuery;
 import lombok.extern.slf4j.Slf4j;
+import org.datavaultplatform.common.event.Event;
+import org.datavaultplatform.common.util.DaoUtils;
 import org.hibernate.Session;
 
 @Slf4j
@@ -43,4 +47,23 @@ public abstract class BaseCustomDAOImpl implements BaseCustomDAO {
     Long result = typedQuery.getSingleResult();
     return result == null ? 0 : result.longValue();
   }
+
+
+  public static <T> TypedQuery<T> addEntityGraph(EntityManager em, Class<T> clazz, TypedQuery<T> query) {
+    return DaoUtils.addEntityGraph(em, clazz, query);
+  }
+
+
+  public <T> TypedQuery<T> addEntityGraph(Class<T> clazz, TypedQuery<T> query) {
+      return addEntityGraph(em, clazz, query);
+  }
+
+  protected <V> List<V> getResults(CriteriaQuery<V> cq) {
+      return getResults(em, cq);
+  }
+  protected static <V> List<V> getResults(EntityManager em, CriteriaQuery<V> cq) {
+    return addEntityGraph(em, cq.getResultType(), em.createQuery(cq)).getResultList();
+  }
+
+
 }

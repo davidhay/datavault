@@ -11,8 +11,20 @@ import javax.persistence.*;
 @ApiObject(name = "DataCreator")
 @Entity
 @Table(name="DataCreators")
+@NamedEntityGraph(
+    name=DataCreator.EG_DATA_CREATOR,
+    attributeNodes = @NamedAttributeNode(value = DataCreator_.VAULT, subgraph = "subVault"),
+    subgraphs = @NamedSubgraph(
+        name="subVault",
+        attributeNodes = {
+            @NamedAttributeNode(Vault_.DATASET),
+            @NamedAttributeNode(Vault_.GROUP),
+            @NamedAttributeNode(Vault_.RETENTION_POLICY),
+            @NamedAttributeNode(Vault_.USER)
+        }))
 public class DataCreator {
 
+    public static final String EG_DATA_CREATOR = "eg.DataCreator.1";
     // PDC Identifier
     @Id
     @GeneratedValue(generator = "uuid")

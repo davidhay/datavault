@@ -12,9 +12,10 @@ import javax.persistence.*;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Entity
 @Table(name="Clients")
-
+@NamedEntityGraph(name=Client.EG_CLIENT)
 public class Client {
 
+    public static final String EG_CLIENT = "eg.Client.1";
     // User Identifier (not a UUID)
     @Id
     @Column(name = "id", unique = true, length = 180)

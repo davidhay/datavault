@@ -7,8 +7,10 @@ import javax.persistence.*;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Entity
 @Table(name="Datasets")
+@NamedEntityGraph(name=Dataset.EG_DATASET)
 public class Dataset {
-    
+
+    public static final String EG_DATASET = "eg.Dataset.1";
     @Id
     @Column(name = "id", unique = true, length = 180)
     private String id;

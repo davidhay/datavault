@@ -29,7 +29,7 @@ public class BillingCustomDAOImpl extends BaseCustomDAOImpl implements BillingCu
 
         TypedQuery<BillingInfo> typedQuery = restrict(cr, offset, maxResult);
 
-        List<BillingInfo> vaults = typedQuery.getResultList();
+        List<BillingInfo> vaults = getBillingInfo(typedQuery);
         return vaults;
     }
 
@@ -55,13 +55,14 @@ public class BillingCustomDAOImpl extends BaseCustomDAOImpl implements BillingCu
 
         TypedQuery<BillingInfo> typedQuery = restrict(cr, offset, maxResult);
 
-        List<BillingInfo> vaults = typedQuery.getResultList();
+        List<BillingInfo> vaults = getBillingInfo(typedQuery);
         return vaults;
     }
 
 
     private TypedQuery<BillingInfo> restrict(CriteriaQuery<BillingInfo> cr, String offset, String maxResult){
       TypedQuery<BillingInfo> typedQuery = em.createQuery(cr);
+
       if ((offset != null && maxResult != null) && !maxResult.equals("0")) {
         typedQuery.setMaxResults(Integer.parseInt(maxResult));
         typedQuery.setFirstResult(Integer.parseInt(offset));
@@ -91,4 +92,8 @@ public class BillingCustomDAOImpl extends BaseCustomDAOImpl implements BillingCu
     return count;
   }
 
+
+  List<BillingInfo> getBillingInfo(TypedQuery<BillingInfo> typedQuery) {
+    return addEntityGraph(BillingInfo.class,typedQuery).getResultList();
+  }
 }

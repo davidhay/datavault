@@ -1,5 +1,8 @@
 package org.datavaultplatform.common.model;
 
+import javax.persistence.NamedAttributeNode;
+import javax.persistence.NamedEntityGraph;
+import javax.persistence.NamedSubgraph;
 import org.datavaultplatform.common.response.DepositInfo;
 import org.datavaultplatform.common.event.Event;
 
@@ -29,8 +32,21 @@ import org.jsondoc.core.annotation.ApiObjectField;
 @ApiObject(name = "Deposit")
 @Entity
 @Table(name="Deposits")
+@NamedEntityGraph(
+    name=Deposit.EG_DEPOSIT,
+    attributeNodes = {
+        @NamedAttributeNode(value = Deposit_.VAULT, subgraph = "subVault"),
+        @NamedAttributeNode("user")
+    },
+    subgraphs = @NamedSubgraph(name="subVault", attributeNodes = {
+        @NamedAttributeNode(Vault_.RETENTION_POLICY),
+        @NamedAttributeNode(Vault_.GROUP),
+        @NamedAttributeNode(Vault_.DATASET)
+    })
+)
 public class Deposit {
 
+    public static final String EG_DEPOSIT = "eg.Deposit.1";
     // Deposit Identifier
     @Id
     @ApiObjectField(description = "Universally Unique Identifier for the Deposit", name="Deposit")

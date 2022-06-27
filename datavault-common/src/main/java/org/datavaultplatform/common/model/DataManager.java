@@ -7,6 +7,9 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.NamedAttributeNode;
+import javax.persistence.NamedEntityGraph;
+import javax.persistence.NamedSubgraph;
 import javax.persistence.Table;
 import javax.persistence.ManyToOne;
 
@@ -18,7 +21,20 @@ import org.jsondoc.core.annotation.ApiObjectField;
 @ApiObject(name = "DataManager")
 @Entity
 @Table(name="DataManagers")
+@NamedEntityGraph(
+    name=DataManager.EG_DATA_MANAGER,
+    attributeNodes = @NamedAttributeNode(value = DataManager_.VAULT, subgraph = "subVault"),
+    subgraphs = @NamedSubgraph(
+        name="subVault",
+        attributeNodes = {
+            @NamedAttributeNode(Vault_.DATASET),
+            @NamedAttributeNode(Vault_.GROUP),
+            @NamedAttributeNode(Vault_.RETENTION_POLICY),
+            @NamedAttributeNode(Vault_.USER)
+        }))
 public class DataManager {
+
+    public static final String EG_DATA_MANAGER = "eg.DataManager.1";
 
     // Data Manager Identifier
     @Id

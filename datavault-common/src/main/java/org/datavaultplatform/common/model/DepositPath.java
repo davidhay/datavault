@@ -8,6 +8,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedAttributeNode;
+import javax.persistence.NamedEntityGraph;
+import javax.persistence.NamedSubgraph;
 import org.hibernate.annotations.GenericGenerator;
 import org.jsondoc.core.annotation.ApiObject;
 import org.jsondoc.core.annotation.ApiObjectField;
@@ -16,7 +19,18 @@ import org.jsondoc.core.annotation.ApiObjectField;
 @ApiObject(name = "DepositPath")
 @Entity
 @Table(name="DepositPaths")
+@NamedEntityGraph(
+    name = DepositPath.EG_DEPOSIT_PATH,
+    attributeNodes =
+    @NamedAttributeNode(value = DepositPath_.DEPOSIT, subgraph = "subDeposit"),
+    subgraphs = @NamedSubgraph(name = "subDeposit", attributeNodes = {
+        @NamedAttributeNode(Deposit_.VAULT),
+        @NamedAttributeNode(Deposit_.USER)
+    })
+)
 public class DepositPath {
+
+    public static final String EG_DEPOSIT_PATH =  "eg.DepositPath.1";
 
     // Deposit Identifier
     @Id

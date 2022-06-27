@@ -17,10 +17,16 @@ import java.util.List;
 @ApiObject(name = "PendingVault")
 @Entity
 @Table(name="PendingVaults")
+@NamedEntityGraph(name=PendingVault.EG_PENDING_VAULT, attributeNodes =
+    {
+        @NamedAttributeNode(PendingVault_.GROUP),
+        @NamedAttributeNode(PendingVault_.USER),
+        @NamedAttributeNode(PendingVault_.RETENTION_POLICY)
+    })
 public class PendingVault {
-    
-    private static String DEFAULT_PENDING_VAULT_NAME = "*** UNNAMED VAULT ***";
 
+    public static final String EG_PENDING_VAULT = "eg.PendingVault.1";
+    private static String DEFAULT_PENDING_VAULT_NAME = "*** UNNAMED VAULT ***";
     public enum Estimate {
         UNDER_100GB,
         UNDER_10TB,

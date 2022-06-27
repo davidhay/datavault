@@ -10,8 +10,20 @@ import java.util.Date;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Entity
 @Table(name="Retrieves")
+@NamedEntityGraph(
+    name=Retrieve.EG_RETRIEVE,
+    attributeNodes = {
+        @NamedAttributeNode(value = Retrieve_.DEPOSIT, subgraph = "subDeposit"),
+        @NamedAttributeNode(Retrieve_.USER)},
+    subgraphs = @NamedSubgraph(name="subDeposit",
+        attributeNodes = {
+        @NamedAttributeNode(Deposit_.VAULT),
+        @NamedAttributeNode(Deposit_.USER)
+    })
+)
 public class Retrieve {
 
+    public static final String EG_RETRIEVE = "eg.Retrieve.1";
     // Deposit Identifier
     @Id
     @GeneratedValue(generator = "uuid")

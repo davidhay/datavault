@@ -14,7 +14,18 @@ import java.util.List;
 @ApiObject(name = "VaultReview")
 @Entity
 @Table(name="VaultReviews")
+@NamedEntityGraph(
+    name=VaultReview.EG_VAULT_REVIEW,
+    attributeNodes = @NamedAttributeNode(value = VaultReview_.VAULT, subgraph = "subVault"),
+    subgraphs = @NamedSubgraph(name="subVault", attributeNodes = {
+        @NamedAttributeNode(Vault_.DATASET),
+        @NamedAttributeNode(Vault_.GROUP),
+        @NamedAttributeNode(Vault_.RETENTION_POLICY),
+        @NamedAttributeNode(Vault_.USER)
+    }))
 public class VaultReview {
+
+    public static final String EG_VAULT_REVIEW = "eg.VaultReview.1";
 
     // VaultReview Identifier
     @Id

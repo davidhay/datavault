@@ -10,7 +10,19 @@ import java.util.Date;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Entity
 @Table(name="Archives")
+@NamedEntityGraph(
+    name=Archive.EG_ARCHIVE,
+    attributeNodes = {
+        @NamedAttributeNode(Archive_.ARCHIVE_STORE),
+        @NamedAttributeNode(value = Archive_.DEPOSIT, subgraph = "subDeposit")
+    },
+    subgraphs = @NamedSubgraph(name="subDeposit", attributeNodes = {
+        @NamedAttributeNode(Deposit_.USER),
+        @NamedAttributeNode(Deposit_.VAULT)
+    })
+)
 public class Archive {
+    public static final String EG_ARCHIVE = "eg.Archive.1";
 
     // Archive Identifier
     @Id

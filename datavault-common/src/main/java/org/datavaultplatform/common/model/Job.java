@@ -12,6 +12,9 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Lob;
+import javax.persistence.NamedAttributeNode;
+import javax.persistence.NamedEntityGraph;
+import javax.persistence.NamedSubgraph;
 import javax.persistence.Table;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -25,7 +28,17 @@ import org.hibernate.annotations.GenericGenerator;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Entity
 @Table(name="Jobs")
+@NamedEntityGraph(
+    name=Job.EG_JOB,
+    attributeNodes = @NamedAttributeNode(value = Job_.DEPOSIT, subgraph = "subDeposit"),
+    subgraphs = @NamedSubgraph(name="subDeposit", attributeNodes = {
+        @NamedAttributeNode(Deposit_.USER),
+        @NamedAttributeNode(Deposit_.VAULT)
+    })
+)
 public class Job {
+
+    public static final String EG_JOB = "eg.Job.1";
 
     // Job Identifier
     @Id

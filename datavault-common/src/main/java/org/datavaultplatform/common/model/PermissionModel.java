@@ -7,7 +7,10 @@ import javax.persistence.*;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Entity
 @Table(name="Permissions")
+@NamedEntityGraph(name=PermissionModel.EG_PERMISSION_MODEL)
 public class PermissionModel {
+
+    public static final String EG_PERMISSION_MODEL = "eg.PermissionModel.1";
 
     public enum PermissionType {
         SCHOOL,

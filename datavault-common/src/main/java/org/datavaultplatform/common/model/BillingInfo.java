@@ -7,6 +7,9 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.NamedAttributeNode;
+import javax.persistence.NamedEntityGraph;
+import javax.persistence.NamedSubgraph;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Version;
@@ -20,9 +23,18 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Entity
 @Table(name="BillingInfo")
+@NamedEntityGraph(name=BillingInfo.EG_BILLING_INFO,
+		attributeNodes = @NamedAttributeNode(value = BillingInfo_.VAULT, subgraph = "subVault"),
+		subgraphs = @NamedSubgraph(name="subVault", attributeNodes = {
+				@NamedAttributeNode(Vault_.DATASET),
+				@NamedAttributeNode(Vault_.GROUP),
+				@NamedAttributeNode(Vault_.RETENTION_POLICY),
+				@NamedAttributeNode(Vault_.USER)
+		})
+)
 public class BillingInfo {
 
-     
+		public static final String EG_BILLING_INFO = "eg.BillingInfo.1";
     @Id
     @GeneratedValue(generator = "uuid")
     @GenericGenerator(name = "uuid", strategy = "uuid2")

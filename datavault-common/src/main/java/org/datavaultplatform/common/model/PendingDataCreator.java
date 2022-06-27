@@ -2,16 +2,33 @@ package org.datavaultplatform.common.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.NamedAttributeNode;
+import javax.persistence.NamedEntityGraph;
+import javax.persistence.NamedSubgraph;
+import javax.persistence.Table;
+import javax.persistence.Version;
 import org.hibernate.annotations.GenericGenerator;
 import org.jsondoc.core.annotation.ApiObject;
-
-import javax.persistence.*;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @ApiObject(name = "PendingDataCreator")
 @Entity
 @Table(name="PendingDataCreators")
+@NamedEntityGraph(name = PendingDataCreator.EG_PENDING_DATA_CREATOR, attributeNodes =
+@NamedAttributeNode(value = PendingDataCreator_.PENDING_VAULT, subgraph = "subPV"),
+    subgraphs = @NamedSubgraph(name = "subPV", attributeNodes = {
+        @NamedAttributeNode(PendingVault_.GROUP),
+        @NamedAttributeNode(PendingVault_.RETENTION_POLICY),
+        @NamedAttributeNode(PendingVault_.USER)
+    }))
 public class PendingDataCreator {
+
+    public static final String EG_PENDING_DATA_CREATOR = "eg.PendingDataCreator.1";
 
     // PDC Identifier
     @Id
