@@ -94,6 +94,6 @@ public class BillingCustomDAOImpl extends BaseCustomDAOImpl implements BillingCu
 
 
   List<BillingInfo> getBillingInfo(TypedQuery<BillingInfo> typedQuery) {
-    return addEntityGraph(BillingInfo.class,typedQuery).getResultList();
+    return getResults(BillingInfo.class, typedQuery);
   }
 }

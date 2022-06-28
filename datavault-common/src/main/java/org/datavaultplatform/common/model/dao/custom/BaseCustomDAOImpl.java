@@ -48,22 +48,23 @@ public abstract class BaseCustomDAOImpl implements BaseCustomDAO {
     return result == null ? 0 : result.longValue();
   }
 
+  protected <V> List<V> getResults(CriteriaQuery<V> cq) {
+    return getResults(em, cq);
+  }
+
+  protected <V> List<V> getResults(Class<V> clazz, TypedQuery<V> tq) {
+    return addEntityGraph(clazz, tq).getResultList();
+  }
+
+  public <T> TypedQuery<T> addEntityGraph(Class<T> clazz, TypedQuery<T> query) {
+    return addEntityGraph(em, clazz, query);
+  }
 
   public static <T> TypedQuery<T> addEntityGraph(EntityManager em, Class<T> clazz, TypedQuery<T> query) {
     return DaoUtils.addEntityGraph(em, clazz, query);
   }
-
-
-  public <T> TypedQuery<T> addEntityGraph(Class<T> clazz, TypedQuery<T> query) {
-      return addEntityGraph(em, clazz, query);
-  }
-
-  protected <V> List<V> getResults(CriteriaQuery<V> cq) {
-      return getResults(em, cq);
-  }
   protected static <V> List<V> getResults(EntityManager em, CriteriaQuery<V> cq) {
     return addEntityGraph(em, cq.getResultType(), em.createQuery(cq)).getResultList();
   }
-
 
 }
