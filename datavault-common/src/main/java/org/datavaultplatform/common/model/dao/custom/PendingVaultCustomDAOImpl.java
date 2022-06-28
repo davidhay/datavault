@@ -147,7 +147,7 @@ public class PendingVaultCustomDAOImpl extends BaseCustomDAOImpl implements
   private void addConfirmed(List<Predicate> predicates, String confirmed, CriteriaBuilder cb,
       Root<PendingVault> rt) {
     if (confirmed != null && !confirmed.equals("null") && !confirmed.equals("")) {
-      Boolean conf = new Boolean(confirmed);
+      Boolean conf = Boolean.valueOf(confirmed);
       predicates.add(
           cb.equal(rt.get(PendingVault_.CONFIRMED), conf)
       );

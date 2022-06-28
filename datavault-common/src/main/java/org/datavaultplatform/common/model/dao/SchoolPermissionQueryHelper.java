@@ -8,13 +8,11 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import javax.persistence.EntityManager;
-import javax.persistence.Tuple;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.Join;
-import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Order;
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
@@ -24,7 +22,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.datavaultplatform.common.model.Group;
 import org.datavaultplatform.common.model.Group_;
 import org.datavaultplatform.common.util.DaoUtils;
-import org.hibernate.query.Query;
 
 @Slf4j
 public class SchoolPermissionQueryHelper<T> {
@@ -95,7 +92,7 @@ public class SchoolPermissionQueryHelper<T> {
         result.add(single);
       }
     }
-    Predicate[] array = result.stream().toArray(Predicate[]::new);
+    Predicate[] array = result.toArray(new Predicate[0]);
     return array;
   }
 

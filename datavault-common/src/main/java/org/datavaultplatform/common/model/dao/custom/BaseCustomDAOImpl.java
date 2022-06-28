@@ -1,13 +1,11 @@
 package org.datavaultplatform.common.model.dao.custom;
 
 import java.util.List;
-import javax.persistence.EntityGraph;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaQuery;
 import lombok.extern.slf4j.Slf4j;
-import org.datavaultplatform.common.event.Event;
 import org.datavaultplatform.common.util.DaoUtils;
 import org.hibernate.Session;
 

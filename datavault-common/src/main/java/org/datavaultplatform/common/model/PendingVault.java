@@ -308,7 +308,7 @@ public class PendingVault {
     }
 
     public void setDataCreator(List<PendingDataCreator> dataCreators) {
-        synchronized (dataCreators) {
+        synchronized (this.dataCreators) {
             this.dataCreators.clear();
             this.dataCreators.addAll(dataCreators);
         }
