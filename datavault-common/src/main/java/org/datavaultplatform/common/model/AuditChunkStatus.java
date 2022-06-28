@@ -3,13 +3,22 @@ package org.datavaultplatform.common.model;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import java.util.Date;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.NamedAttributeNode;
+import javax.persistence.NamedEntityGraph;
+import javax.persistence.NamedSubgraph;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.datavaultplatform.common.response.AuditChunkStatusInfo;
 import org.hibernate.annotations.GenericGenerator;
-
-import javax.persistence.*;
-import java.util.Date;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Entity
@@ -193,8 +202,6 @@ public class AuditChunkStatus {
 
     @Override
     public int hashCode() {
-        // you pick a hard-coded, randomly chosen, non-zero, odd number
-        // ideally different for each class
         return new HashCodeBuilder(17, 37).
             append(id).toHashCode();
     }

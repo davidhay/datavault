@@ -414,8 +414,6 @@ public class Deposit {
 
     @Override
     public int hashCode() {
-        // you pick a hard-coded, randomly chosen, non-zero, odd number
-        // ideally different for each class
         return new HashCodeBuilder(17, 37).
             append(id).toHashCode();
     }

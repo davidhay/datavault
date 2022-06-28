@@ -1,7 +1,7 @@
 package org.datavaultplatform.common.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.math.BigDecimal;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -13,11 +13,10 @@ import javax.persistence.NamedSubgraph;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Version;
-
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.datavaultplatform.common.response.BillingInformation;
 import org.hibernate.annotations.GenericGenerator;
-
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -184,28 +183,23 @@ public class BillingInfo {
 				billingType
             );
     }
-     
-    
-    @Override
-    public boolean equals(Object other) {
-        
-        if (this == other) return true;
-        
-        if (!(other instanceof BillingInfo)) {
-            return false;
-        }
-        
-        final BillingInfo vault = (BillingInfo)other;
-        
-        if (!vault.getID().equals(getID())) {
-            return false;
-        }
-        
-        return true;
-    }
-    
-    @Override
-    public int hashCode() {
-        return getID().hashCode();
-    }
+
+
+	@Override
+	public boolean equals(Object obj){
+		if (obj == null) { return false; }
+		if (obj == this) { return true; }
+		if (obj.getClass() != getClass()) {
+			return false;
+		}
+		BillingInfo rhs = (BillingInfo) obj;
+		return new EqualsBuilder()
+				.append(this.id, rhs.id).isEquals();
+	}
+
+	@Override
+	public int hashCode() {
+		return new HashCodeBuilder(17, 37).
+				append(id).toHashCode();
+	}
 }

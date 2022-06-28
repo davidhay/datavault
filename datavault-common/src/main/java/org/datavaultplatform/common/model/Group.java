@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import javax.persistence.*;
 import javax.validation.constraints.*;
 import java.util.List;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -77,28 +79,23 @@ public class Group {
             return vaults;
         }
     }
-    
+
     @Override
-    public boolean equals(Object other) {
-        
-        if (this == other) return true;
-        
-        if (!(other instanceof Group)) {
+    public boolean equals(Object obj){
+        if (obj == null) { return false; }
+        if (obj == this) { return true; }
+        if (obj.getClass() != getClass()) {
             return false;
         }
-        
-        final Group group = (Group)other;
-        
-        if (!group.getID().equals(getID())) {
-            return false;
-        }
-        
-        return true;
+        Group rhs = (Group) obj;
+        return new EqualsBuilder()
+            .append(this.id, rhs.id).isEquals();
     }
-    
+
     @Override
     public int hashCode() {
-        return getID().hashCode();
+        return new HashCodeBuilder(17, 37).
+            append(id).toHashCode();
     }
 
     public boolean hasMember(String userID) {

@@ -23,6 +23,7 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Version;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.datavaultplatform.common.response.BillingInformation;
 import org.datavaultplatform.common.response.VaultInfo;
 import org.datavaultplatform.common.retentionpolicy.RetentionPolicyStatus;
@@ -442,6 +443,7 @@ public class Vault {
     
     @Override
     public int hashCode() {
-        return getID().hashCode();
+      return new HashCodeBuilder(17, 37).
+        append(id).toHashCode();
     }
 }

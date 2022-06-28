@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import javax.persistence.*;
 import java.util.HashMap;
 import java.util.List;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Entity
@@ -118,9 +119,10 @@ public class User {
 
         return user.getID().equals(getID());
     }
-    
+
     @Override
     public int hashCode() {
-        return getID().hashCode();
+        return new HashCodeBuilder(17, 37).
+            append(id).toHashCode();
     }
 }
