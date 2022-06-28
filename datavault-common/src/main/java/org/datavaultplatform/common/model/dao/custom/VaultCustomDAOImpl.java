@@ -27,6 +27,7 @@ import org.datavaultplatform.common.model.dao.SchoolPermissionQueryHelper;
 import org.datavaultplatform.common.util.DaoUtils;
 import org.hibernate.annotations.SQLDeleteAll;
 import org.slf4j.MDC;
+import org.springframework.data.jpa.repository.EntityGraph.EntityGraphType;
 
 
 public class VaultCustomDAOImpl extends BaseCustomDAOImpl implements VaultCustomDAO {
@@ -194,7 +195,7 @@ public class VaultCustomDAOImpl extends BaseCustomDAOImpl implements VaultCustom
         Root<Vault> root = cq.from(Vault.class);
         cq.select(root).distinct(true);
 
-        TypedQuery<Vault> tq = em.createQuery(cq);
+        TypedQuery<Vault> tq = em.createQuery(cq).setHint(EntityGraphType.FETCH.getKey(), em.getEntityGraph(Vault.EG_VAULT));
 
         SQLAppender.setQueryName("queryAAA");
         List<Vault> result = tq.getResultList();
