@@ -23,21 +23,14 @@ public class PendingVaultCustomDAOImpl extends BaseCustomDAOImpl implements
     super(em);
   }
 
-  private static List<Order> getSingletonList(CriteriaBuilder cb, boolean asc, Path sortPath) {
-    return Collections.singletonList(asc ? cb.asc(sortPath) : cb.desc(sortPath));
-  }
 
   @SuppressWarnings("unchecked")
   @Override
   public List<PendingVault> list(String userId, String sort, String order, String offset, String maxResult) {
-    SchoolPermissionQueryHelper helper = createPendingVaultQueryHelper(userId,
-        Permission.CAN_MANAGE_VAULTS);
+    SchoolPermissionQueryHelper helper = createPendingVaultQueryHelper(userId, Permission.CAN_MANAGE_VAULTS);
     if (helper.hasNoAccess()) {
       return new ArrayList<>();
     }
-    //Criteria criteria = criteriaBuilder.build();
-    //criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
-
     order(sort, order, helper);
 
     if((offset != null && maxResult != null) && !maxResult.equals("0")) {
@@ -60,8 +53,8 @@ public class PendingVaultCustomDAOImpl extends BaseCustomDAOImpl implements
       addConfirmed(predicates, confirmed, cb, rt);
       return predicates;
     });
-    long totalNumberOfVaults = helper.getItemCount();
-    return (int)totalNumberOfVaults;
+    int totalNumberOfVaults = helper.getItemCount().intValue();
+    return totalNumberOfVaults;
   }
 
   /**
@@ -74,8 +67,8 @@ public class PendingVaultCustomDAOImpl extends BaseCustomDAOImpl implements
       return 0;
     }
     addCommonPredicates(helper, query, confirmed);
-    long totalNumberOfVaults = helper.getItemCount();
-    return (int)totalNumberOfVaults;
+    int totalNumberOfVaults = helper.getItemCount().intValue();
+    return totalNumberOfVaults;
   }
 
   @SuppressWarnings("unchecked")
@@ -127,7 +120,7 @@ public class PendingVaultCustomDAOImpl extends BaseCustomDAOImpl implements
       } else {
         sortPath = rt.get(sort);
       }
-      return getSingletonList(cb, asc, sortPath);
+      return getSingletonOrderList(cb, asc, sortPath);
     });
   }
 
@@ -136,7 +129,7 @@ public class PendingVaultCustomDAOImpl extends BaseCustomDAOImpl implements
     helper.setPredicateHelper((cb, rt) -> {
       List<Predicate> predicates = new ArrayList<>();
       if (!(query == null || query.equals(""))) {
-        String lowerQuery = "%" + query.toLowerCase() + "%";
+        String lowerQuery = getQueryLower(query);
         predicates.add(
             cb.or(
                 cb.like(cb.lower(rt.get(PendingVault_.ID)), lowerQuery),
@@ -159,5 +152,8 @@ public class PendingVaultCustomDAOImpl extends BaseCustomDAOImpl implements
           cb.equal(rt.get(PendingVault_.CONFIRMED), conf)
       );
     }
+  }
+  private static List<Order> getSingletonOrderList(CriteriaBuilder cb, boolean asc, Path sortPath) {
+    return Collections.singletonList(asc ? cb.asc(sortPath) : cb.desc(sortPath));
   }
 }

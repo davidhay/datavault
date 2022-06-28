@@ -99,14 +99,6 @@ public class SchoolPermissionQueryHelper<T> {
     return array;
   }
 
-  SchoolPermissionQueryHelper<T> build() {
-    if (hasNoAccess()) {
-      throw new IllegalStateException(
-          "Cannot build school permissions criteria without any permitted schools");
-    }
-    return this;
-  }
-
   public List<T> getItems(boolean distinct) {
     CriteriaQuery<T> cq = cb.createQuery(this.criteriaType);
     Root<T> root = cq.from(this.criteriaType);

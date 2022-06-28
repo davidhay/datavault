@@ -22,7 +22,7 @@ public class DepositReviewCustomDAOImpl extends BaseCustomDAOImpl implements
         CriteriaQuery<DepositReview> cq = cb.createQuery(DepositReview.class).distinct(true);
         Root<DepositReview> rt = cq.from(DepositReview.class);
         if (query != null) {
-            cq.where(cb.like(cb.lower(rt.get(DepositReview_.ID)), "%" + query.toLowerCase() + "%"));
+            cq.where(cb.like(cb.lower(rt.get(DepositReview_.ID)), getQueryLower(query)));
         }
         List<DepositReview> depositReviews = getResults(cq);
         return depositReviews;

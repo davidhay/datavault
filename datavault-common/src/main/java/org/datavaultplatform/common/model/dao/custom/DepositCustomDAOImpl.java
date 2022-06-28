@@ -28,22 +28,19 @@ public class DepositCustomDAOImpl extends BaseCustomDAOImpl implements DepositCu
 
   @SuppressWarnings("unchecked")
   @Override
-  public List<Deposit> list(String query, String userId, String sort, String sortDirection,
-      int offset, int maxResult) {
-    System.out.println(
-        "query:" + query + ", sort: " + sort + ", order: " + sortDirection + ", offset: " + offset
-            + ", maxResult: " + maxResult);
-    SchoolPermissionQueryHelper<Deposit> helper = createDepositQueryHelper(userId,
-        Permission.CAN_MANAGE_DEPOSITS);
+  public List<Deposit> list(String query, String userId, String sort, String sortDirection, int offset, int maxResult) {
+    System.out.println("query:"+query+", sort: "+sort+", order: "+sortDirection +", offset: "+offset+", maxResult: "+maxResult);
+    SchoolPermissionQueryHelper<Deposit> helper = createDepositQueryHelper(userId, Permission.CAN_MANAGE_DEPOSITS);
     if (helper.hasNoAccess()) {
       return new ArrayList<>();
     }
 
-    System.out.println("DAO.list query=" + query);
-    if ((query == null || "".equals(query)) == false) {
+    System.out.println("DAO.list query="+query);
+    if((query == null || "".equals(query)) == false) {
       System.out.println("apply restrictions");
 
-      String queryLower = "%" + query.toLowerCase() + "%";
+      String queryLower = getQueryLower(query);
+
       helper.setSinglePredicateHelper((cb, rt) ->
           cb.or(
               cb.like(cb.lower(rt.get(Deposit_.ID)), queryLower),
@@ -85,15 +82,14 @@ public class DepositCustomDAOImpl extends BaseCustomDAOImpl implements DepositCu
 
   @Override
   public int count(String userId, String query) {
-    SchoolPermissionQueryHelper<Deposit> helper = createDepositQueryHelper(userId,
-        Permission.CAN_MANAGE_DEPOSITS);
+    SchoolPermissionQueryHelper<Deposit> helper = createDepositQueryHelper(userId, Permission.CAN_MANAGE_DEPOSITS);
     if (helper.hasNoAccess()) {
       return 0;
     }
 
-    if ((query == null || "".equals(query)) == false) {
+    if((query == null || "".equals(query)) == false) {
       System.out.println("apply restrictions");
-      String queryLower = "%" + query.toLowerCase() + "%";
+      String queryLower = getQueryLower(query);
       helper.setSinglePredicateHelper((cb, rt) -> cb.or(
           cb.like(cb.lower(rt.get(Deposit_.ID)), queryLower),
           cb.like(cb.lower(rt.get(Deposit_.NAME)), queryLower)));
@@ -103,8 +99,7 @@ public class DepositCustomDAOImpl extends BaseCustomDAOImpl implements DepositCu
 
   @Override
   public int queueCount(String userId) {
-    SchoolPermissionQueryHelper<Deposit> helper = createDepositQueryHelper(userId,
-        Permission.CAN_VIEW_QUEUES);
+    SchoolPermissionQueryHelper<Deposit> helper = createDepositQueryHelper(userId, Permission.CAN_VIEW_QUEUES);
     if (helper.hasNoAccess()) {
       return 0;
     }
@@ -115,8 +110,7 @@ public class DepositCustomDAOImpl extends BaseCustomDAOImpl implements DepositCu
 
   @Override
   public int inProgressCount(String userId) {
-    SchoolPermissionQueryHelper<Deposit> helper = createDepositQueryHelper(userId,
-        Permission.CAN_VIEW_IN_PROGRESS);
+    SchoolPermissionQueryHelper<Deposit> helper = createDepositQueryHelper(userId, Permission.CAN_VIEW_IN_PROGRESS);
     if (helper.hasNoAccess()) {
       return 0;
     }
@@ -131,12 +125,11 @@ public class DepositCustomDAOImpl extends BaseCustomDAOImpl implements DepositCu
     CriteriaBuilder cb = em.getCriteriaBuilder();
     CriteriaQuery<Deposit> cq = cb.createQuery(Deposit.class).distinct(true);
     Root<Deposit> root = cq.from(Deposit.class);
-    cq.where(cb.and (
+    cq.where(cb.and(
         cb.notEqual(root.get(Deposit_.STATUS), Status.NOT_STARTED),
         cb.notEqual(root.get(Deposit_.STATUS), Status.COMPLETE)));
     List<Deposit> deposits = getResults(cq);
     return deposits;
-
   }
 
   @Override
@@ -149,30 +142,14 @@ public class DepositCustomDAOImpl extends BaseCustomDAOImpl implements DepositCu
     return deposits;
   }
 
-    /*
-            CriteriaQuery<Event> cr = cb.createQuery(Event.class).distinct(true);
-        Root<Event> rt = cr.from(Event.class);
-        // See if there is a valid sort option
-        if(Event_.ID.equals(sort)) {
-            cr.orderBy(cb.asc(rt.get(Event_.ID)));
-        } else {
-            cr.orderBy(cb.asc(rt.get(Event_.TIMESTAMP)));
-        }
-
-        List<Event> events = em.createQuery(cr).getResultList();
-        return events;
-
-     */
-
   @Override
   public List<Deposit> search(String query, String sort, String sortDirection, String userId) {
-    SchoolPermissionQueryHelper<Deposit> helper = createDepositQueryHelper(userId,
-        Permission.CAN_MANAGE_DEPOSITS);
+    SchoolPermissionQueryHelper<Deposit> helper = createDepositQueryHelper(userId, Permission.CAN_MANAGE_DEPOSITS);
     if (helper.hasNoAccess()) {
       return new ArrayList<>();
     }
 
-    String queryLower = "%" + query.toLowerCase() + "%";
+    String queryLower = getQueryLower(query);
 
     helper.setSinglePredicateHelper((cb, rt) ->
         cb.or(
@@ -185,7 +162,7 @@ public class DepositCustomDAOImpl extends BaseCustomDAOImpl implements DepositCu
     helper.setOrderByHelper((cb, rt) -> {
       Path sortPath = rt.get(sort);
       final Order order;
-      if ("asc".equals(sortDirection)) {
+      if("asc".equals(sortDirection)) {
         order = cb.asc(sortPath);
       } else {
         order = cb.desc(sortPath);
@@ -199,8 +176,7 @@ public class DepositCustomDAOImpl extends BaseCustomDAOImpl implements DepositCu
 
   @Override
   public Long size(String userId) {
-    SchoolPermissionQueryHelper<Deposit> helper = createDepositQueryHelper(userId,
-        Permission.CAN_VIEW_VAULTS_SIZE);
+    SchoolPermissionQueryHelper<Deposit> helper = createDepositQueryHelper(userId,  Permission.CAN_VIEW_VAULTS_SIZE);
     if (helper.hasNoAccess()) {
       return 0L;
     }
@@ -224,6 +200,7 @@ public class DepositCustomDAOImpl extends BaseCustomDAOImpl implements DepositCu
         cb.lessThanOrEqualTo(root.get(Deposit_.STATUS), Deposit.Status.COMPLETE)
     ));
     cq.orderBy(cb.asc(root.get(Deposit_.CREATION_TIME)));
+
     List<Deposit> deposits = getResults(cq);
     return deposits;
   }

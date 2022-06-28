@@ -22,7 +22,7 @@ public class VaultReviewCustomDAOImpl extends BaseCustomDAOImpl implements
         CriteriaQuery<VaultReview> cq = cb.createQuery(VaultReview.class).distinct(true);
         Root<VaultReview> rt = cq.from(VaultReview.class);
         if(query != null) {
-            cq.where(cb.like(cb.lower(rt.get(VaultReview_.ID)), "%" + query.toLowerCase() + "%"));
+            cq.where(cb.like(cb.lower(rt.get(VaultReview_.ID)), getQueryLower(query)));
         }
         List<VaultReview> vaultReviews = getResults(cq);
         return vaultReviews;

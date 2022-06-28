@@ -34,8 +34,7 @@ public class VaultCustomDAOImpl extends BaseCustomDAOImpl implements VaultCustom
     @SuppressWarnings("unchecked")
     @Override
     public List<Vault> list(String userId, String sort, String order, String offset, String maxResult) {
-        SchoolPermissionQueryHelper<Vault> helper = createVaultQueryHelper(userId,
-            Permission.CAN_MANAGE_VAULTS);
+        SchoolPermissionQueryHelper<Vault> helper = createVaultQueryHelper(userId, Permission.CAN_MANAGE_VAULTS);
         if (helper.hasNoAccess()) {
             return new ArrayList<>();
         }
@@ -55,13 +54,12 @@ public class VaultCustomDAOImpl extends BaseCustomDAOImpl implements VaultCustom
     @SuppressWarnings("unchecked")
     @Override
     public List<Vault> search(String userId, String query, String sort, String order, String offset, String maxResult) {
-        SchoolPermissionQueryHelper<Vault> helper = createVaultQueryHelper(userId,
-            Permission.CAN_MANAGE_VAULTS);
+        SchoolPermissionQueryHelper<Vault> helper = createVaultQueryHelper(userId, Permission.CAN_MANAGE_VAULTS);
         if (helper.hasNoAccess()) {
             return new ArrayList<>();
         }
         if (StringUtils.isNotBlank(query)) {
-            String queryLower = "%" + query.toLowerCase() + "%";
+            String queryLower = getQueryLower(query);
             helper.setSinglePredicateHelper((cb, rt) -> cb.or (
                 cb.like(cb.lower(rt.get(Vault_.ID)), queryLower),
                 cb.like(cb.lower(rt.get(Vault_.NAME)), queryLower),
@@ -159,13 +157,12 @@ public class VaultCustomDAOImpl extends BaseCustomDAOImpl implements VaultCustom
 	 */
 	@Override
 	public int getTotalNumberOfVaults(String userId, String query) {
-      SchoolPermissionQueryHelper<Vault> helper = createVaultQueryHelper(userId,
-          Permission.CAN_MANAGE_VAULTS);
+      SchoolPermissionQueryHelper<Vault> helper = createVaultQueryHelper(userId, Permission.CAN_MANAGE_VAULTS);
       if (helper.hasNoAccess()) {
           return 0;
       }
       if (StringUtils.isNotBlank(query)) {
-          String queryLower = "%" + query.toLowerCase() + "%";
+          String queryLower = getQueryLower(query);
           helper.setSinglePredicateHelper((cb, rt) ->
               cb.or(
                   cb.like(cb.lower(rt.get(Vault_.id)), queryLower),

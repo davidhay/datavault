@@ -40,10 +40,10 @@ public class BillingCustomDAOImpl extends BaseCustomDAOImpl implements BillingCu
         Root<BillingInfo> rt = cr.from(BillingInfo.class);
 
         if(query != null){
-          String queryLower = query.toLowerCase();
+          String queryLower = getQueryLower(query);
           cr.where(cb.or(
-              cb.like(cb.lower(rt.get(BillingInfo_.id)), "%" + queryLower + "%"),
-              cb.like(cb.lower(rt.get(BillingInfo_.contactName)), "%" + queryLower + "%")
+              cb.like(cb.lower(rt.get(BillingInfo_.id)), queryLower),
+              cb.like(cb.lower(rt.get(BillingInfo_.contactName)), queryLower)
           ));
         }
 
@@ -81,10 +81,10 @@ public class BillingCustomDAOImpl extends BaseCustomDAOImpl implements BillingCu
 
     countQuery.select(cb.count(rt));
     if (query != null) {
-      String queryLower = query.toLowerCase();
+      String queryLower = getQueryLower(query);
       countQuery.where(cb.or(
-          cb.like(cb.lower(rt.get(BillingInfo_.id)), "%" + queryLower + "%"),
-          cb.like(cb.lower(rt.get(BillingInfo_.contactName)), "%" + queryLower + "%")
+          cb.like(cb.lower(rt.get(BillingInfo_.id)), queryLower),
+          cb.like(cb.lower(rt.get(BillingInfo_.contactName)), queryLower)
       ));
     }
 

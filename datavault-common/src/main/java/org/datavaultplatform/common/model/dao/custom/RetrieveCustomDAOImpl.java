@@ -41,7 +41,6 @@ public class RetrieveCustomDAOImpl extends BaseCustomDAOImpl implements Retrieve
             return 0;
         }
         return helper.getItemCount().intValue();
-
     }
 
     @Override
@@ -53,7 +52,6 @@ public class RetrieveCustomDAOImpl extends BaseCustomDAOImpl implements Retrieve
         helper.setSinglePredicateHelper((cb, rt) ->
             cb.equal(rt.get(Retrieve_.STATUS), Status.NOT_STARTED));
         return helper.getItemCount().intValue();
-
     }
 
     @Override

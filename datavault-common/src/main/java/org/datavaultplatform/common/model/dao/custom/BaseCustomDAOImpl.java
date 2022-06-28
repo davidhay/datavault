@@ -67,4 +67,9 @@ public abstract class BaseCustomDAOImpl implements BaseCustomDAO {
     return addEntityGraph(em, cq.getResultType(), em.createQuery(cq)).getResultList();
   }
 
+
+  public String getQueryLower(String query) {
+    return "%" + query.toLowerCase() + "%";
+  }
+
 }

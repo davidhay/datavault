@@ -19,8 +19,7 @@ public class GroupCustomDAOImpl extends BaseCustomDAOImpl implements GroupCustom
 
     @Override
     public List<Group> list(String userId) {
-        SchoolPermissionQueryHelper<Group> helper = createGroupQueryHelper(userId,
-            Permission.CAN_VIEW_SCHOOL_ROLE_ASSIGNMENTS);
+        SchoolPermissionQueryHelper<Group> helper = createGroupQueryHelper(userId, Permission.CAN_VIEW_SCHOOL_ROLE_ASSIGNMENTS);
         if (helper.hasNoAccess()) {
             return new ArrayList<>();
         }
@@ -32,8 +31,7 @@ public class GroupCustomDAOImpl extends BaseCustomDAOImpl implements GroupCustom
 
     @Override
     public int count(String userId) {
-        SchoolPermissionQueryHelper<Group> helper = createGroupQueryHelper(userId,
-            Permission.CAN_VIEW_SCHOOL_ROLE_ASSIGNMENTS);
+        SchoolPermissionQueryHelper<Group> helper = createGroupQueryHelper(userId, Permission.CAN_VIEW_SCHOOL_ROLE_ASSIGNMENTS);
         if (helper.hasNoAccess()) {
             return 0;
         }
@@ -41,7 +39,7 @@ public class GroupCustomDAOImpl extends BaseCustomDAOImpl implements GroupCustom
     }
 
     private SchoolPermissionQueryHelper<Group> createGroupQueryHelper(String userId, Permission permission) {
-        return new SchoolPermissionQueryHelper<Group>(em,Group.class)
+        return new SchoolPermissionQueryHelper<>(em, Group.class)
                 .setSchoolIds(DaoUtils.getPermittedSchoolIds(em, userId, permission));
     }
 }

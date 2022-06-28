@@ -22,11 +22,11 @@ public class UserCustomDAOImpl extends BaseCustomDAOImpl implements UserCustomDA
         Root<User> rt = cq.from(User.class);
 
         if(query != null) {
-            String queryLower = query.toLowerCase();
+            String queryLower = getQueryLower(query);
             cq.where(cb.or(
-                cb.like(cb.lower(rt.get(User_.id)), "%" + queryLower + "%"),
-                cb.like(cb.lower(rt.get(User_.firstname)), "%" + queryLower + "%"),
-                cb.like(cb.lower(rt.get(User_.lastname)), "%" + queryLower + "%")
+                cb.like(cb.lower(rt.get(User_.id)), queryLower),
+                cb.like(cb.lower(rt.get(User_.firstname)), queryLower),
+                cb.like(cb.lower(rt.get(User_.lastname)), queryLower)
             ));
         }
 
