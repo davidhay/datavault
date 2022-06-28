@@ -8,7 +8,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
-import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Expression;
@@ -21,13 +20,8 @@ import org.datavaultplatform.common.model.Permission;
 import org.datavaultplatform.common.model.User_;
 import org.datavaultplatform.common.model.Vault;
 import org.datavaultplatform.common.model.Vault_;
-import org.datavaultplatform.common.model.dao.SQLAppender;
-import org.datavaultplatform.common.model.dao.SQLAppender.GroupedSQL;
 import org.datavaultplatform.common.model.dao.SchoolPermissionQueryHelper;
 import org.datavaultplatform.common.util.DaoUtils;
-import org.hibernate.annotations.SQLDeleteAll;
-import org.slf4j.MDC;
-import org.springframework.data.jpa.repository.EntityGraph.EntityGraphType;
 
 
 public class VaultCustomDAOImpl extends BaseCustomDAOImpl implements VaultCustomDAO {
@@ -187,23 +181,6 @@ public class VaultCustomDAOImpl extends BaseCustomDAOImpl implements VaultCustom
           "select v.projectId, sum(v.vaultSize) from org.datavaultplatform.common.model.Vault v group by v.projectId");
 		return query.getResultList();
 	}
-
-    @Override
-    public List<Vault> special() {
-        CriteriaBuilder cb = em.getCriteriaBuilder();
-        CriteriaQuery<Vault> cq = cb.createQuery(Vault.class);
-        Root<Vault> root = cq.from(Vault.class);
-        cq.select(root).distinct(true);
-
-        TypedQuery<Vault> tq = em.createQuery(cq).setHint(EntityGraphType.FETCH.getKey(), em.getEntityGraph(Vault.EG_VAULT));
-
-        SQLAppender.setQueryName("queryAAA");
-        List<Vault> result = tq.getResultList();
-        GroupedSQL sql =  SQLAppender.getGroupedSQL();
-        SQLAppender.clearQueryName();
-
-        return result;
-    }
 
 
     private SchoolPermissionQueryHelper<Vault> createVaultQueryHelper(String userId, Permission permission) {
