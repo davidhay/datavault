@@ -2,6 +2,8 @@ package org.datavaultplatform.common.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -77,5 +79,25 @@ public class Archive {
     }
     public String getId() {
         return this.id;
+    }
+
+    @Override
+    public boolean equals(Object obj){
+        if (obj == null) { return false; }
+        if (obj == this) { return true; }
+        if (obj.getClass() != getClass()) {
+            return false;
+        }
+        Archive rhs = (Archive) obj;
+        return new EqualsBuilder()
+            .append(this.id, rhs.id).isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        // you pick a hard-coded, randomly chosen, non-zero, odd number
+        // ideally different for each class
+        return new HashCodeBuilder(17, 37).
+            append(id).toHashCode();
     }
 }

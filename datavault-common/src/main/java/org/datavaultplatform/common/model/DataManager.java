@@ -13,6 +13,8 @@ import javax.persistence.NamedSubgraph;
 import javax.persistence.Table;
 import javax.persistence.ManyToOne;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.hibernate.annotations.GenericGenerator;
 import org.jsondoc.core.annotation.ApiObject;
 import org.jsondoc.core.annotation.ApiObjectField;
@@ -72,5 +74,25 @@ public class DataManager {
     
     public void setUUN(String uun) {
         this.uun = uun;
+    }
+
+    @Override
+    public boolean equals(Object obj){
+        if (obj == null) { return false; }
+        if (obj == this) { return true; }
+        if (obj.getClass() != getClass()) {
+            return false;
+        }
+        DataManager rhs = (DataManager) obj;
+        return new EqualsBuilder()
+            .append(this.id, rhs.id).isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        // you pick a hard-coded, randomly chosen, non-zero, odd number
+        // ideally different for each class
+        return new HashCodeBuilder(17, 37).
+            append(id).toHashCode();
     }
 }

@@ -11,6 +11,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedAttributeNode;
 import javax.persistence.NamedEntityGraph;
 import javax.persistence.NamedSubgraph;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.hibernate.annotations.GenericGenerator;
 import org.jsondoc.core.annotation.ApiObject;
 import org.jsondoc.core.annotation.ApiObjectField;
@@ -81,5 +83,25 @@ public class DepositPath {
 
     public void setPathType(Path.PathType pathType) {
         this.pathType = pathType;
+    }
+
+    @Override
+    public boolean equals(Object obj){
+        if (obj == null) { return false; }
+        if (obj == this) { return true; }
+        if (obj.getClass() != getClass()) {
+            return false;
+        }
+        DepositPath rhs = (DepositPath) obj;
+        return new EqualsBuilder()
+            .append(this.id, rhs.id).isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        // you pick a hard-coded, randomly chosen, non-zero, odd number
+        // ideally different for each class
+        return new HashCodeBuilder(17, 37).
+            append(id).toHashCode();
     }
 }

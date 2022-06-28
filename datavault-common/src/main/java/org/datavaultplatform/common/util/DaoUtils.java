@@ -68,6 +68,7 @@ public abstract class DaoUtils {
         EntityGraph<T> graph = (EntityGraph<T>) em.getEntityGraph(graphName);
         log.info(String.format("adding graph [%s] to [%s]", graph.getName(), clazz.getSimpleName()));
         return query.setHint(DaoUtils.HINT_FETCH_GRAPH, graph);
+        //return query;
     }
 
 }

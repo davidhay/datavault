@@ -20,4 +20,6 @@ public interface VaultCustomDAO extends BaseCustomDAO {
     int getTotalNumberOfVaults(String userId, String query);
 
     List<Object[]> getAllProjectsSize();
+
+    List<Vault> special();
 }

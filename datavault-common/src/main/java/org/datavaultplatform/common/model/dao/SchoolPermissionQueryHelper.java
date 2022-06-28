@@ -146,8 +146,6 @@ public class SchoolPermissionQueryHelper<T> {
     return getQueryWithRestrictions(cq).getSingleResult();
   }
 
-
-
   private <V> TypedQuery<V> getQueryWithRestrictions(CriteriaQuery<V> cq) {
     TypedQuery<V> typedQuery = em.createQuery(cq);
     if (this.firstResult != null) {
@@ -156,7 +154,6 @@ public class SchoolPermissionQueryHelper<T> {
     if (this.maxResults != null) {
       typedQuery.setMaxResults(maxResults);
     }
-    recordRawSQLforInformationOnly(typedQuery);
     return typedQuery;
   }
 
@@ -197,21 +194,6 @@ public class SchoolPermissionQueryHelper<T> {
     Expression<Long> getNumericExpression(CriteriaBuilder cb, Root<V> root);
   }
 
-  // The ThreadLocal can be used to access the raw generated SQL in test code for checking - could be removed
-  static final ThreadLocal<String> SQL_CAPTURE_TL = new ThreadLocal<>();
-
-  private <V> void recordRawSQLforInformationOnly(TypedQuery<V> typedQuery) {
-    Query<V> query = (Query) typedQuery;
-    String sql = query.getQueryString();
-    log.debug("raw SQL string [{}]", sql);
-    // Using a ThreadLocal is a sneaky way of getting the ACTUAL SQL into our Java test code.
-    // TODO : gotta double check but looks like JPA does NOT use SQL for MaxResults and Offset
-    SQL_CAPTURE_TL.set(sql);
-  }
-
-  public static String getLastRawSQL() {
-    return SQL_CAPTURE_TL.get();
-  }
 
   public void setSelectionHelper(SelectionHelper<T> selectionHelper) {
     this.selectionHelper = selectionHelper;

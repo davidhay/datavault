@@ -316,8 +316,6 @@ public class SpringDataEntityGraphIT extends BaseDatabaseTest {
   void test26VaultReview() {
     em.find(VaultReview.class, "VaultReview-AAA");
     dao26vaultReview.findById("VaultReview-BBBB");
-    String latestSQL = SQLAppender.SQL_TL.get();
-    log.info("tada {}", latestSQL);
     dao26vaultReview.findAll();
     dao26vaultReview.list();
 
