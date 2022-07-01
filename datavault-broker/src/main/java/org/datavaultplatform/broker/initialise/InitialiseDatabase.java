@@ -1,18 +1,24 @@
 package org.datavaultplatform.broker.initialise;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import org.datavaultplatform.broker.config.ConfigUtils;
 import org.datavaultplatform.broker.services.ArchiveStoreService;
 import org.datavaultplatform.broker.services.RolesAndPermissionsService;
 import org.datavaultplatform.common.model.ArchiveStore;
+import org.datavaultplatform.common.storage.impl.LocalFileSystem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
-
-import java.util.HashMap;
-import java.util.List;
+import org.springframework.util.Assert;
 
 
 /**
@@ -23,19 +29,26 @@ import java.util.List;
 //TODO - DHAY this class *might* be redundant - if we use flyway/liquibase to manage db
 public class InitialiseDatabase {
 
+    public static final String CLASSNAME_TSM = "org.datavaultplatform.common.storage.impl.TivoliStorageManager";
+    public static final String CLASSNAME_ORACLE = "org.datavaultplatform.common.storage.impl.OracleObjectStorageClassic";
+    public static final String CLASSNAME_LOCAL = "org.datavaultplatform.common.storage.impl.LocalFileSystem";
+
     private static final Logger logger = LoggerFactory.getLogger(InitialiseDatabase.class);
+    public static final String ARCHIVE_STORE_LOCAL_ROOT_PATH = "archive.store.local.root.path";
 
     private final ArchiveStoreService archiveStoreService;
     private final String archiveDir;
 
     private final RolesAndPermissionsService rolesAndPermissionsService;
+    private final Environment env;
 
     @Autowired
-    public InitialiseDatabase(ArchiveStoreService archiveStoreService,
+    public InitialiseDatabase(Environment env, ArchiveStoreService archiveStoreService,
         @Value("${archiveDir}") String archiveDir, RolesAndPermissionsService rolesAndPermissionsService) {
         this.archiveStoreService = archiveStoreService;
         this.archiveDir = archiveDir;
         this.rolesAndPermissionsService = rolesAndPermissionsService;
+        this.env = env;
     }
 
 
@@ -56,9 +69,9 @@ public class InitialiseDatabase {
 
     private BrokerInitialisedEvent initialiseDataStores(){
 
-        final BrokerInitialisedEvent initEvent;
-
         List<ArchiveStore> archiveStores = archiveStoreService.getArchiveStores();
+
+        List<ArchiveStore> initStores = new ArrayList<>();
         if (archiveStores.isEmpty()) {
             HashMap<String,String> storeProperties = new HashMap<>();
             storeProperties.put("rootPath", archiveDir);
@@ -71,10 +84,38 @@ public class InitialiseDatabase {
             //archiveStoreService.addArchiveStore(s3);
             //archiveStoreService.addArchiveStore(local);
             archiveStoreService.addArchiveStore(oracle);
-            initEvent = new BrokerInitialisedEvent(this,tsm,oracle);
-        }else{
-            initEvent = new BrokerInitialisedEvent(this);
+            initStores.add(tsm);
+            initStores.add(oracle);
         }
+        configureLocalFileSystem(archiveStores, initStores);
+
+        BrokerInitialisedEvent initEvent = new BrokerInitialisedEvent(this, initStores.toArray(new ArchiveStore[0]));
         return initEvent;
+    }
+
+    private void configureLocalFileSystem(List<ArchiveStore> archiveStores, List<ArchiveStore> initStores) {
+        if (ConfigUtils.isLocal(env) == false) {
+            return;
+        }
+        boolean hasLocal = archiveStores
+            .stream()
+            .filter(as -> CLASSNAME_LOCAL.equals(as.getStorageClass())).
+            findFirst()
+            .isPresent();
+        if (hasLocal) {
+            return;
+        }
+        HashMap<String, String> storeProperties = new HashMap<>();
+        String localDir = env.getProperty(ARCHIVE_STORE_LOCAL_ROOT_PATH);
+        Path rootPath = Paths.get(localDir);
+        Assert.isTrue(rootPath.toFile().exists(), () ->
+            String.format("the [%s] file [%s] does not exist", ARCHIVE_STORE_LOCAL_ROOT_PATH,
+                rootPath.toAbsolutePath()));
+        String rootPathValue = rootPath.toAbsolutePath().toString();
+        storeProperties.put(LocalFileSystem.ROOT_PATH, rootPathValue);
+        ArchiveStore local = new ArchiveStore(CLASSNAME_LOCAL, storeProperties,
+            "LocalFileSystem", true);
+        archiveStoreService.addArchiveStore(local);
+        initStores.add(local);
     }
 }

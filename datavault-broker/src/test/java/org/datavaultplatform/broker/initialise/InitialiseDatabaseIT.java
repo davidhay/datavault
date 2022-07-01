@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.ApplicationListener;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.testcontainers.shaded.org.awaitility.Awaitility;
 
@@ -42,7 +43,7 @@ public class InitialiseDatabaseIT extends BaseDatabaseTest {
   }
 
   @Test
-  void testSaveAndReadUser() {
+  void testArchiveStoresInitialise() {
     long start = System.currentTimeMillis();
     Awaitility.await().atMost(60, TimeUnit.SECONDS).until(() -> initEvent != null);
     long diff = System.currentTimeMillis() - start;
