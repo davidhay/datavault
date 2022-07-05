@@ -2,6 +2,11 @@ package org.datavaultplatform.broker.config;
 
 import static org.datavaultplatform.common.util.Constants.HEADER_USER_ID;
 
+import java.io.IOException;
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.datavaultplatform.broker.authentication.RestAuthenticationFailureHandler;
 import org.datavaultplatform.broker.authentication.RestAuthenticationFilter;
@@ -16,14 +21,20 @@ import org.datavaultplatform.common.util.Constants;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.context.annotation.Bean;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.Http403ForbiddenEntryPoint;
 import org.springframework.security.web.authentication.preauth.AbstractPreAuthenticatedProcessingFilter;
+import org.springframework.stereotype.Component;
+import org.springframework.web.filter.CommonsRequestLoggingFilter;
+import org.springframework.web.filter.GenericFilterBean;
 
 @ConditionalOnExpression("${broker.security.enabled:true}")
 @EnableWebSecurity
@@ -171,4 +182,32 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
   Http403ForbiddenEntryPoint http403EntryPoint() {
       return new Http403ForbiddenEntryPoint();
   }
+
+  @Bean
+  @Order(1)
+  public CommonsRequestLoggingFilter requestLoggingFilter() {
+    log.info("creating logging filter");
+    CommonsRequestLoggingFilter loggingFilter = new CommonsRequestLoggingFilter();
+    loggingFilter.setIncludeClientInfo(true);
+    loggingFilter.setIncludeQueryString(true);
+    loggingFilter.setIncludePayload(true);
+    loggingFilter.setIncludeHeaders(true);
+    loggingFilter.setMaxPayloadLength(100_000);
+    return loggingFilter;
+  }
+
+  @Component
+  @Order(2)
+  static class PrincipalLoggingFilter extends GenericFilterBean {
+
+    @Override
+    public void doFilter(ServletRequest request, ServletResponse response,
+        FilterChain chain) throws IOException, ServletException {
+
+      Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+      log.debug("AUTH IS {}",auth);
+      chain.doFilter(request, response);
+    }
+  }
+
 }

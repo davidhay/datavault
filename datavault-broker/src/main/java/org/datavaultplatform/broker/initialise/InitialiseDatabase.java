@@ -5,6 +5,8 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import javax.annotation.PostConstruct;
+import lombok.extern.slf4j.Slf4j;
 import org.datavaultplatform.broker.config.ConfigUtils;
 import org.datavaultplatform.broker.services.ArchiveStoreService;
 import org.datavaultplatform.broker.services.RolesAndPermissionsService;
@@ -26,6 +28,7 @@ import org.springframework.util.Assert;
  */
 
 @Component
+@Slf4j
 //TODO - DHAY this class *might* be redundant - if we use flyway/liquibase to manage db
 public class InitialiseDatabase {
 
@@ -106,16 +109,30 @@ public class InitialiseDatabase {
             return;
         }
         HashMap<String, String> storeProperties = new HashMap<>();
-        String localDir = env.getProperty(ARCHIVE_STORE_LOCAL_ROOT_PATH);
-        Path rootPath = Paths.get(localDir);
-        Assert.isTrue(rootPath.toFile().exists(), () ->
-            String.format("the [%s] file [%s] does not exist", ARCHIVE_STORE_LOCAL_ROOT_PATH,
-                rootPath.toAbsolutePath()));
+        Path rootPath = getLocalArchiveStoreRootPath();
         String rootPathValue = rootPath.toAbsolutePath().toString();
         storeProperties.put(LocalFileSystem.ROOT_PATH, rootPathValue);
         ArchiveStore local = new ArchiveStore(CLASSNAME_LOCAL, storeProperties,
             "LocalFileSystem", true);
         archiveStoreService.addArchiveStore(local);
         initStores.add(local);
+    }
+
+    protected Path getLocalArchiveStoreRootPath(){
+        String localDir = env.getProperty(ARCHIVE_STORE_LOCAL_ROOT_PATH);
+        log.debug("{} - [{}]", ARCHIVE_STORE_LOCAL_ROOT_PATH, localDir);
+        Path rootPath = Paths.get(localDir);
+        Assert.isTrue(rootPath.toFile().exists(), () ->
+            String.format("the [%s] file [%s] does not exist", ARCHIVE_STORE_LOCAL_ROOT_PATH,
+                rootPath.toAbsolutePath()));
+        return rootPath;
+    }
+
+    @PostConstruct
+    void afterPropertiesSet() {
+        if (ConfigUtils.isLocal(env) == false) {
+            return;
+        }
+        getLocalArchiveStoreRootPath();
     }
 }

@@ -515,6 +515,8 @@ public class RoleDAOIT extends BaseDatabaseTest {
   void cleanup() {
     template.execute("delete from `Role_permissions`");
     template.execute("delete from `Permissions`");
+    template.execute("delete from `GroupOwners`");
+    template.execute("delete from `Groups`");
     template.execute("delete from `Role_assignments`");
     template.execute("delete from `Users`");
     template.execute("delete from `Roles`");
