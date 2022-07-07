@@ -6,7 +6,7 @@ export PROJECT_ROOT=$(cd ../../;pwd)
 cd $PROJECT_ROOT
 DATAVAULT_HOME="$PROJECT_ROOT/dv5" \
  SPRING_PROFILES_ACTIVE=database \
- SPRING_SECURITY_DEBUG=true \
+ SPRING_SECURITY_DEBUG=false \
  SERVER_PORT=8888 \
  DATAVAULT_HOME="$PROJECT_ROOT/dv5/local/webapp" \
  ./mvnw spring-boot:run  \
