@@ -14,7 +14,9 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Entity
 @Table(name="Groups")
-@NamedEntityGraph(name=Group.EG_GROUP)
+@NamedEntityGraph(name=Group.EG_GROUP, attributeNodes = {
+    @NamedAttributeNode(Group_.OWNERS)
+})
 public class Group {
 
     public static final String EG_GROUP = "eg.Group.1";

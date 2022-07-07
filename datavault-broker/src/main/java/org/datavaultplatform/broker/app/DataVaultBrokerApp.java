@@ -42,6 +42,7 @@ public class DataVaultBrokerApp implements CommandLineRunner {
     log.info("java.vendor [{}]",env.getProperty("java.vendor"));
     log.info("os.arch [{}]",env.getProperty("os.arch"));
     log.info("os.name [{}]",env.getProperty("os.name"));
+    log.info("spring.security.debug [{}]",env.getProperty("spring.security.debug"));
     log.info("spring-boot.version [{}]", SpringBootVersion.getVersion());
     log.info("active.profiles {}", (Object) env.getActiveProfiles());
     log.info("git.commit.id.abbrev [{}]", env.getProperty("git.commit.id.abbrev","-1"));

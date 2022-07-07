@@ -19,7 +19,7 @@ public abstract class BaseCustomDAOImpl implements BaseCustomDAO {
 
   protected <T> T getSingleResult(CriteriaQuery<T> criteriaQuery) {
     try {
-      return em.createQuery(criteriaQuery).getSingleResult();
+      return addEntityGraph(criteriaQuery.getResultType(), em.createQuery(criteriaQuery)).getSingleResult();
     } catch (NoResultException ex) {
       log.debug("no result", ex);
       return null;

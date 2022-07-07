@@ -1,3 +1,5 @@
+
+
 package org.datavaultplatform.common.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -14,7 +16,10 @@ import java.util.Objects;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Entity
 @Table(name="Roles")
-@NamedEntityGraph(name=RoleModel.EG_ROLE_MODEL)
+@NamedEntityGraph(name=RoleModel.EG_ROLE_MODEL, attributeNodes =
+    @NamedAttributeNode(value = RoleModel_.PERMISSIONS, subgraph = "subPermModel"),
+    subgraphs = @NamedSubgraph(name="subPermModel", attributeNodes = @NamedAttributeNode(PermissionModel_.PERMISSION))
+)
 public class RoleModel {
     public static final String EG_ROLE_MODEL = "eg.RoleModel.1";
 

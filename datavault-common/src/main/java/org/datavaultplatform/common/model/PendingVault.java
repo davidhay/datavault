@@ -23,7 +23,8 @@ import java.util.List;
     {
         @NamedAttributeNode(PendingVault_.GROUP),
         @NamedAttributeNode(PendingVault_.USER),
-        @NamedAttributeNode(PendingVault_.RETENTION_POLICY)
+        @NamedAttributeNode(PendingVault_.RETENTION_POLICY),
+        @NamedAttributeNode(PendingVault_.DATA_CREATORS),
     })
 public class PendingVault {
 

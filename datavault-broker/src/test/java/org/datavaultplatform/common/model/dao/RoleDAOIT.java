@@ -39,6 +39,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.SingleColumnRowMapper;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.transaction.annotation.Transactional;
+import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 
 @SpringBootTest(classes = DataVaultBrokerApp.class)
 @AddTestProperties
@@ -510,8 +511,7 @@ public class RoleDAOIT extends BaseDatabaseTest {
   }
 
 
-
-    @AfterEach
+  @AfterEach
   void cleanup() {
     template.execute("delete from `Role_permissions`");
     template.execute("delete from `Permissions`");

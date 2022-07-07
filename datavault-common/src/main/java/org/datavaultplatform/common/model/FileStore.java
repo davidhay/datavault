@@ -2,19 +2,32 @@ package org.datavaultplatform.common.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import java.util.HashMap;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Lob;
+import javax.persistence.ManyToOne;
+import javax.persistence.NamedAttributeNode;
+import javax.persistence.NamedEntityGraph;
+import javax.persistence.NamedSubgraph;
+import javax.persistence.Table;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.hibernate.annotations.GenericGenerator;
-
-import javax.persistence.*;
-import java.util.HashMap;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Entity
 @Table(name="FileStores")
 @NamedEntityGraph(
-    name=FileStore.EG_FILE_STORE,
-    attributeNodes = @NamedAttributeNode(FileStore_.USER)
+    name = FileStore.EG_FILE_STORE,
+    attributeNodes = @NamedAttributeNode(value = FileStore_.USER, subgraph = "subUser"),
+    subgraphs = {
+        @NamedSubgraph(name = "subUser", attributeNodes = {
+            @NamedAttributeNode(value = User_.FILE_STORES)
+        })
+    }
 )
 public class FileStore {
 

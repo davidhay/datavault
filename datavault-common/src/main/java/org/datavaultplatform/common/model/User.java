@@ -11,7 +11,9 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Entity
 @Table(name="Users")
-@NamedEntityGraph(name=User.EG_USER)
+@NamedEntityGraph(name=User.EG_USER, attributeNodes = {
+    @NamedAttributeNode(User_.FILE_STORES)
+})
 public class User {
     // User Identifier (not a UUID)
     public static final String EG_USER = "eg.User.1";

@@ -25,7 +25,7 @@ services:
     container_name: dv-local-rabbit
     image: 3.10.5-management-alpine
     restart: always
-    container_name: rabbit-management
+    container_name: dv-local-rabbit
     image: rabbitmq:3-management
     environment:
       - RABBITMQ_DEFAULT_USER=rabbit
@@ -42,6 +42,23 @@ services:
     ports:
      - "1025:1025" #SMTP
      - "8025:8025" #HTTP
+  ldap:
+    container_name: dv-local-ldap
+    image: bitnami/openldap:latest
+    restart: always
+    environment:
+      LDAP_ROOT: "o=myu.ed"
+      LDAP_PASSWORD: "test-password"
+      LDAP_CUSTOM_LDIF_DIR: "/custom"
+    ports:
+      - "1389:1389"
+    expose:
+      - "1389"
+    volumes:
+      # Where our ldif files are stored
+      - /Users/davidhay/DEV/DV/FORK/volumes/ldap/custom:/custom
+      - /Users/davidhay/DEV/DV/FORK/volumes/ldap/schema:/schema
 volumes:
+  #todo - define volumes outside of docker containers!!
   v-local-mysql:
   v-local-rabbit:

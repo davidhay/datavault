@@ -1,8 +1,7 @@
 package org.datavaultplatform.webapp.services;
 
+import lombok.extern.slf4j.Slf4j;
 import org.datavaultplatform.common.request.CreateVault;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -11,8 +10,8 @@ import java.util.*;
 import org.springframework.stereotype.Service;
 
 @Service
+@Slf4j
 public class ValidateService {
-    private static final Logger logger = LoggerFactory.getLogger(ValidateService.class);
 
     public List<String> validate(CreateVault vault, String userID) {
         List<String> retVal = new ArrayList<>();
