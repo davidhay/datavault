@@ -3,10 +3,12 @@ package org.datavaultplatform.broker.config;
 import static org.datavaultplatform.common.util.Constants.HEADER_USER_ID;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.datavaultplatform.broker.authentication.RestAuthenticationFailureHandler;
 import org.datavaultplatform.broker.authentication.RestAuthenticationFilter;
@@ -32,7 +34,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.Http403ForbiddenEntryPoint;
 import org.springframework.security.web.authentication.preauth.AbstractPreAuthenticatedProcessingFilter;
+import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.stereotype.Component;
+import org.springframework.util.Assert;
 import org.springframework.web.filter.CommonsRequestLoggingFilter;
 import org.springframework.web.filter.GenericFilterBean;
 
@@ -111,13 +115,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
    */
 
   RestAuthenticationFilter restFilter() throws Exception {
-    RestAuthenticationFilter result = new RestAuthenticationFilter();
+    RequestMatcher matcher = request -> {
+      log.info("FILTER PROCESSING {}", request.getPathInfo());
+      return true;
+    };
+    RestAuthenticationFilter result = new RestAuthenticationFilter(matcher);
     result.setPrincipalRequestHeader(HEADER_USER_ID);
     result.setAuthenticationManager(authenticationManager());
     result.setAuthenticationDetailsSource(restWebAuthenticationDetailsSource());
     result.setAuthenticationSuccessHandler(authenticationSuccessHandler());
     result.setAuthenticationFailureHandler(authenticationFailureHandler());
-    result.setFilterProcessesUrl("/**");
+    //result.setFilterProcessesUrl("/**");
+    RequestMatcher actualRM = result.getRequestMatcher();
+    Assert.isTrue(matcher.equals(actualRM), () -> String.format("Request Matcher has been overriden ", actualRM));
     return result;
   }
 
