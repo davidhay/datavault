@@ -10,8 +10,10 @@ import org.springframework.util.StreamUtils;
 import org.testcontainers.containers.Container;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.images.builder.Transferable;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
 @Slf4j
+@Testcontainers(disabledWithoutDocker = true)
 public abstract class BaseUserKeyPairServiceTest {
 
   // this image has 'scp' and runs a configurable ssh daemon

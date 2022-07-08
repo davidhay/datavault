@@ -36,7 +36,7 @@ public class RoleDAO2IT extends BaseDatabaseTest {
 
   @Test
   void testEntityGraph() {
-    assertEquals(5, dao.count());
+    assertEquals(7, dao.count());
 
     RoleModel dataOwner = dao.getDataOwner();
     writeToString(dataOwner);

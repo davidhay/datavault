@@ -180,9 +180,9 @@ public class ValidateService {
         ownerList.add(owner);
         List<String> ndms = vault.getNominatedDataManagers();
         List<String> deps = vault.getDepositors();
-        boolean match1 = ndms.stream().filter(x -> x!="").anyMatch(deps::contains);
-        boolean match2 = ndms.stream().filter(x -> x!="").anyMatch(ownerList::contains);
-        boolean match3 = deps.stream().filter(x -> x!="").anyMatch(ownerList::contains);
+        boolean match1 = ndms.stream().filter(x -> !Objects.equals(x, "")).anyMatch(deps::contains);
+        boolean match2 = ndms.stream().filter(x -> !Objects.equals(x, "")).anyMatch(ownerList::contains);
+        boolean match3 = deps.stream().filter(x -> !Objects.equals(x, "")).anyMatch(ownerList::contains);
 
         if (match1) {
             retVal.add("A user cannot have the role of both a NDM and a depositor");

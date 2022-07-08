@@ -507,12 +507,6 @@ public class RoleDAOIT extends BaseDatabaseTest {
 
   @BeforeEach
   void setup() {
-    assertEquals(0, dao.count());
-  }
-
-
-  @AfterEach
-  void cleanup() {
     template.execute("delete from `Role_permissions`");
     template.execute("delete from `Permissions`");
     template.execute("delete from `GroupOwners`");
