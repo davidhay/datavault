@@ -44,6 +44,7 @@ import org.springframework.web.filter.GenericFilterBean;
 @EnableWebSecurity
 @Slf4j
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
+@Order(2)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
   @Value("${spring.security.debug:false}")
@@ -78,7 +79,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     <security:http pattern="/resources/**" security="none"/>
     <security:http pattern="/jsondoc" security="none"/>
            */
-          .antMatchers("/","/resources/**","jsondoc").permitAll() //pretty sure this DOES NOT WORK
+          //.antMatchers("/","/resources/**","jsondoc").permitAll() //pretty sure this DOES NOT WORK
         /*
         <security:intercept-url pattern="/admin/users/**" access="hasRole('ROLE_ADMIN')" />
         <security:intercept-url pattern="/admin/archivestores/**" access="hasRole('ROLE_ADMIN_ARCHIVESTORES')" />
