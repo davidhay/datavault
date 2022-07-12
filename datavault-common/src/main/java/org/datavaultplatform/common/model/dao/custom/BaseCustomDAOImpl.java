@@ -28,7 +28,7 @@ public abstract class BaseCustomDAOImpl implements BaseCustomDAO {
 
   protected long getCount(TypedQuery<Long> typedQuery) {
     Long result = typedQuery.getSingleResult();
-    return result == null ? 0 : result.longValue();
+    return result == null ? 0 : result;
   }
 
   protected <V> List<V> getResults(CriteriaQuery<V> cq) {

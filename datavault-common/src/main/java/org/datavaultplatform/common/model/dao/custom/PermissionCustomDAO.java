@@ -1,6 +1,5 @@
 package org.datavaultplatform.common.model.dao.custom;
 
-import org.datavaultplatform.common.model.PendingVault;
 import org.datavaultplatform.common.model.Permission;
 import org.datavaultplatform.common.model.PermissionModel;
 

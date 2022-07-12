@@ -2,7 +2,6 @@ package org.datavaultplatform.common.model.dao.custom;
 
 import java.util.List;
 import org.datavaultplatform.common.model.BillingInfo;
-import org.datavaultplatform.common.model.dao.BillingDAO;
 import org.springframework.data.jpa.repository.EntityGraph;
 
 public interface BillingCustomDAO extends BaseCustomDAO {

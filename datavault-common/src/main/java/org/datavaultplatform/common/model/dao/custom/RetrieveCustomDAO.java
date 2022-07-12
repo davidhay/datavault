@@ -1,7 +1,6 @@
 package org.datavaultplatform.common.model.dao.custom;
 
 import java.util.List;
-import org.datavaultplatform.common.model.PermissionModel;
 import org.datavaultplatform.common.model.Retrieve;
 import org.springframework.data.jpa.repository.EntityGraph;
 

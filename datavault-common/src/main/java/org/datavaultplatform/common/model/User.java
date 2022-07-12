@@ -6,7 +6,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import javax.persistence.*;
 import java.util.HashMap;
 import java.util.List;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
+import java.util.Objects;
+import org.hibernate.Hibernate;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Entity
@@ -107,24 +108,21 @@ public class User {
     public List<FileStore> getFileStores() {
         return fileStores;
     }
-    
+
     @Override
-    public boolean equals(Object other) {
-        
-        if (this == other) return true;
-        
-        if (!(other instanceof User)) {
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) {
             return false;
         }
-        
-        final User user = (User)other;
-
-        return user.getID().equals(getID());
+        User user = (User) o;
+        return id != null && Objects.equals(id, user.id);
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder(17, 37).
-            append(id).toHashCode();
+        return getClass().hashCode();
     }
 }

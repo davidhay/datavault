@@ -61,7 +61,7 @@ public class RetentionPolicyDAOIT extends BaseReuseDatabaseTest {
 
     RetentionPolicy retentionPolicy3 = getRetentionPolicy3();
 
-    assertEquals(0, retentionPolicy1.getID());
+    assertEquals(null, retentionPolicy1.getID());
     dao.save(retentionPolicy1);
     assertTrue(retentionPolicy1.getID() > 0);
     assertEquals(1, count());

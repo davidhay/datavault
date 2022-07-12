@@ -3,10 +3,10 @@ package org.datavaultplatform.common.model;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import java.util.Objects;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.datavaultplatform.common.response.VaultInfo;
+import org.hibernate.Hibernate;
 import org.hibernate.annotations.GenericGenerator;
 import org.jsondoc.core.annotation.ApiObject;
 
@@ -429,20 +429,19 @@ public class PendingVault {
         return retVal;
     }
     @Override
-    public boolean equals(Object obj){
-        if (obj == null) { return false; }
-        if (obj == this) { return true; }
-        if (obj.getClass() != getClass()) {
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) {
             return false;
         }
-        PendingVault rhs = (PendingVault) obj;
-        return new EqualsBuilder()
-            .append(this.id, rhs.id).isEquals();
+        PendingVault that = (PendingVault) o;
+        return id != null && Objects.equals(id, that.id);
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder(17, 37).
-            append(id).toHashCode();
+        return getClass().hashCode();
     }
 }
