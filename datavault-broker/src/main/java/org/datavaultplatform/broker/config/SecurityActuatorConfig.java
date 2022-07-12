@@ -32,14 +32,14 @@ public class SecurityActuatorConfig extends WebSecurityConfigurerAdapter {
   @Override
   protected void configure(AuthenticationManagerBuilder auth) throws Exception {
     auth.inMemoryAuthentication()
-        .withUser(username).password("{noop}"+password).roles("USER");
+        .withUser(username).password("{noop}"+password).roles("ACTUATOR");
   }
 
   @Override
   protected void configure(HttpSecurity http) throws Exception {
     http.antMatcher("/actuator/**")
         .httpBasic().and()
-        .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
+        //.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
         .authorizeRequests()
           .antMatchers("/actuator/health", "/actuator/info").permitAll()
           .anyRequest().authenticated();
