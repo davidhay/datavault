@@ -112,8 +112,37 @@ INSERT ignore INTO RetentionPolicies(name,description,sort,engine,extendUponRetr
 select 'Edinburgh Imaging Retention Policy','Policy of UoE''s Edinburgh Imaging (part of Edinburgh Medical School)',59,'org.datavaultplatform.common.retentionpolicy.impl.DefaultRetentionPolicy',TRUE,'N/A',5,STR_TO_DATE('03/12/2018', '%d/%m/%Y'),NULL,'',STR_TO_DATE('03/12/2018', '%d/%m/%Y')
 where not exists (select 1 from RetentionPolicies where sort = 59);
 
-insert ignore INTO Roles (id, description, assignedUserCount, name, role_status, role_type) VALUES (100, 'School Role 100', 0, 'SchoolRole100', "0", 'SCHOOL');
+-- Java Code will Add this 'IS Admin' role if it's missing but we need it here (before Java Runs) so we can add a role_assignment which refers to it
+INSERT INTO Roles (id, description, assignedUserCount, name, role_status, role_type)
+SELECT * FROM (SELECT
+                   1 as id,
+                   'An admin of the whole system, with full permissions over the system.' as description,
+                   0 as assignedUserCount,
+                   'IS Admin' as name,
+                   '0' as role_status,
+                   'ADMIN' as role_type) AS tmp
+WHERE NOT EXISTS (
+        SELECT name FROM Roles WHERE name = 'IS Admin'
+    ) LIMIT 1;
 
-insert ignore INTO Roles (id, description, assignedUserCount, name, role_status, role_type) VALUES (101, 'School Role 101', 0, 'SchoolRole101', "1", 'SCHOOL');
+-- Java Code will Add this 'Data Owner' role if it's missing but we need it here (before Java Runs) so we can add a role_assignment which refers to it
+INSERT INTO Roles (id, description, assignedUserCount, name, role_status, role_type)
+SELECT * FROM (SELECT
+                   2 as id,
+                   'An admin of a specific vault, with full permissions over that vault.' as description,
+                   0 as assignedUserCount,
+                   'Data Owner' as name,
+                   '0' as role_status,
+                   'ADMIN' as role_type) AS tmp
+WHERE NOT EXISTS (
+        SELECT name FROM Roles WHERE name = 'Data Owner'
+    ) LIMIT 1;
+
+insert ignore INTO Roles (id, description, assignedUserCount, name, role_status, role_type) VALUES (98, 'School Role 98', 0, 'SchoolRole98', "0", 'SCHOOL');
+insert ignore INTO Roles (id, description, assignedUserCount, name, role_status, role_type) VALUES (99, 'School Role 99', 0, 'SchoolRole99', "1", 'SCHOOL');
 
 insert ignore into Role_assignments (id,user_id,school_id,role_id) select 1,'admin1', 'grp_lfcs', R.id from Roles R where R.name = 'IS Admin';
+insert ignore into Role_assignments (id,user_id,school_id,role_id) select 2,'user1',  'grp-lfcs', R.id from Roles R where R.name = 'Data Owner';
+
+-- this prevents means new Role Ids added by Java (uses hibernate_sequence) clashing with Role Ids added by this script
+update hibernate_sequence set next_val = 100 where next_val < 100;
