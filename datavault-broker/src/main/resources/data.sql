@@ -115,3 +115,5 @@ where not exists (select 1 from RetentionPolicies where sort = 59);
 insert ignore INTO Roles (id, description, assignedUserCount, name, role_status, role_type) VALUES (100, 'School Role 100', 0, 'SchoolRole100', "0", 'SCHOOL');
 
 insert ignore INTO Roles (id, description, assignedUserCount, name, role_status, role_type) VALUES (101, 'School Role 101', 0, 'SchoolRole101', "1", 'SCHOOL');
+
+insert ignore into Role_assignments (id,user_id,school_id,role_id) select 1,'admin1', 'grp_lfcs', R.id from Roles R where R.name = 'IS Admin';

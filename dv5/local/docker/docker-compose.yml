@@ -20,7 +20,7 @@ services:
       - "3306"
       # Where our data will be persisted
     volumes:
-      - v-local-mysql:/Users/davidhay/DEV/DV/FORK/volumes/mysql
+      - v-local-mysql:/var/lib/mysql
   rabbit:
     container_name: dv-local-rabbit
     image: 3.10.5-management-alpine
@@ -34,7 +34,7 @@ services:
       - "15672:15672"
       - "5672:5672"
     volumes:
-      - v-local-rabbit:/Users/davidhay/DEV/DV/FORK/volumes/rabbit
+      - v-local-rabbit:/var/lib/rabbitmq
   email:
     container_name: dv-local-email
     image: mailhog/mailhog:v1.0.1
@@ -56,9 +56,10 @@ services:
       - "1389"
     volumes:
       # Where our ldif files are stored
-      - /Users/davidhay/DEV/DV/FORK/volumes/ldap/custom:/custom
-      - /Users/davidhay/DEV/DV/FORK/volumes/ldap/schema:/schema
+      - $LOCAL_LDAP_DIR/custom:/custom
+      - $LOCAL_LDAP_DIR/schema:/schema
+
 volumes:
-  #todo - define volumes outside of docker containers!!
-  v-local-mysql:
   v-local-rabbit:
+  v-local-mysql:
+
