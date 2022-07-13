@@ -2,6 +2,8 @@
 
 java -version
 
+mkdir -p /tmp/as/local
+
 export PROJECT_ROOT=$(cd ../../../;pwd)
 cd $PROJECT_ROOT
  SPRING_PROFILES_ACTIVE=local \
