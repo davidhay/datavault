@@ -9,6 +9,7 @@ import org.datavaultplatform.webapp.config.MailConfig;
 import org.datavaultplatform.webapp.config.MvcConfig;
 import org.datavaultplatform.webapp.config.PropertiesConfig;
 import org.datavaultplatform.webapp.config.RestTemplateConfig;
+import org.datavaultplatform.webapp.config.SecurityActuatorConfig;
 import org.datavaultplatform.webapp.config.SecurityConfig;
 import org.datavaultplatform.webapp.config.WebConfig;
 import org.datavaultplatform.webapp.config.database.DatabaseProfileConfig;
@@ -30,7 +31,7 @@ import org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer;
     "org.datavaultplatform.webapp.controllers",
     "org.datavaultplatform.webapp.services"})
 @Import({PropertiesConfig.class, WebConfig.class, MvcConfig.class, ActutatorConfig.class,
-    SecurityConfig.class, MailConfig.class, LdapConfig.class,
+    SecurityActuatorConfig.class, SecurityConfig.class, MailConfig.class, LdapConfig.class,
         StandaloneProfileConfig.class, DatabaseProfileConfig.class,
     ShibProfileConfig.class, RestTemplateConfig.class})
 @Slf4j
