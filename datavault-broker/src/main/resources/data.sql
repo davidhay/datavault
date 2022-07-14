@@ -141,7 +141,7 @@ WHERE NOT EXISTS (
 insert ignore INTO Roles (id, description, assignedUserCount, name, role_status, role_type) VALUES (98, 'School Role 98', 0, 'SchoolRole98', "0", 'SCHOOL');
 insert ignore INTO Roles (id, description, assignedUserCount, name, role_status, role_type) VALUES (99, 'School Role 99', 0, 'SchoolRole99', "1", 'SCHOOL');
 
-insert ignore into Role_assignments (id,user_id,school_id,role_id) select 1,'admin1', 'grp_lfcs', R.id from Roles R where R.name = 'IS Admin';
+insert ignore into Role_assignments (id,user_id,school_id,role_id) select 1,'admin1', 'grp-lfcs', R.id from Roles R where R.name = 'IS Admin';
 insert ignore into Role_assignments (id,user_id,school_id,role_id) select 2,'user1',  'grp-lfcs', R.id from Roles R where R.name = 'Data Owner';
 
 -- this prevents means new Role Ids added by Java (uses hibernate_sequence) clashing with Role Ids added by this script
