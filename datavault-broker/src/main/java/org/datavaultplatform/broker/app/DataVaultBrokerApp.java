@@ -1,9 +1,13 @@
 package org.datavaultplatform.broker.app;
 
+import static org.datavaultplatform.broker.scheduled.ScheduledUtils.*;
+
+import java.util.stream.Stream;
 import lombok.extern.slf4j.Slf4j;
 import org.datavaultplatform.broker.config.ControllerConfig;
 import org.datavaultplatform.broker.config.DatabaseConfig;
 import org.datavaultplatform.broker.config.EmailConfig;
+import org.datavaultplatform.broker.config.EmailLocalConfig;
 import org.datavaultplatform.broker.config.InitialiseConfig;
 import org.datavaultplatform.broker.config.LdapConfig;
 import org.datavaultplatform.broker.config.PropertiesConfig;
@@ -12,6 +16,7 @@ import org.datavaultplatform.broker.config.ScheduleConfig;
 import org.datavaultplatform.broker.config.SecurityActuatorConfig;
 import org.datavaultplatform.broker.config.SecurityConfig;
 import org.datavaultplatform.broker.config.ServiceConfig;
+import org.datavaultplatform.broker.scheduled.ScheduledUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -26,7 +31,7 @@ import org.springframework.core.env.Environment;
     ScheduleConfig.class, InitialiseConfig.class,
     SecurityActuatorConfig.class, SecurityConfig.class, ControllerConfig.class,
     ServiceConfig.class,  DatabaseConfig.class,
-    LdapConfig.class, EmailConfig.class, RabbitConfig.class
+    LdapConfig.class, EmailConfig.class, EmailLocalConfig.class, RabbitConfig.class
 })
 @Slf4j
 //@EnableJSONDoc
@@ -48,6 +53,13 @@ public class DataVaultBrokerApp implements CommandLineRunner {
     log.info("spring-boot.version [{}]", SpringBootVersion.getVersion());
     log.info("active.profiles {}", (Object) env.getActiveProfiles());
     log.info("git.commit.id.abbrev [{}]", env.getProperty("git.commit.id.abbrev","-1"));
+
+    Stream.of(
+        SCHEDULE_1_AUDIT_DEPOSIT_NAME,
+        SCHEDULE_2_ENCRYPTION_CHECK_NAME,
+        SCHEDULE_3_DELETE_NAME,
+        SCHEDULE_4_REVIEW_NAME,
+        SCHEDULE_5_RETENTION_CHECK_NAME).forEach(schedule -> log.info("Schedule[{}]value[{}]",schedule, env.getProperty(schedule)));
   }
 
 
