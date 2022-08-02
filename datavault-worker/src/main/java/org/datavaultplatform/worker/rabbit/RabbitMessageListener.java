@@ -41,7 +41,6 @@ public class RabbitMessageListener {
     Assert.isTrue(deliveryTag == deliveryTag2, () -> "problems with tags");
 
     MessageInfo info = getMessageInfo(message);
-    log.info("XXX MESSAGE[{}]delTag[{}]", info, deliveryTag);
 
     if (info.isShutdown()) {
       channel.basicAck(deliveryTag, false);
@@ -54,10 +53,8 @@ public class RabbitMessageListener {
 
       boolean requeue = processor.processMessage(info);
       if (requeue) {
-        log.info("YYY NACK/REQUEUE [{}]", info);
         channel.basicNack(deliveryTag, false, true);
       } else {
-        log.info("YYY ACK [{}]", info);
         channel.basicAck(deliveryTag, false);
       }
     }

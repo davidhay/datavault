@@ -13,7 +13,10 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 @Testcontainers(disabledWithoutDocker = true)
 @Slf4j
 @DirtiesContext
-public abstract class BaseRabbitTCTest {
+public abstract class BaseRabbitTest {
+
+  public static final int HI_PRIORITY = 2;
+  public static final int NORMAL_PRIORITY = 1;
 
   @Value("${spring.rabbitmq.username}")
   private String rabbitUsername;

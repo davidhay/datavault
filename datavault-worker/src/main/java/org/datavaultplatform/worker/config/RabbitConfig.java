@@ -1,7 +1,6 @@
 package org.datavaultplatform.worker.config;
 
 import lombok.extern.slf4j.Slf4j;
-import org.datavaultplatform.worker.queue.Receiver;
 import org.datavaultplatform.worker.rabbit.ExitingShutdownHandler;
 import org.datavaultplatform.worker.rabbit.MessageProcessor;
 import org.datavaultplatform.worker.rabbit.RabbitListenerUtils;
@@ -11,7 +10,6 @@ import org.springframework.amqp.rabbit.listener.RabbitListenerEndpointRegistry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Lazy;
 
 @Configuration
 @Slf4j

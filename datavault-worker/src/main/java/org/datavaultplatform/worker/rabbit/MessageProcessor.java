@@ -1,7 +1,5 @@
 package org.datavaultplatform.worker.rabbit;
 
-import org.datavaultplatform.worker.rabbit.MessageInfo;
-
 public interface MessageProcessor {
 
   /**
