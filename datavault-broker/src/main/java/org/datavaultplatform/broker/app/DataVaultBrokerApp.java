@@ -61,12 +61,16 @@ public class DataVaultBrokerApp implements CommandLineRunner {
   public void run(String... args) {
     log.info("java.version [{}]", env.getProperty("java.version"));
     log.info("java.vendor [{}]", env.getProperty("java.vendor"));
+
     log.info("os.arch [{}]", env.getProperty("os.arch"));
     log.info("os.name [{}]", env.getProperty("os.name"));
-    log.info("spring.security.debug [{}]", env.getProperty("spring.security.debug"));
+
+    log.info("git.commit.id.abbrev [{}]", env.getProperty("git.commit.id.abbrev", "-1"));
+
+    log.info("spring.security.debug [{}]", env.getProperty("spring.security.debug","false"));
     log.info("spring-boot.version [{}]", SpringBootVersion.getVersion());
     log.info("active.profiles {}", (Object) env.getActiveProfiles());
-    log.info("git.commit.id.abbrev [{}]", env.getProperty("git.commit.id.abbrev", "-1"));
+
     log.info("validate.encryption.config [{}]", validateEncryptionConfig);
 
     Stream.of(
@@ -103,9 +107,10 @@ public class DataVaultBrokerApp implements CommandLineRunner {
   private String encryptThenDecrypt(String plainText) throws IllegalStateException {
     try {
       byte[] iv = Encryption.generateIV();
+      // null secretKey => the (Vault)PrivateKeyEncryptionKeyName (for SSH KEYS - NOT DATA)
       byte[] encrypted = Encryption.encryptSecret(plainText, null, iv);
-      byte[] decrpyted = Encryption.decryptSecret(encrypted, iv, null);
-      return new String(decrpyted, StandardCharsets.UTF_8);
+      byte[] decrypted = Encryption.decryptSecret(encrypted, iv, null);
+      return new String(decrypted, StandardCharsets.UTF_8);
     } catch (Exception ex) {
       throw new IllegalStateException("Encryption Config is NOT VALID", ex);
     }

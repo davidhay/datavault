@@ -22,13 +22,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.core.env.Environment;
+import org.springframework.test.annotation.DirtiesContext;
 
 @SpringBootTest(classes = DataVaultWorkerInstanceApp.class)
-@Slf4j
 @AddTestProperties
+@DirtiesContext
+@Slf4j
 /*
-Checks that we can recv and process messages, 1 at a time, in the order they are sent.
- */
+ Checks that we can recv and process messages, 1 at a time, in the order they are sent.
+*/
 class MessageReceiveIT extends BaseReceiveIT {
 
   private static final int MESSAGES_TO_SEND = 5;
@@ -41,9 +43,6 @@ class MessageReceiveIT extends BaseReceiveIT {
   ShutdownHandler mShutdownHandler;
 
   CountDownLatch latch;
-
-  @Autowired
-  RabbitListenerContainerFactory containerFactory;
 
   @Autowired
   Environment env;

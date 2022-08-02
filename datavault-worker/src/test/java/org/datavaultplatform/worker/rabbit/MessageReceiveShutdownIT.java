@@ -19,14 +19,15 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.annotation.DirtiesContext;
 
 @SpringBootTest(classes = DataVaultWorkerInstanceApp.class)
-@Slf4j
 @AddTestProperties
+@DirtiesContext
+@Slf4j
 /*
-  Checks that a shutdown message will stop the processing of further messages.
- */
-
+ Checks that a shutdown message will stop the processing of further messages.
+*/
 class MessageReceiveShutdownIT extends BaseReceiveIT {
 
   private static final int MESSAGES_TO_SEND = 5;

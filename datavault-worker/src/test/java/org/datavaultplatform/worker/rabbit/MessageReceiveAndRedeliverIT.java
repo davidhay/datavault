@@ -19,14 +19,16 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.annotation.DirtiesContext;
 
 @SpringBootTest(classes = DataVaultWorkerInstanceApp.class)
-@Slf4j
 @AddTestProperties
+@DirtiesContext
+@Slf4j
 /*
-Checks that a message can be marked for redelivery. When it's redelivered - it's marked as a redelivery
-AND has original message id.
- */
+ Checks that a message can be marked for redelivery. When it's redelivered - it's marked as a redelivery
+ AND has original message id.
+*/
 class MessageReceiveAndRedeliverIT extends BaseReceiveIT {
 
   public static final int MESSAGES_TO_SEND = 10;

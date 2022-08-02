@@ -5,10 +5,12 @@ import org.datavaultplatform.worker.queue.EventSender;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
+@ConditionalOnExpression("${worker.rabbit.enabled:true}")
 public class EventSenderConfig {
 
   @Autowired

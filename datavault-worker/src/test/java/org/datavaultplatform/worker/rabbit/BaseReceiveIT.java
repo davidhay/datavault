@@ -19,7 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
 @Slf4j
-public class BaseReceiveIT extends BaseRabbitTest {
+public class BaseReceiveIT extends BaseRabbitTCTest {
 
   @Autowired
   protected AmqpAdmin admin;

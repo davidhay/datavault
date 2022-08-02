@@ -2,8 +2,8 @@ package org.datavaultplatform.worker.rabbit;
 
 import javax.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
+import org.datavaultplatform.common.docker.DockerImage;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.RabbitMQContainer;
@@ -12,8 +12,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 
 @Testcontainers(disabledWithoutDocker = true)
 @Slf4j
-@DirtiesContext
-public abstract class BaseRabbitTest {
+public abstract class BaseRabbitTCTest {
 
   public static final int HI_PRIORITY = 2;
   public static final int NORMAL_PRIORITY = 1;
@@ -31,8 +30,8 @@ public abstract class BaseRabbitTest {
   private int rabbitPort;
 
   @Container
-  private static final RabbitMQContainer RABBIT = new RabbitMQContainer(
-      "rabbitmq:3.10.0-management-alpine").withExposedPorts(5672, 15672).withReuse(false);
+  private static final RabbitMQContainer RABBIT = new RabbitMQContainer(DockerImage.RABBIT_IMAGE_NAME)
+      .withExposedPorts(5672, 15672);
 
   @DynamicPropertySource
   static void setupProperties(DynamicPropertyRegistry registry) {

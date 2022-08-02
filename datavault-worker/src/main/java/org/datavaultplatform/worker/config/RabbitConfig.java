@@ -8,10 +8,12 @@ import org.datavaultplatform.worker.rabbit.RabbitMessageListener;
 import org.datavaultplatform.worker.rabbit.ShutdownHandler;
 import org.springframework.amqp.rabbit.listener.RabbitListenerEndpointRegistry;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
+@ConditionalOnExpression("${worker.rabbit.enabled:true}")
 @Slf4j
 public class RabbitConfig {
 

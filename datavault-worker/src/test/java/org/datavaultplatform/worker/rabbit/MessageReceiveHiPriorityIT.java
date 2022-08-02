@@ -18,14 +18,16 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.annotation.DirtiesContext;
 
 @SpringBootTest(classes = DataVaultWorkerInstanceApp.class)
-@Slf4j
 @AddTestProperties
+@DirtiesContext
+@Slf4j
 /*
-  Checks that a hi-priority shutdown message will get processed before
-  other normal messages.
- */
+ Checks that a hi-priority shutdown message will get processed before
+ other normal messages.
+*/
 class MessageReceiveHiPriorityIT extends BaseReceiveIT {
 
   private static final int LO_MESSAGES_TO_SEND = 100;
