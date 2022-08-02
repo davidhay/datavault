@@ -79,7 +79,7 @@ public class UserKeyPairService2IT extends BaseUserKeyPairServiceTest {
   void initContainers(String publicKey) {
     ImageFromDockerfile image = new ImageFromDockerfile()
         .withDockerfileFromBuilder(builder -> builder
-            .from(DockerImage.OPEN_SSH_IMAGE_NAME)
+            .from(DockerImage.OPEN_SSH_8pt8_IMAGE_NAME)
             .run("apk add expect") //we have to add 'expect' to openssh image
             .build());
 

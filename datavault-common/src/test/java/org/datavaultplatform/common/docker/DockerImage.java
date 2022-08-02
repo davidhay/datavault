@@ -27,6 +27,13 @@ public abstract class DockerImage {
 
   // this image has 'openssl'
   // version-8.8_p1-r1 was 'latest' on 2/Aug/2022
-  public static String OPEN_SSH_IMAGE_NAME = "linuxserver/openssh-server:version-8.8_p1-r1";
-  public static DockerImageName OPEN_SSH_IMAGE = parse(OPEN_SSH_IMAGE_NAME);
+  public static String OPEN_SSH_8pt8_IMAGE_NAME = "linuxserver/openssh-server:version-8.8_p1-r1";
+  public static DockerImageName OPEN_SSH_IMAGE = parse(OPEN_SSH_8pt8_IMAGE_NAME);
+
+  public static String OPEN_SSH_8pt3_IMAGE_NAME = "linuxserver/openssh-server:version-8.3_p1-r1";
+  public static String OPEN_SSH_8pt4_IMAGE_NAME = "linuxserver/openssh-server:version-8.4_p1-r3";
+
+  public static String OPEN_SSH_8pt6_IMAGE_NAME = "linuxserver/openssh-server:version-8.6_p1-r3";
+  public static String OPEN_SSH_8pt7_IMAGE_NAME = "linuxserver/openssh-server:version-8.7_p1-r3";
+
 }
