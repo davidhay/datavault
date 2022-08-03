@@ -627,7 +627,7 @@ public class Encryption {
         return initialised;
     }
 
-    private static void checkKeyNamesAreNotSame() {
+    public static void checkKeyNamesAreNotSame() {
         String keyNameData = Encryption.getVaultDataEncryptionKeyName();
         if (StringUtils.isNotBlank(keyNameData)) {
             String keyNamePrivateKey = Encryption.getVaultPrivateKeyEncryptionKeyName();
