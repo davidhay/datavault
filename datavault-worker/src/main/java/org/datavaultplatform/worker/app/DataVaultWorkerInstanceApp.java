@@ -12,6 +12,7 @@ import org.datavaultplatform.worker.config.PropertiesConfig;
 import org.datavaultplatform.worker.config.QueueConfig;
 import org.datavaultplatform.worker.config.RabbitConfig;
 import org.datavaultplatform.worker.config.ReceiverConfig;
+import org.datavaultplatform.worker.config.SecurityActuatorConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
@@ -29,6 +30,7 @@ import org.springframework.util.Assert;
 @Import({
     PropertiesConfig.class,
     ActuatorConfig.class,
+    SecurityActuatorConfig.class,
     QueueConfig.class,
     EventSenderConfig.class,
     ReceiverConfig.class,
@@ -38,6 +40,7 @@ import org.springframework.util.Assert;
 @Slf4j
 public class DataVaultWorkerInstanceApp implements CommandLineRunner {
 
+  public static final String DATAVAULT_HOME = "DATAVAULT_HOME";
   @Autowired
   Environment env;
 
@@ -50,7 +53,11 @@ public class DataVaultWorkerInstanceApp implements CommandLineRunner {
   public static void main(String[] args) {
 
     //setup properties BEFORE spring starts
-    System.setProperty("datavault-home", System.getenv("DATAVAULT_HOME"));
+    if (System.getenv(DATAVAULT_HOME) == null) {
+      log.error("The ENV variable DATAVAULT_HOME must be defined.");
+      System.exit(1);
+    }
+    System.setProperty("datavault-home", System.getenv(DATAVAULT_HOME));
 
     SpringApplication.run(DataVaultWorkerInstanceApp.class, args);
   }

@@ -26,12 +26,7 @@ public class EventSenderConfig {
   String workerName;
 
   @Bean
-  public ObjectMapper mapper() {
-    return new ObjectMapper();
-  }
-
-  @Bean
-  public EventSender eventSender() {
-    return new EventSender(template, brokerQueueName, workerName, sequenceStart, mapper());
+  public EventSender eventSender(ObjectMapper mapper) {
+    return new EventSender(template, brokerQueueName, workerName, sequenceStart, mapper);
   }
 }
