@@ -8,6 +8,7 @@ import org.datavaultplatform.worker.rabbit.RabbitMessageListener;
 import org.datavaultplatform.worker.rabbit.ShutdownHandler;
 import org.springframework.amqp.rabbit.listener.RabbitListenerEndpointRegistry;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,6 +24,9 @@ public class RabbitConfig {
   @Autowired
   MessageProcessor messageProcessor;
 
+  @Value("${spring.application.name}")
+  String applicationName;
+
   @Bean
   RabbitListenerUtils rabbitListeners() {
     return new RabbitListenerUtils(registry);
@@ -30,12 +34,12 @@ public class RabbitConfig {
 
   @Bean
   RabbitMessageListener rabbitMessageListener() {
-    return new RabbitMessageListener(messageProcessor, shutdownHandler(), rabbitListeners());
+    return new RabbitMessageListener(messageProcessor, shutdownHandler(), rabbitListeners(), applicationName);
   }
 
   @Bean
   ShutdownHandler shutdownHandler() {
-    return new ExitingShutdownHandler();
+    return new ExitingShutdownHandler(applicationName);
   }
 
 }

@@ -18,14 +18,17 @@ public class RabbitMessageListener {
   private final MessageProcessor processor;
 
   private final RabbitListenerUtils listeners;
+  private final String applicationName;
 
-  public RabbitMessageListener(
+  public RabbitMessageListener (
       MessageProcessor processor,
       ShutdownHandler shutdownHandler,
-      RabbitListenerUtils listeners) {
+      RabbitListenerUtils listeners,
+      String applicationName) {
     this.processor = processor;
     this.shutdownHandler = shutdownHandler;
     this.listeners = listeners;
+    this.applicationName = applicationName;
   }
 
   @SneakyThrows
@@ -43,12 +46,12 @@ public class RabbitMessageListener {
     MessageInfo info = getMessageInfo(message);
 
     if (info.isShutdown()) {
-      channel.basicAck(deliveryTag, false);
+        log.warn("SHUTDOWN MESSAGE [{}] - Received by Worker[{}]", info, applicationName);
+        channel.basicAck(deliveryTag, false);
 
-      listeners.stopAll();
+        listeners.stopAll();
 
-      shutdownHandler.handleShutdown(info);
-
+        shutdownHandler.handleShutdown(info);
     } else {
 
       boolean requeue = processor.processMessage(info);
