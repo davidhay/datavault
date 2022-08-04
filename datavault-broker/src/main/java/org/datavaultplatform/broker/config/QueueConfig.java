@@ -1,4 +1,4 @@
-package org.datavaultplatform.worker.config;
+package org.datavaultplatform.broker.config;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@ConditionalOnExpression("${worker.rabbit.enabled:true}")
+@ConditionalOnExpression("${broker.rabbit.enabled:true}")
 @Slf4j
 public class QueueConfig {
 
@@ -20,7 +20,7 @@ public class QueueConfig {
 
   //will create Q if it does not exist
   @Bean
-  @ConditionalOnProperty(value="worker.define.queue.worker", havingValue = "true",  matchIfMissing = false)
+  @ConditionalOnProperty(value="broker.define.queue.worker", havingValue = "true",  matchIfMissing = false)
   public Queue workerQueue(@Value(WORKER_QUEUE_NAME) String workerQueueName) {
     // Allow for priority messages so that a shutdown message can be prioritised if required.
     Map<String, Object> args = new HashMap<>();
@@ -30,7 +30,7 @@ public class QueueConfig {
 
   //will create Q if it does not exist
   @Bean
-  @ConditionalOnProperty(value="worker.define.queue.broker", havingValue = "true",  matchIfMissing = false)
+  @ConditionalOnProperty(value="broker.define.queue.broker", havingValue = "true",  matchIfMissing = false)
   public Queue brokerQueue(@Value(BROKER_QUEUE_NAME) String brokerQueueName) {
     return new Queue(brokerQueueName, true, false, false);
   }
