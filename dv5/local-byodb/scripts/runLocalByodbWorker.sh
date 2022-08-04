@@ -5,6 +5,7 @@ java -version
 export PROJECT_ROOT=$(cd ../../../;pwd)
 cd $PROJECT_ROOT
  SERVER_PORT=9090 \
+ SPRING_APPLICATION_NAME=datavault-worker-1 \
  SPRING_SECURITY_DEBUG=true \
  DATAVAULT_HOME="$PROJECT_ROOT/dv5/local-byodb/props/worker" \
 #KEYSTORE_ENABLE=true \
