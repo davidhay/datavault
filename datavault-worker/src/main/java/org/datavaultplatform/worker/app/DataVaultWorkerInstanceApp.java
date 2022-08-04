@@ -1,10 +1,7 @@
 package org.datavaultplatform.worker.app;
 
-import java.nio.charset.StandardCharsets;
-import java.util.UUID;
-import javax.crypto.SecretKey;
 import lombok.extern.slf4j.Slf4j;
-import org.datavaultplatform.common.crypto.Encryption;
+import org.datavaultplatform.common.crypto.EncryptionValidator;
 import org.datavaultplatform.worker.config.ActuatorConfig;
 import org.datavaultplatform.worker.config.EncryptionConfig;
 import org.datavaultplatform.worker.config.EventSenderConfig;
@@ -24,7 +21,6 @@ import org.springframework.boot.context.event.ApplicationStartingEvent;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.event.EventListener;
 import org.springframework.core.env.Environment;
-import org.springframework.util.Assert;
 
 @SpringBootApplication
 @Import({
@@ -50,6 +46,9 @@ public class DataVaultWorkerInstanceApp implements CommandLineRunner {
   @Value("${validate.encryption.config:false}")
   boolean validateEncryptionConfig;
 
+  @Autowired
+  EncryptionValidator encryptionValidator;
+
   public static void main(String[] args) {
 
     //setup properties BEFORE spring starts
@@ -61,17 +60,6 @@ public class DataVaultWorkerInstanceApp implements CommandLineRunner {
 
     SpringApplication.run(DataVaultWorkerInstanceApp.class, args);
   }
-
-  @EventListener
-  void onEvent(ApplicationStartingEvent event) {
-    log.info("Worker [{}] starting", applicationName);
-  }
-
-  @EventListener
-  void onEvent(ApplicationReadyEvent event) {
-    log.info("Worker [{}] ready", applicationName);
-  }
-
 
   @Override
   public void run(String... args) {
@@ -90,33 +78,19 @@ public class DataVaultWorkerInstanceApp implements CommandLineRunner {
     log.info("validate.encryption.config [{}]", validateEncryptionConfig);
 
     if (validateEncryptionConfig) {
-      validateEncryptionConfig(null);
-      validateEncryptionConfig(Encryption.getVaultPrivateKeyEncryptionKeyName());
-      validateEncryptionConfig(Encryption.getVaultDataEncryptionKeyName());
+      encryptionValidator.validate(true, true);
     } else {
       log.info("Encryption Config NOT CHECKED");
     }
   }
 
-
-  private void validateEncryptionConfig(String keyName) throws IllegalStateException {
-    String randomSecret = UUID.randomUUID().toString();
-    String encryptedThenDecrypted = encryptThenDecrypt(randomSecret, keyName);
-    Assert.isTrue(randomSecret.equals(encryptedThenDecrypted),
-        () -> String.format("Problem  with the setup of Encryption using keyName[%s]", keyName));
-    log.info("Encryption Config is Valid");
+  @EventListener
+  void onEvent(ApplicationStartingEvent event) {
+    log.info("Worker [{}] starting", applicationName);
   }
 
-  private String encryptThenDecrypt(String plainText, String keyName) {
-    try {
-      byte[] iv = Encryption.generateIV();
-      // null secretKey => the (Vault)PrivateKeyEncryptionKeyName (for SSH KEYS - NOT DATA)
-      SecretKey secretKey = keyName == null ? null : Encryption.getSecretKeyFromKeyStore(keyName);
-      byte[] encrypted = Encryption.encryptSecret(plainText, secretKey, iv);
-      byte[] decrypted = Encryption.decryptSecret(encrypted, iv, secretKey);
-      return new String(decrypted, StandardCharsets.UTF_8);
-    } catch (Exception ex) {
-      throw new IllegalStateException("Encryption Config is NOT VALID", ex);
-    }
+  @EventListener
+  void onEvent(ApplicationReadyEvent event) {
+    log.info("Worker [{}] ready", applicationName);
   }
 }

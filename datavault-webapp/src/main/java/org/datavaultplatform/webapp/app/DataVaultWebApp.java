@@ -21,8 +21,11 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.SpringBootVersion;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.boot.context.event.ApplicationStartingEvent;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Import;
+import org.springframework.context.event.EventListener;
 import org.springframework.core.env.Environment;
 import org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer;
 
@@ -70,4 +73,15 @@ public class DataVaultWebApp implements CommandLineRunner {
     log.info("broker.timeout.ms [{}]",env.getProperty("broker.timeout.ms"));
     log.info("broker.api.key [{}]",env.getProperty("broker.api.key"));
   }
+
+  @EventListener
+  void onEvent(ApplicationStartingEvent event) {
+    log.info("WebApp [{}] starting", applicationName);
+  }
+
+  @EventListener
+  void onEvent(ApplicationReadyEvent event) {
+    log.info("WebApp [{}] ready", applicationName);
+  }
+
 }
