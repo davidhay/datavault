@@ -2,6 +2,7 @@ package org.datavaultplatform.worker.queue;
 
 import java.nio.file.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.concurrent.TimeUnit;
 import org.datavaultplatform.common.event.Event;
 import org.datavaultplatform.common.event.EventStream;
 import org.datavaultplatform.common.io.FileUtils;
@@ -61,9 +62,9 @@ public class Receiver implements MessageProcessor {
     }
 
     @Override
-    public boolean processMessage(MessageInfo messsageInfo) {
-
-            String message = messsageInfo.getValue();
+    public boolean processMessage(MessageInfo messageInfo) {
+            long start = System.currentTimeMillis();
+            String message = messageInfo.getValue();
 
             // Decode and begin the job ...
             Path tempDirPath = null;
@@ -75,7 +76,7 @@ public class Receiver implements MessageProcessor {
                 Task concreteTask = (Task)(mapper.readValue(message, clazz));
 
                 // Is the message a redelivery?
-                if (messsageInfo.getIsRedeliver()) {
+                if (messageInfo.getIsRedeliver()) {
                     concreteTask.setIsRedeliver(true);
                 }
 
@@ -110,8 +111,12 @@ public class Receiver implements MessageProcessor {
 
                 // Clean up the temporary directory (if success if failure we need it for retries)
                 FileUtils.deleteDirectory(tempDirPath.toFile());
-            } catch (Exception e) {
-                logger.error("Error decoding message", e);
+            } catch (Exception ex) {
+                logger.error("Error processing message[{}]", messageInfo, ex);
+            } finally {
+                long diff = System.currentTimeMillis() - start;
+                logger.info("Finished Processing message[{}]. Took [{}]secs",
+                    messageInfo, TimeUnit.MILLISECONDS.toSeconds(diff));
             }
 
             return false;
