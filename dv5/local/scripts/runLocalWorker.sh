@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# This script now uses 'java -jar' instead of 'mvnw spring-boot:run'
 java -version
 
 export PROJECT_ROOT=$(cd ../../../;pwd)
@@ -16,8 +17,7 @@ cd $PROJECT_ROOT
  VALIDATE_ENCRYPTION_CONFIG=true \
  WORKER_DEFINE_QUEUE_WORKER=true \
  WORKER_DEFINE_QUEUE_BROKER=true \
- ./mvnw spring-boot:run \
- -Dspring-boot.run.jvmArguments="-Xdebug \
- -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=5555" \
- --projects datavault-worker
+ java -Xdebug \
+ -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=5555 \
+ -jar ./datavault-worker/target/datavault-worker.jar
 

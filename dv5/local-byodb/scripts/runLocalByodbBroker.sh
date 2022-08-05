@@ -2,6 +2,7 @@
 
 java -version
 
+# The 'local' profile for broker creates a LocalFileSystem in /tmp/as/local
 mkdir -p /tmp/as/local
 
 export PROJECT_ROOT=$(cd ../../../;pwd)

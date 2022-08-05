@@ -1,7 +1,9 @@
 #!/bin/bash
 
+# This script now uses 'java -jar' instead of 'mvnw spring-boot:run'
 java -version
 
+# The 'local' profile for broker creates a LocalFileSystem in /tmp/as/local
 mkdir -p /tmp/as/local
 
 export PROJECT_ROOT=$(cd ../../../;pwd)
@@ -21,8 +23,8 @@ cd $PROJECT_ROOT
  VALIDATE_ENCRYPTION_CONFIG=true \
  BROKER_DEFINE_QUEUE_WORKER=true \
  BROKER_DEFINE_QUEUE_BROKER=true \
- ./mvnw spring-boot:run  \
- -Dspring-boot.run.jvmArguments="-Xdebug \
- -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=5005" \
- --projects datavault-broker
+ java -Xdebug \
+ -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=5005 \
+ -jar ./datavault-broker/target/datavault-broker.jar
+
 
