@@ -10,6 +10,7 @@ pipeline {
         stage('BUILD-DIR Check') {
             steps {
               echo "JAVA_TOOL_OPTIONS=[$JAVA_TOOL_OPTIONS]"
+              sh 'printenv'
               sh "ls -l /var/run/docker.sock"
               sh "whoami"
               sh "groups"
@@ -48,7 +49,7 @@ pipeline {
         stage('MAVEN INTEGRATION TESTS') {
             steps {
                 echo 'Compiling..'
-                sh './mvnw integration-test -Dskip.unit.tests'
+                sh './mvnw integration-test -Dskip.unit.tests -Dmaven.main.skip'
             }
         }
         stage('MAVEN INSTALL ARTEFACTS') {
