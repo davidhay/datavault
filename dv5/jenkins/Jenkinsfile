@@ -7,7 +7,7 @@ pipeline {
       }
     }
     stages {
-        stage('BUILD-DIR Check') {
+        stage('PreBuild Checks') {
             steps {
               echo "JAVA_TOOL_OPTIONS=[$JAVA_TOOL_OPTIONS]"
               sh 'printenv'
@@ -33,26 +33,26 @@ pipeline {
                 sh 'curl --silent -XGET --unix-socket /var/run/docker.sock http://localhost/info | jq '
             }
         }
-        stage('MAVEN CLEAN COMPILE') {
+        stage('Compile') {
             steps {
                 echo 'Compiling..'
                 sh './mvnw help:evaluate -Dexpression=settings.localRepository'
                 sh './mvnw clean compile'
             }
         }
-        stage('MAVEN UNIT TESTS') {
+        stage('Unit Tests') {
             steps {
-                echo 'Compiling..'
-                sh './mvnw test'
+                echo 'Unit Tests..'
+                sh './mvnw test -Dmaven.main.skip'
             }
         }
-        stage('MAVEN INTEGRATION TESTS') {
+        stage('Integration Tests') {
             steps {
-                echo 'Compiling..'
+                echo 'Integration Tests..'
                 sh './mvnw integration-test -Dskip.unit.tests -Dmaven.main.skip'
             }
         }
-        stage('MAVEN INSTALL ARTEFACTS') {
+        stage('Install') {
             steps {
                 echo 'installing locally'
                 sh './mvnw install -Dskip.unit.tests -Dskip.integration.tests -Dmaven.main.skip'
