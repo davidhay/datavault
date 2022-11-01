@@ -1,0 +1,66 @@
+pipeline {
+    agent {
+      docker {
+        image "custom-java8:latest"
+        args  '--group-add=docker -v /var/run/docker.sock:/var/run/docker.sock -v /var/lib/jenkins/.m2:/home/jenkins/.m2 -e JAVA_TOOL_OPTIONS=-Dfile.encoding=UTF-8'
+      }
+    }
+    stages {
+        stage('BUILD-DIR Check') {
+            steps {
+              echo "JAVA_TOOL_OPTIONS=[$JAVA_TOOL_OPTIONS]"
+              sh "ls -l /var/run/docker.sock"
+              sh "whoami"
+              sh "groups"
+              sh "java -version"
+              sh "ls -la ."
+              sh "ls -l /.dockerenv"
+              sh 'pwd'
+              echo "DIR1 is [`cd;pwd`]"
+              echo "DIR2 is [$HOME]"
+              echo "HOME IS $HOME"
+              echo "BUILD DIR IS $PWD"
+              sh "ls -la /home/jenkins/.m2"
+              echo "type curl"
+              echo "type jq"
+            }
+        }
+        stage('Test Docker Socket') {
+            steps {
+                echo 'Compiling..'
+                sh 'curl --silent -XGET --unix-socket /var/run/docker.sock http://localhost/info | jq '
+            }
+        }
+        stage('MAVEN CLEAN COMPILE') {
+            steps {
+                echo 'Compiling..'
+                sh './mvnw help:evaluate -Dexpression=settings.localRepository'
+                sh './mvnw clean compile'
+            }
+        }
+        stage('MAVEN UNIT TESTS') {
+            steps {
+                echo 'Compiling..'
+                sh './mvnw test'
+            }
+        }
+        stage('MAVEN INTEGRATION TESTS') {
+            steps {
+                echo 'Compiling..'
+                sh './mvnw integration-test -Dskip.unit.tests'
+            }
+        }
+        stage('MAVEN INSTALL ARTEFACTS') {
+            steps {
+                echo 'installing locally'
+                sh './mvnw install -Dskip.unit.tests -Dskip.integration.tests -Dmaven.main.skip'
+            }
+        }
+    }
+    post {
+        success {
+            echo "BUILD SUCCESS"
+            archiveArtifacts artifacts: 'datavault-webapp/target/datavault-webapp.jar, datavault-worker/target/datavault-worker.jar, datavault-broker/target/datavault-broker.jar', fingerprint: true
+        }
+    }
+}
