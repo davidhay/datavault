@@ -10,8 +10,8 @@ pipeline {
         stage('PreBuild Checks') {
             steps {
               echo "JAVA_TOOL_OPTIONS=[$JAVA_TOOL_OPTIONS]"
-              echo "BRANCH_NAME[${BRANCH_NAME}]"
-              echo "GIT_COMMIT[${GIT_COMMIT}]"
+              echo "BRANCH_NAME[$env.BRANCH_NAME]"
+              echo "GIT_COMMIT[$env.GIT_COMMIT]"
               sh "ls -l /var/run/docker.sock"
               sh "whoami"
               sh "groups"
