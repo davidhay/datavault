@@ -45,7 +45,7 @@ pipeline {
         stage('Unit Tests') {
             steps {
                 echo 'Unit Tests..'
-                sh './mvnw test -Dmaven.main.skip'
+                sh './mvnw test'
             }
         }
         stage('Integration Tests') {
