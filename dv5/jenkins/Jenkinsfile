@@ -31,14 +31,13 @@ pipeline {
         }
         stage('Test Docker Socket') {
             steps {
-                echo 'Compiling..'
-                sh 'curl --silent -XGET --unix-socket /var/run/docker.sock http://localhost/info | jq '
+                echo 'Testing Docker Socket'
+                sh 'curl --silent -XGET --unix-socket /var/run/docker.sock http://localhost/info | jq'
             }
         }
         stage('Compile') {
             steps {
                 echo 'Compiling..'
-                sh './mvnw help:evaluate -Dexpression=settings.localRepository'
                 sh './mvnw clean compile'
             }
         }
@@ -51,7 +50,7 @@ pipeline {
         stage('Integration Tests') {
             steps {
                 echo 'Integration Tests..'
-                sh './mvnw integration-test -Dskip.unit.tests -Dmaven.main.skip'
+                sh './mvnw integration-test -Dskip.unit.tests'
             }
         }
         stage('Install') {
@@ -63,7 +62,7 @@ pipeline {
     }
     post {
         success {
-            echo "BUILD SUCCESS"
+            echo "BUILD SUCCESS : Recording Artifacts.."
             archiveArtifacts artifacts: 'datavault-webapp/target/datavault-webapp.jar, datavault-worker/target/datavault-worker.jar, datavault-broker/target/datavault-broker.jar', fingerprint: true
         }
     }
