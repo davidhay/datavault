@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
+import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -22,6 +23,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.contract.wiremock.WireMockRestServiceServer;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.DirtiesContext;
@@ -51,10 +53,10 @@ public class RestTemplateLoggingTest {
 
   MockRestServiceServer server;
 
-  @Value("${classpath:/logs/expectedLogEvents.txt}")
-  ClassPathResource expectedLogEventsResource;
+  Resource expectedLogEventsResource = new ClassPathResource("logs/expectedLogEvents.txt");
 
   @BeforeEach
+  @SneakyThrows
   void setup() {
     server = WireMockRestServiceServer.with(this.restTemplate) //
         .baseUrl("https://example.org") //
@@ -65,6 +67,8 @@ public class RestTemplateLoggingTest {
     logBackListAppender.start();
     getLoggingInterceptorLogbackLogger().addAppender(logBackListAppender);
 
+    File f = expectedLogEventsResource.getFile();
+    assertTrue(f.getName().endsWith("txt"));
   }
 
   @Test
@@ -80,9 +84,10 @@ public class RestTemplateLoggingTest {
     Thread.sleep(5000);
 
     List<String> actualLogEvents = logBackListAppender.list.stream().map(Object::toString).collect(Collectors.toList());
-    log.info("actual {} ", actualLogEvents);
     List<String> expectedLogEvents = IOUtils.readLines(this.expectedLogEventsResource.getInputStream(), StandardCharsets.UTF_8);
+    log.info("====");
     log.info("expected {}", expectedLogEvents);
+    log.info("actual {} ", actualLogEvents);
     log.info("====");
     assertTrue(actualLogEvents.containsAll(expectedLogEvents));
   }
