@@ -80,8 +80,10 @@ public class RestTemplateLoggingTest {
     Thread.sleep(5000);
 
     List<String> actualLogEvents = logBackListAppender.list.stream().map(Object::toString).collect(Collectors.toList());
+    log.info("actual", actualLogEvents);
     List<String> expectedLogEvents = IOUtils.readLines(this.expectedLogEventsResource.getInputStream(), StandardCharsets.UTF_8);
-
+    log.info("expected", expectedLogEvents);
+    log.info("====");
     assertTrue(actualLogEvents.containsAll(expectedLogEvents));
   }
 
