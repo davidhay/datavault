@@ -41,7 +41,7 @@ import org.springframework.web.client.RestTemplate;
 @ProfileDatabase
 @DirtiesContext(classMode = ClassMode.BEFORE_CLASS)
 @TestPropertySource(properties = "logging.level.org.datavaultplatform.webapp.config.logging=DEBUG")
-@DisabledInsideDocker
+//@DisabledInsideDocker
 public class RestTemplateLoggingTest {
 
   @Autowired
@@ -92,7 +92,9 @@ public class RestTemplateLoggingTest {
   }
 
   private ch.qos.logback.classic.Logger getLoggingInterceptorLogbackLogger() {
-    return (ch.qos.logback.classic.Logger) LoggingInterceptor.LOGGER;
+    ch.qos.logback.classic.Logger result = (ch.qos.logback.classic.Logger) LoggingInterceptor.LOGGER;
+    assertTrue(result.isDebugEnabled());
+    return result;
   }
 
 }
