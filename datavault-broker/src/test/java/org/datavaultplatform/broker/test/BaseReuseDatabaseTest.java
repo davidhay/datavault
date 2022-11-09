@@ -30,7 +30,10 @@ import org.testcontainers.containers.MariaDBContainer;
 public abstract class BaseReuseDatabaseTest  {
 
   // This container is once per class - not once per method. Methods can 'dirty' the database.
+<<<<<<< HEAD
 
+=======
+>>>>>>> 5d3816de (dv-5 RSS408-256 - switch to using mariadb testcontainers instead of mysql testcontainers as production uses mariadb)
   static MariaDBContainer mariadb = new MariaDBContainer<>(DockerImage.MARIADB_IMAGE).withReuse(true);
   @Autowired
   InitialiseDatabase initialiseDatabase;

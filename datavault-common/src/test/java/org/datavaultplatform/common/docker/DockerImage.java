@@ -8,9 +8,14 @@ public abstract class DockerImage {
   // https://hub.docker.com/r/bitnami/openldap/tags
   public static final DockerImageName LDAP_IMAGE = parse("bitnami/openldap@sha256:23ebcaa52331a6521f2e512b971943a3a8b99d15459d59105d6a0eeb31220c86");
 
+<<<<<<< HEAD
 
   // https://hub.docker.com/_/mariadb/tags
   public static DockerImageName MARIADB_IMAGE = parse("mariadb:10.9.4");
+=======
+  // https://hub.docker.com/_/mariadb/tags
+  public static DockerImageName MARIADB_IMAGE = parse("mariadb:10.9.3");
+>>>>>>> 5d3816de (dv-5 RSS408-256 - switch to using mariadb testcontainers instead of mysql testcontainers as production uses mariadb)
 
   // https://hub.docker.com/r/mailhog/mailhog/tags
   public static final DockerImageName MAIL_IMAGE = parse("mailhog/mailhog:v1.0.1");
