@@ -23,13 +23,11 @@ pipeline {
         stage('Unit Tests') {
             steps {
                 echo 'Unit Tests..'
-                sh './mvnw test'
             }
         }
         stage('Integration Tests') {
             steps {
                 echo 'Integration Tests..'
-                sh './mvnw integration-test -Dskip.unit.tests -Dmaven.main.skip'
             }
         }
         stage('Install') {
@@ -38,6 +36,38 @@ pipeline {
                 sh './mvnw install -Dskip.unit.tests -Dskip.integration.tests -Dmaven.main.skip'
             }
         }
+        stage('Approval') {
+            steps {
+                echo "DEPLOYED-1 ? ${DEPLOY:false}"
+                timeout(time:5, unit:'HOURS') {
+                    input message: 'ReDeploy to Jenkins16 ?', ok: 'Deploy!'
+                }
+            }
+        }
+        stage("INIT - CHECK TARGET IS UP") {
+            steps {
+                script {
+                    def pingRes = sh(script:"ping -c 1 $TARGET > /dev/null 2>&1", returnStatus: true);
+                    if ( pingRes != 0) {
+                        throw new Exception("Failed to ping $TARGET");
+                    }
+                }
+            }
+        }
+        stage('CopyToTarget') {
+            steps {
+                withCredentials([sshUserPrivateKey(credentialsId: 'jenkinsKeyPairWithEC2USER', keyFileVariable: 'KEYFILE', usernameVariable:"USERNAME")]) {
+                    sh  """
+                    set +x
+                    echo "KEYFILE IS $KEYFILE"
+                    echo "USERNAME IS $USERNAME"
+                    scp -i $KEYFILE -o StrictHostKeyChecking=no datavault-webapp/target/datavault-webapp.jar $USERNAME@$TARGET:./
+                    scp -i $KEYFILE -o StrictHostKeyChecking=no datavault-worker/target/datavault-worker.jar $USERNAME@$TARGET:./
+                    scp -i $KEYFILE -o StrictHostKeyChecking=no datavault-broker/target/datavault-broker.jar $USERNAME@$TARGET:./
+                """
+                }
+            }
+        }//end stage
     }
     post {
         always {
