@@ -31,7 +31,7 @@ pipeline {
           //the GH_TAG variable set here is used in the stage 'Tag Build'
           steps {
             script {
-              GH_TAG = TAG.replaceAll(" ","_").trim()
+              GH_TAG = TAG.trim().replaceAll(" ","_")
               if (GH_TAG != "") {
                 if (!isGitTagValid(GH_TAG)) {
                   error "Tag [${GH_TAG}] is not valid"
