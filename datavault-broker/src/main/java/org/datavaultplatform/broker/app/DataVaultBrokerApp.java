@@ -53,7 +53,9 @@ import org.springframework.core.env.Environment;
 @Import({
     JacksonConfig.class, PropertiesConfig.class, EncryptionConfig.class, ActuatorConfig.class,
     ScheduleConfig.class, InitialiseConfig.class,
-    SecurityActuatorConfig.class, SecurityConfig.class, ControllerConfig.class,
+    //SecurityActuatorConfig.class,
+    SecurityConfig.class,
+    ControllerConfig.class,
     ServiceConfig.class,  DatabaseConfig.class,
     LdapConfig.class, EmailConfig.class, EmailLocalConfig.class, RabbitConfig.class,
     StorageClassNameResolverConfig.class
