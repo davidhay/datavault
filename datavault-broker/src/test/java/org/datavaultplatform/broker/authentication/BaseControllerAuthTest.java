@@ -191,7 +191,7 @@ public abstract class BaseControllerAuthTest {
     mvc.perform(builder)
         .andDo(print())
         .andExpect(status().isUnauthorized());
-    verify(mClientService, atLeast(1)).getClientByApiKey(null);
+    verify(mClientService).getClientByApiKey(null);
     verifyNoMoreInteractions(mClientService, mUserService, mAdminService, mLoginUser);
   }
 

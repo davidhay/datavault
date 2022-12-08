@@ -53,7 +53,7 @@ import org.springframework.core.env.Environment;
 @Import({
     JacksonConfig.class, PropertiesConfig.class, EncryptionConfig.class, ActuatorConfig.class,
     ScheduleConfig.class, InitialiseConfig.class,
-    //SecurityActuatorConfig.class,
+    SecurityActuatorConfig.class,
     SecurityConfig.class,
     ControllerConfig.class,
     ServiceConfig.class,  DatabaseConfig.class,
