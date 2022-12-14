@@ -19,7 +19,7 @@ public class SecurityConfig {
   }
 
   @Bean
-  AuthenticationSuccess authenticationSuccess(NotifyLoginService service){
+  public AuthenticationSuccess authenticationSuccess(NotifyLoginService service){
     return new AuthenticationSuccess(service);
   }
 

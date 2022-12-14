@@ -24,6 +24,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
+import org.springframework.security.authentication.AuthenticationEventPublisher;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.ProviderManager;
@@ -209,9 +210,13 @@ public class SecurityConfig {
 
   @Bean
   AuthenticationManager authenticationManager(
+      AuthenticationEventPublisher eventPublisher,
       @Qualifier("actuatorAuthenticationProvider") AuthenticationProvider authenticationProvider1,
       @Qualifier("restAuthenticationProvider") AuthenticationProvider authenticationProvider2
   ) {
-    return new ProviderManager(authenticationProvider1, authenticationProvider2);
+    ProviderManager result = new ProviderManager(authenticationProvider1, authenticationProvider2);
+    result.setAuthenticationEventPublisher(eventPublisher);
+    result.afterPropertiesSet();
+    return result;
   }
 }

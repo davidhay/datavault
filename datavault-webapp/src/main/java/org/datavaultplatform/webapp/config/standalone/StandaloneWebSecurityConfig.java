@@ -9,7 +9,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
+import org.springframework.security.authentication.AuthenticationEventPublisher;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -69,11 +72,22 @@ public class StandaloneWebSecurityConfig {
   }
 
   @Bean
+  @Qualifier("standaloneAuthenticationProvider")
   public DaoAuthenticationProvider standaloneAuthenticationProvider(@Qualifier("standaloneUsers") UserDetailsService uds) {
     DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
     provider.setUserDetailsService(uds);
     return provider;
   }
 
-
+  @Bean
+  public AuthenticationManager authenticationManager(
+      AuthenticationEventPublisher eventPublisher,
+      @Qualifier("actuatorAuthenticationProvider") AuthenticationProvider authenticationProvider1,
+      @Qualifier("standaloneAuthenticationProvider") AuthenticationProvider authenticationProvider2
+  ) {
+    ProviderManager result = new ProviderManager(authenticationProvider1, authenticationProvider2);
+    result.setAuthenticationEventPublisher(eventPublisher);
+    result.afterPropertiesSet();
+    return result;
+  }
 }

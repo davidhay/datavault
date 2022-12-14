@@ -53,8 +53,10 @@ public class DataVaultWebApp implements CommandLineRunner {
   Environment env;
 
   public DataVaultWebApp(FreeMarkerConfigurer freeMarkerConfigurer) {
+    /*
     freeMarkerConfigurer.getTaglibFactory()
         .setClasspathTlds(singletonList("/META-INF/security.tld"));
+     */
   }
 
   @SneakyThrows

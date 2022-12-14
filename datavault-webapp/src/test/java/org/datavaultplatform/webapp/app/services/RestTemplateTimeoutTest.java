@@ -9,7 +9,6 @@ import java.lang.reflect.Field;
 import java.util.concurrent.TimeUnit;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.http.client.config.RequestConfig;
 import org.datavaultplatform.webapp.test.ProfileDatabase;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,33 +53,34 @@ public class RestTemplateTimeoutTest {
     Field fRequestFactory = AbstractClientHttpRequestFactoryWrapper.class.getDeclaredField("requestFactory");
     fRequestFactory.setAccessible(true);
 
-    Field fRequestConfig = HttpComponentsClientHttpRequestFactory.class.getDeclaredField("requestConfig");
-    fRequestConfig.setAccessible(true);
+    Field fConnectTimeout = HttpComponentsClientHttpRequestFactory.class.getDeclaredField("connectTimeout");
+    fConnectTimeout.setAccessible(true);
 
-    assertEquals(2_000, timeoutMs);
+    Field fConnectionRequestTimeout = HttpComponentsClientHttpRequestFactory.class.getDeclaredField("connectionRequestTimeout");
+    fConnectionRequestTimeout.setAccessible(true);
 
     ClientHttpRequestFactory iFactory = restTemplate.getRequestFactory();
 
-    BufferingClientHttpRequestFactory bFactory = (BufferingClientHttpRequestFactory)fRequestFactory.get(iFactory);
+    //BufferingClientHttpRequestFactory bFactory = (BufferingClientHttpRequestFactory)fRequestFactory.get(iFactory);
 
-    HttpComponentsClientHttpRequestFactory factory = (HttpComponentsClientHttpRequestFactory)fRequestFactory.get(bFactory);
-    RequestConfig requestConfig = (RequestConfig)fRequestConfig.get(factory);
-    assertEquals(2_000, requestConfig.getSocketTimeout());
-    assertEquals(2_000, requestConfig.getConnectionRequestTimeout());
-    assertEquals(2_000, requestConfig.getConnectTimeout());
+    HttpComponentsClientHttpRequestFactory factory = (HttpComponentsClientHttpRequestFactory)fRequestFactory.get(iFactory);
+    int connectTimeout = (Integer)fConnectTimeout.get(factory);
+    //int connectionRequestTimeout = (Integer)fConnectionRequestTimeout.get(factory);
+    assertEquals(timeoutMs, connectTimeout);
+    //assertEquals(timeoutMs, connectionRequestTimeout);
   }
 
   @Test
   void testTimeout() {
       String url = String.format("http://localhost:%d/auth/info/hello", serverPort);
       long start = System.currentTimeMillis();
-      ResourceAccessException ex = assertThrows(ResourceAccessException.class,() ->restTemplate.getForEntity(url, String.class));
+      ResourceAccessException ex = assertThrows(ResourceAccessException.class,() -> restTemplate.getForEntity(url, String.class));
       long diff = System.currentTimeMillis() - start;
       log.info("diff is {}",diff);
       assertTrue(diff > 2_000);
-      assertTrue(diff < 2_300);
-      String expectedErrorPrefix = String.format("I/O error on GET request for \"http://localhost:%d/auth/info/hello\": Read timed out; nested exception is java.net.SocketTimeoutException: Read timed out",serverPort);
+      String expectedErrorPrefix = String.format("I/O error on GET request for \"http://localhost:%d/auth/info/hello\": Read timed out", serverPort);
       assertThat(ex.getMessage()).startsWith(expectedErrorPrefix);
+      assertTrue(diff < 3_000);
   }
 
   @TestConfiguration

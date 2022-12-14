@@ -17,7 +17,7 @@ import org.springframework.security.web.authentication.Http403ForbiddenEntryPoin
 
 @Configuration
 @Profile("shib")
-@Import({ShibWebSecurityConfig.class, ShibFilterConfigurer.class})
+@Import(ShibWebSecurityConfig.class)
 @Slf4j
 public class ShibProfileConfig {
 

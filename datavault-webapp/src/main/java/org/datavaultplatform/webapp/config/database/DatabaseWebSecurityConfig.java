@@ -5,9 +5,14 @@ import org.datavaultplatform.webapp.authentication.AuthenticationSuccess;
 import org.datavaultplatform.webapp.authentication.database.DatabaseAuthenticationProvider;
 import org.datavaultplatform.webapp.config.HttpSecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
+import org.springframework.security.authentication.AuthenticationEventPublisher;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -27,7 +32,7 @@ public class DatabaseWebSecurityConfig {
   AuthenticationSuccess authenticationSuccess;
 
   @Autowired
-  DatabaseAuthenticationProvider authenticationProvider;
+  DatabaseAuthenticationProvider databaseAuthenticationProvider;
 
   @Bean
   @Order(2)
@@ -38,8 +43,20 @@ public class DatabaseWebSecurityConfig {
 
     HttpSecurityUtils.sessionManagement(http, sessionRegistry);
 
-    http.authenticationProvider(authenticationProvider);
+    http.authenticationProvider(this.databaseAuthenticationProvider);
 
     return http.build();
   }
+
+  @Bean
+  public AuthenticationManager authenticationManager(
+      AuthenticationEventPublisher eventPublisher,
+      @Qualifier("actuatorAuthenticationProvider") AuthenticationProvider authenticationProvider1
+  ) {
+    ProviderManager result =  new ProviderManager(authenticationProvider1, this.databaseAuthenticationProvider);
+    result.setAuthenticationEventPublisher(eventPublisher);
+    result.afterPropertiesSet();
+    return result;
+  }
+
 }
