@@ -5,11 +5,12 @@ import javax.annotation.PostConstruct;
 import javax.net.ssl.SSLContext;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.http.conn.ssl.NoopHostnameVerifier;
-import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
-import org.apache.http.client.HttpClient;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.HttpClients;
+import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManagerBuilder;
+import org.apache.hc.client5.http.io.HttpClientConnectionManager;
+import org.apache.hc.client5.http.ssl.NoopHostnameVerifier;
+import org.apache.hc.client5.http.ssl.SSLConnectionSocketFactory;
 import org.apache.http.ssl.TrustStrategy;
 import org.datavaultplatform.webapp.config.logging.LoggingInterceptor;
 import org.datavaultplatform.webapp.services.ApiErrorHandler;
@@ -45,12 +46,12 @@ public class RestTemplateConfig {
   private ClientHttpRequestFactory getRequestFactory(int brokerTimeoutMs) {
     HttpComponentsClientHttpRequestFactory inner = new HttpComponentsClientHttpRequestFactory();
     if (brokerUsingSelfSignedCert) {
-      inner.setHttpClient(getClientForSelfSignedCert());
+      inner.setHttpClient(getClient());
     }
     // by using -1, we can remove the timeout - helps debug the broker!
     if(brokerTimeoutMs > 0) {
       inner.setConnectTimeout(brokerTimeoutMs);
-      inner.setReadTimeout(brokerTimeoutMs);
+      //inner.setReadTimeout(brokerTimeoutMs);
       inner.setConnectionRequestTimeout(brokerTimeoutMs);
     }
     log.warn("broker.timeout.ms [{}]", brokerTimeoutMs);
@@ -61,12 +62,15 @@ public class RestTemplateConfig {
    * When using SelfSignedCerts for testing SSL locally, we have to disable the SSL cert verification.
    */
   @SneakyThrows
-  protected HttpClient getClientForSelfSignedCert() {
+  private org.apache.hc.client5.http.classic.HttpClient getClient() {
     TrustStrategy acceptingTrustStrategy = (x509Certificates, authType) -> true;
     SSLContext sslContext = org.apache.http.ssl.SSLContexts.custom().loadTrustMaterial(null, acceptingTrustStrategy).build();
-    SSLConnectionSocketFactory csf = new SSLConnectionSocketFactory(sslContext, new NoopHostnameVerifier());
-    CloseableHttpClient httpClient = HttpClients.custom().setSSLSocketFactory(csf).build();
-    return httpClient;
+    SSLConnectionSocketFactory sslSocketFactory = new SSLConnectionSocketFactory(sslContext, new NoopHostnameVerifier());
+    HttpClientConnectionManager cm = PoolingHttpClientConnectionManagerBuilder.create()
+        .setSSLSocketFactory(sslSocketFactory)
+        .build();
+    CloseableHttpClient httpclient = HttpClients.custom().setConnectionManager(cm).build();
+    return httpclient;
   }
 
   @PostConstruct

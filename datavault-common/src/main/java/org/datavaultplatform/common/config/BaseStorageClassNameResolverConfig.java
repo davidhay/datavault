@@ -1,6 +1,6 @@
 package org.datavaultplatform.common.config;
 
-import javax.annotation.PostConstruct;
+import jakarta.annotation.PostConstruct;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.datavaultplatform.common.storage.StorageConstants;

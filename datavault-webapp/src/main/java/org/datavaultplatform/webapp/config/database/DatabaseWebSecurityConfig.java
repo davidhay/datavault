@@ -5,24 +5,20 @@ import org.datavaultplatform.webapp.authentication.AuthenticationSuccess;
 import org.datavaultplatform.webapp.authentication.database.DatabaseAuthenticationProvider;
 import org.datavaultplatform.webapp.config.HttpSecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.session.SessionRegistry;
+import org.springframework.security.web.SecurityFilterChain;
 
-@EnableWebSecurity
 @Slf4j
+@Configuration
+@EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
-@Order(2)
-public class DatabaseWebSecurityConfig extends WebSecurityConfigurerAdapter {
-
-  @Value("${spring.security.debug:false}")
-  boolean securityDebug;
+public class DatabaseWebSecurityConfig {
 
   @Autowired
   SessionRegistry sessionRegistry;
@@ -33,27 +29,17 @@ public class DatabaseWebSecurityConfig extends WebSecurityConfigurerAdapter {
   @Autowired
   DatabaseAuthenticationProvider authenticationProvider;
 
-  @Override
-  public void configure(WebSecurity web) throws Exception {
-    web.debug(securityDebug);
-    //TODO - do we need to do this?
-    //web.expressionHandler(expressionHandler);
-  }
-
-  @Override
-  protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-    auth.authenticationProvider(authenticationProvider);
-  }
-
-  @Override
-  protected void configure(HttpSecurity http) throws Exception {
-
+  @Bean
+  @Order(2)
+  public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     HttpSecurityUtils.formLogin(http, authenticationSuccess);
 
     HttpSecurityUtils.authorizeRequests(http);
 
     HttpSecurityUtils.sessionManagement(http, sessionRegistry);
 
-  }
+    http.authenticationProvider(authenticationProvider);
 
+    return http.build();
+  }
 }

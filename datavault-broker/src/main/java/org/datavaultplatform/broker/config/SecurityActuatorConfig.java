@@ -5,10 +5,13 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,8 +20,10 @@ import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
 @ConditionalOnExpression("${broker.security.enabled:true}")
+@Configuration
+@EnableWebSecurity
 @Slf4j
-@Order(1)
+@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
 public class SecurityActuatorConfig {
 
   @Value("${broker.actuator.username:bactor}")
@@ -54,10 +59,10 @@ public class SecurityActuatorConfig {
 
     http.authenticationProvider(authenticationProvider);
 
-    http.antMatcher("/actuator/**")
-        .authorizeRequests()
-        .antMatchers("/actuator/health", "/actuator/info").permitAll()
-        .anyRequest().authenticated();
+    http.securityMatcher("/actuator/**")
+        .authorizeHttpRequests()
+        .requestMatchers("/actuator/info", "/actuator/health").permitAll()
+        .anyRequest().fullyAuthenticated();
 
     return http.build();
   }

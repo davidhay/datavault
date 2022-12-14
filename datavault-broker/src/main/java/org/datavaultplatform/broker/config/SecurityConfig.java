@@ -2,11 +2,11 @@ package org.datavaultplatform.broker.config;
 
 import static org.datavaultplatform.common.util.Constants.HEADER_USER_ID;
 
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
 import java.io.IOException;
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.datavaultplatform.broker.authentication.RestAuthenticationFailureHandler;
 import org.datavaultplatform.broker.authentication.RestAuthenticationFilter;
@@ -18,20 +18,18 @@ import org.datavaultplatform.broker.services.ClientsService;
 import org.datavaultplatform.broker.services.RolesAndPermissionsService;
 import org.datavaultplatform.broker.services.UsersService;
 import org.datavaultplatform.common.util.Constants;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Lazy;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.Authentication;
@@ -46,49 +44,47 @@ import org.springframework.web.filter.CommonsRequestLoggingFilter;
 import org.springframework.web.filter.GenericFilterBean;
 
 @ConditionalOnExpression("${broker.security.enabled:true}")
+@Configuration
 @EnableWebSecurity
 @Slf4j
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
 public class SecurityConfig {
 
   @Value("${spring.security.debug:false}")
-  private boolean securityDebug;
+  boolean securityDebug;
 
   @Bean
-  public WebSecurityCustomizer webSecurityCustomizer() {
+  WebSecurityCustomizer webSecurityCustomizer() {
     return web -> web.debug(securityDebug);
   }
-
 
   @Bean
   @Order(2)
   public SecurityFilterChain securityFilterChain(
       HttpSecurity http,
-      RestAuthenticationProvider restAuthenticationProvider) throws Exception {
+      RestAuthenticationProvider restAuthenticationProvider,
+      AuthenticationManager authenticationManager
+) throws Exception {
 
-
-    http.csrf().disable();
-    http.sessionManagement(cust -> cust.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-
-    http.exceptionHandling(ex -> ex.authenticationEntryPoint(http403EntryPoint()));
-
-    //will this make any difference?
-    http.apply(new RestFilterConfigurer());
+    http.csrf().disable()
+    .addFilterAt(restFilter(authenticationManager), AbstractPreAuthenticatedProcessingFilter.class)
+    .sessionManagement(cust -> cust.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+    .exceptionHandling(ex -> ex.authenticationEntryPoint(http403EntryPoint()));
 
     http.authenticationProvider(restAuthenticationProvider);
 
-    http.antMatcher("/**")
+    http.securityMatcher("/**")
         .authorizeRequests()
-        .antMatchers("/admin/users/**").access("hasRole('ROLE_ADMIN')")
-        .antMatchers("/admin/archivestores/**").access("hasRole('ROLE_ADMIN_ARCHIVESTORES')")
-        .antMatchers("/admin/deposits/**").access("hasRole('ROLE_ADMIN_DEPOSITS')")
-        .antMatchers("/admin/retrieves/**").access("hasRole('ROLE_ADMIN_RETRIEVES')")
-        .antMatchers("/admin/vaults/**").access("hasRole('ROLE_ADMIN_VAULTS')")
-        .antMatchers("/admin/pendingVaults/**").access("hasRole('ROLE_ADMIN_PENDING_VAULTS')")
-        .antMatchers("/admin/events/**").access("hasRole('ROLE_ADMIN_EVENTS')")
-        .antMatchers("/admin/billing/**").access("hasRole('ROLE_ADMIN_BILLING')")
+        .requestMatchers("/admin/users/**").access("hasRole('ROLE_ADMIN')")
+        .requestMatchers("/admin/archivestores/**").access("hasRole('ROLE_ADMIN_ARCHIVESTORES')")
+        .requestMatchers("/admin/deposits/**").access("hasRole('ROLE_ADMIN_DEPOSITS')")
+        .requestMatchers("/admin/retrieves/**").access("hasRole('ROLE_ADMIN_RETRIEVES')")
+        .requestMatchers("/admin/vaults/**").access("hasRole('ROLE_ADMIN_VAULTS')")
+        .requestMatchers("/admin/pendingVaults/**").access("hasRole('ROLE_ADMIN_PENDING_VAULTS')")
+        .requestMatchers("/admin/events/**").access("hasRole('ROLE_ADMIN_EVENTS')")
+        .requestMatchers("/admin/billing/**").access("hasRole('ROLE_ADMIN_BILLING')")
         /* TODO : DavidHay : no controller mapped to /admin/reviews ! */
-        .antMatchers("/admin/reviews/**").access("hasRole('ROLE_ADMIN_REVIEWS')")
+        .requestMatchers("/admin/reviews/**").access("hasRole('ROLE_ADMIN_REVIEWS')")
         .anyRequest().authenticated();
 
         return http.build();
@@ -104,12 +100,8 @@ public class SecurityConfig {
    <property name="filterProcessesUrl" value="/**" />
    </bean>
    */
-
-
-  /**
-   * Used with RestFilterConfigurer to allow the filter to be supplied with AuthenticationManager ??
-   */
-  public static RestAuthenticationFilter restFilter(AuthenticationManager authenticationManager) throws Exception {
+  private RestAuthenticationFilter restFilter(
+      AuthenticationManager authenticationManager) throws Exception {
     RequestMatcher matcher = request -> {
       log.info("FILTER PROCESSING {}", request.getPathInfo());
       return true;
@@ -136,7 +128,7 @@ public class SecurityConfig {
    *     </bean>
    */
   @Bean
-  public RestAuthenticationProvider restAuthenticationProvider(
+  RestAuthenticationProvider restAuthenticationProvider(
       UsersService usersService,
       ClientsService clientsService,
       RolesAndPermissionsService rolesAndPermissionsService,
@@ -156,7 +148,8 @@ public class SecurityConfig {
       <property name="clientKeyRequestHeader" value="X-Client-Key"/>
     </bean>
    */
-  private static RestWebAuthenticationDetailsSource restWebAuthenticationDetailsSource(){
+
+  RestWebAuthenticationDetailsSource restWebAuthenticationDetailsSource(){
     RestWebAuthenticationDetailsSource result = new RestWebAuthenticationDetailsSource();
     result.setClientKeyRequestHeader(Constants.HEADER_CLIENT_KEY);
     return result;
@@ -166,7 +159,7 @@ public class SecurityConfig {
    <bean id="authenticationSuccessHandler" class="org.datavaultplatform.broker.authentication.RestAuthenticationSuccessHandler" />
    */
 
-  private static RestAuthenticationSuccessHandler authenticationSuccessHandler(){
+  RestAuthenticationSuccessHandler authenticationSuccessHandler(){
     return new RestAuthenticationSuccessHandler();
   }
 
@@ -174,7 +167,7 @@ public class SecurityConfig {
    <bean id="authenticationFailureHandler" class="org.datavaultplatform.broker.authentication.RestAuthenticationFailureHandler" />
    */
 
-  private static RestAuthenticationFailureHandler authenticationFailureHandler(){
+  RestAuthenticationFailureHandler authenticationFailureHandler(){
     return new RestAuthenticationFailureHandler();
   }
 
@@ -182,7 +175,8 @@ public class SecurityConfig {
     <!-- If user is not authorised for request then throw back a 403 -->
     <bean id="http403EntryPoint" class="org.springframework.security.web.authentication.Http403ForbiddenEntryPoint" />
    */
-  private Http403ForbiddenEntryPoint http403EntryPoint() {
+
+  Http403ForbiddenEntryPoint http403EntryPoint() {
       return new Http403ForbiddenEntryPoint();
   }
 
@@ -201,7 +195,7 @@ public class SecurityConfig {
 
   @Component
   @Order(2)
-  public static class PrincipalLoggingFilter extends GenericFilterBean {
+  static class PrincipalLoggingFilter extends GenericFilterBean {
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response,
@@ -213,4 +207,11 @@ public class SecurityConfig {
     }
   }
 
+  @Bean
+  AuthenticationManager authenticationManager(
+      @Qualifier("actuatorAuthenticationProvider") AuthenticationProvider authenticationProvider1,
+      @Qualifier("restAuthenticationProvider") AuthenticationProvider authenticationProvider2
+  ) {
+    return new ProviderManager(authenticationProvider1, authenticationProvider2);
+  }
 }

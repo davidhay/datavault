@@ -49,11 +49,11 @@ public class SecurityActuatorConfig {
 
   @Bean
   public SecurityFilterChain springFilterChain(HttpSecurity http) throws Exception {
-    http.antMatcher("/actuator/**")
+    http.securityMatcher("/actuator/**")
         .httpBasic().and()
         .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
         .authorizeRequests()
-        .antMatchers(
+        .requestMatchers(
             "/actuator/customtime",
             "/actuator/health",
             "/actuator/info"

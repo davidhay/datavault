@@ -39,7 +39,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringBootVersion;
 import org.springframework.boot.actuate.scheduling.ScheduledTasksEndpoint;
-import org.springframework.boot.actuate.scheduling.ScheduledTasksEndpoint.CronTaskDescription;
+import org.springframework.boot.actuate.scheduling.ScheduledTasksEndpoint.CronTaskDescriptor;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.context.ApplicationPidFileWriter;
@@ -53,9 +53,7 @@ import org.springframework.core.env.Environment;
 @Import({
     JacksonConfig.class, PropertiesConfig.class, EncryptionConfig.class, ActuatorConfig.class,
     ScheduleConfig.class, InitialiseConfig.class,
-    SecurityActuatorConfig.class,
-    SecurityConfig.class,
-    ControllerConfig.class,
+    SecurityActuatorConfig.class, SecurityConfig.class, ControllerConfig.class,
     ServiceConfig.class,  DatabaseConfig.class,
     LdapConfig.class, EmailConfig.class, EmailLocalConfig.class, RabbitConfig.class,
     StorageClassNameResolverConfig.class
@@ -188,7 +186,7 @@ public class DataVaultBrokerApp implements CommandLineRunner {
 
   void showScheduledTasks() {
     scheduledTasksEndpoint.scheduledTasks().getCron().forEach(td -> {
-      CronTaskDescription ctd = (CronTaskDescription)td;
+      CronTaskDescriptor ctd = (CronTaskDescriptor) td;
       String cronExpr = ctd.getExpression();
       String description = CronExpressionDescriptor.getDescription(cronExpr, new Options(){{
         setLocale(Locale.getDefault());

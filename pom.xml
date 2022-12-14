@@ -12,7 +12,7 @@
   <parent>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
-    <version>2.7.6</version>
+    <version>3.0.0</version>
     <relativePath/> <!-- lookup parent from repository -->
   </parent>
 
@@ -35,6 +35,10 @@
     <skip.integration.tests>false</skip.integration.tests>
 
     <!-- dependency versions -->
+
+    <!-- https://mvnrepository.com/artifact/pl.project13.maven/git-commit-id-plugin -->
+    <git.commit.id.maven.plugin.version>4.9.10</git.commit.id.maven.plugin.version>
+
     <!-- https://mvnrepository.com/artifact/com.amazonaws/aws-java-sdk-bom -->
     <aws.java.sdk.bom.version>1.12.334</aws.java.sdk.bom.version>
 
@@ -45,7 +49,10 @@
     <testcontainers.version>1.17.6</testcontainers.version>
 
     <!-- https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-starter-contract-stub-runner -->
+    <!--
     <spring.cloud.version>3.1.5</spring.cloud.version>
+    -->
+    <spring.cloud.version>4.0.0-RC3</spring.cloud.version>
 
     <!-- https://mvnrepository.com/artifact/org.mockito/mockito-core -->
     <mockito.version>4.9.0</mockito.version>
@@ -117,6 +124,8 @@
 
     <!-- https://mvnrepository.com/artifact/net.i2p.crypto/eddsa -->
     <eddsa.version>0.3.0</eddsa.version>
+
+    <hibernate.version>6.1.6.Final</hibernate.version>
   </properties>
 
   <dependencyManagement>
@@ -367,6 +376,7 @@
         <plugin>
           <groupId>pl.project13.maven</groupId>
           <artifactId>git-commit-id-plugin</artifactId>
+          <version>${git.commit.id.maven.plugin.version}</version>
           <configuration>
             <offline>true</offline>
             <verbose>false</verbose>
@@ -515,4 +525,14 @@
       </build>
     </profile>
   </profiles>
+  <repositories>
+    <repository>
+      <id>spring-milestones</id>
+      <name>Spring Milestones</name>
+      <url>https://repo.spring.io/milestone</url>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
+  </repositories>
 </project>

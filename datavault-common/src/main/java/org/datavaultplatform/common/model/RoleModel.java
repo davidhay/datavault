@@ -7,7 +7,7 @@ import com.google.common.collect.Sets;
 
 import java.util.ArrayList;
 import java.util.List;
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.text.MessageFormat;
 import java.util.Collection;
 import java.util.Objects;
@@ -25,7 +25,8 @@ public class RoleModel {
     public static final String EG_ROLE_MODEL = "eg.RoleModel.1";
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @SequenceGenerator(name = "hibSEQ", sequenceName = "hibernate_sequence")
+    @GeneratedValue(strategy = GenerationType.AUTO, generator = "hibSEQ")
     private Long id;
 
     @Column(name = "name", nullable = false, columnDefinition = "TEXT")

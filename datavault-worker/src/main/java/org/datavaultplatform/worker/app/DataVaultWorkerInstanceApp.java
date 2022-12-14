@@ -17,11 +17,11 @@ import org.datavaultplatform.worker.config.RabbitConfig;
 import org.datavaultplatform.worker.config.ReceiverConfig;
 import org.datavaultplatform.worker.config.SecurityActuatorConfig;
 import org.datavaultplatform.worker.config.StorageClassNameResolverConfig;
+import org.datavaultplatform.worker.config.WebConfig;
 import org.springframework.amqp.rabbit.listener.RabbitListenerEndpointRegistry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.boot.SpringApplication;
 import org.springframework.boot.SpringBootVersion;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
@@ -42,7 +42,8 @@ import org.springframework.core.env.Environment;
     ReceiverConfig.class,
     RabbitConfig.class,
     EncryptionConfig.class,
-    StorageClassNameResolverConfig.class
+    StorageClassNameResolverConfig.class,
+    WebConfig.class
 })
 @Slf4j
 public class DataVaultWorkerInstanceApp implements CommandLineRunner {

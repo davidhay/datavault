@@ -49,7 +49,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.Base64;
 import java.util.EnumSet;
-import javax.annotation.PostConstruct;
+import jakarta.annotation.PostConstruct;
 import java.security.Security;
 import java.security.Provider;
 import org.springframework.util.Assert;
