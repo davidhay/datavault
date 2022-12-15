@@ -1,5 +1,6 @@
 package org.datavaultplatform.broker.queue;
 
+import java.time.Duration;
 import lombok.extern.slf4j.Slf4j;
 import org.datavaultplatform.common.docker.DockerImage;
 import org.springframework.test.context.DynamicPropertyRegistry;
@@ -14,7 +15,7 @@ public abstract class BaseRabbitTCTest extends BaseRabbitTest {
 
   @Container
   private static final RabbitMQContainer RABBIT = new RabbitMQContainer(DockerImage.RABBIT_IMAGE_NAME)
-      .withExposedPorts(5672,15672);
+      .withExposedPorts(5672,15672).withStartupTimeout(Duration.ofSeconds(90L));
 
   @DynamicPropertySource
   static void setupProperties(DynamicPropertyRegistry registry) {
