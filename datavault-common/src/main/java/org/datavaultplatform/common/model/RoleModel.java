@@ -25,7 +25,8 @@ public class RoleModel {
     public static final String EG_ROLE_MODEL = "eg.RoleModel.1";
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @SequenceGenerator(name = "hibSEQ", sequenceName = "hibernate_sequence")
+    @GeneratedValue(strategy = GenerationType.AUTO, generator = "hibSEQ")
     private Long id;
 
     @Column(name = "name", nullable = false, columnDefinition = "TEXT")

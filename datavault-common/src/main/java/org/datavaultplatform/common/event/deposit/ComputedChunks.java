@@ -2,15 +2,19 @@ package org.datavaultplatform.common.event.deposit;
 
 import java.util.HashMap;
 
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.Column;
 import org.datavaultplatform.common.event.Event;
+import org.datavaultplatform.common.model.custom.HashMapConverter;
 
 @Entity
 public class ComputedChunks extends Event implements ChunksDigestEvent {
-    
+
+    @Convert(converter = HashMapConverter.class)
     @Column(name="chunksDigest", columnDefinition="LONGBLOB")
     public HashMap<Integer, String> chunksDigest = new HashMap<>();
+
     public String digestAlgorithm;
     
     public ComputedChunks() {

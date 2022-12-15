@@ -234,7 +234,11 @@ public class RoleCustomDAOImpl extends BaseCustomDAOImpl implements RoleCustomDA
         CriteriaQuery<RoleModel> cq = cb.createQuery(RoleModel.class).distinct(true);
         Root<RoleModel> root = cq.from(RoleModel.class);
         cq.select(root);
-        cq.where(cb.equal(root.get(RoleModel_.type), roleType));
+        if (roleType == null) {
+            cq.where(cb.isNull(root.get(RoleModel_.type)));
+        }else{
+            cq.where(cb.equal(root.get(RoleModel_.type), roleType));
+        }
         List<RoleModel> roles = getResults(cq);
         for (RoleModel role : roles) {
             populateAssignedUserCount(role);

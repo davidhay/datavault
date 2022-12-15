@@ -58,7 +58,11 @@ public class AuditChunkStatusCustomDAOImpl extends BaseCustomDAOImpl implements
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<AuditChunkStatus> cr = cb.createQuery(AuditChunkStatus.class).distinct(true);
         Root<AuditChunkStatus> rt = cr.from(AuditChunkStatus.class);
-        cr.where(cb.equal(rt.get(AuditChunkStatus_.depositChunk), chunk));
+        if (chunk == null) {
+            cr.where(cb.isNull(rt.get(AuditChunkStatus_.depositChunk)));
+        } else {
+            cr.where(cb.equal(rt.get(AuditChunkStatus_.depositChunk), chunk));
+        }
         cr.orderBy(cb.desc(rt.get(AuditChunkStatus_.timestamp)));
 
         List<AuditChunkStatus> auditChunks = getResults(cr);
