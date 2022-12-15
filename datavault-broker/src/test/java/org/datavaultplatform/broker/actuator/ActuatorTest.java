@@ -16,10 +16,10 @@ import java.util.stream.Stream;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.datavaultplatform.broker.app.DataVaultBrokerApp;
+import org.datavaultplatform.broker.config.MockServicesConfig;
 import org.datavaultplatform.broker.queue.Sender;
 import org.datavaultplatform.broker.services.FileStoreService;
 import org.datavaultplatform.broker.test.AddTestProperties;
-import org.datavaultplatform.broker.test.BaseDatabaseTest;
 import org.datavaultplatform.broker.test.TestClockConfig;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -33,19 +33,27 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
 @SpringBootTest(classes = DataVaultBrokerApp.class)
-@Import(TestClockConfig.class)
+@Import({TestClockConfig.class, MockServicesConfig.class})
 @AddTestProperties
 @Slf4j
 @TestPropertySource(properties = {
+    "logging.level.org.springframework.security.web=trace",
+    "broker.database.enabled=false",
+    "spring.security.debug=true",
     "broker.email.enabled=true",
     "broker.controllers.enabled=true",
-    "broker.initialise.enabled=true",
+    "broker.initialise.enabled=false",
     "broker.rabbit.enabled=false",
     "broker.scheduled.enabled=false",
     "management.endpoints.web.exposure.include=*",
-    "management.health.rabbit.enabled=false"})
+    "management.health.rabbit.enabled=false",
+    "spring.autoconfigure.exclude="
+        + "org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration,"
+        + "org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration,"
+        + "org.springframework.boot.autoconfigure.jdbc.DataSourceTransactionManagerAutoConfiguration"
+    })
 @AutoConfigureMockMvc
-public class ActuatorTest extends BaseDatabaseTest {
+public class ActuatorTest {
 
   @Autowired
   MockMvc mvc;
@@ -56,7 +64,7 @@ public class ActuatorTest extends BaseDatabaseTest {
   @Autowired
   ObjectMapper mapper;
 
-  @MockBean
+  @Autowired
   FileStoreService mFileStoreService;
 
   @Test
@@ -80,7 +88,7 @@ public class ActuatorTest extends BaseDatabaseTest {
   @Test
   @SneakyThrows
   void testActuatorAuthorized() {
-    Stream.of("/actuator", "/actuator/", "/actuator/env", "/actuator/customtime",
+    Stream.of("/actuator", "/actuator/env", "/actuator/customtime",
             "/actuator/sftpfilestores", "/actuator/localfilestores")
         .forEach(url -> checkAuthorized(url, "bactor", "bactorpass"));
   }
