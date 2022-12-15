@@ -72,7 +72,11 @@ public class RoleAssignmentCustomDAOImpl extends BaseCustomDAOImpl implements
       CriteriaBuilder cb = em.getCriteriaBuilder();
       CriteriaQuery<T> cr = cb.createQuery(type).distinct(true);
       Root<T> rt = cr.from(type);
-      cr.where(cb.equal(rt.get(idName), idValue));
+      if (idValue == null) {
+        cr.where(cb.isNull(rt.get(idName)));
+      } else {
+        cr.where(cb.equal(rt.get(idName), idValue));
+      }
       return getSingleResult(cr);
     }
 
@@ -80,7 +84,11 @@ public class RoleAssignmentCustomDAOImpl extends BaseCustomDAOImpl implements
       CriteriaBuilder cb = em.getCriteriaBuilder();
       CriteriaQuery<RoleAssignment> cr = cb.createQuery(RoleAssignment.class).distinct(true);
       Root<RoleAssignment> rt = cr.from(RoleAssignment.class);
-      cr.where(cb.equal(rt.get(columnName), columnValue));
+      if (columnValue == null) {
+        cr.where(cb.isNull(rt.get(columnName)));
+      } else {
+        cr.where(cb.equal(rt.get(columnName), columnValue));
+      }
       return getResults(cr);
     }
 

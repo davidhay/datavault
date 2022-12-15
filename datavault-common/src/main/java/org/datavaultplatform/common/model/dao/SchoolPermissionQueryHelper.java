@@ -124,7 +124,10 @@ public class SchoolPermissionQueryHelper<T> {
     CriteriaQuery<Long> cq = cb.createQuery(Long.class);
     Root<T> root = cq.from(this.criteriaType);
     cq.select(cb.countDistinct(root));
-    cq.where(this.getPredicates(root));
+    Predicate[] preds = this.getPredicates(root);
+    if (preds.length > 0) {
+      cq.where(preds);
+    }
     return getQueryWithFirstAndMaxRestrictions(cq).getSingleResult();
   }
 
