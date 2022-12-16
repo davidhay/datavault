@@ -9,7 +9,6 @@ import org.datavaultplatform.common.request.CreateClientEvent;
 import org.datavaultplatform.common.model.User;
 import org.datavaultplatform.common.model.Group;
 import org.datavaultplatform.webapp.services.NotifyLoginService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
 
@@ -18,14 +17,20 @@ public class AuthenticationSuccess extends SavedRequestAwareAuthenticationSucces
 
     private final NotifyLoginService service;
 
-    @Autowired
     public AuthenticationSuccess(NotifyLoginService service){
         this.service = service;
     }
     
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
-        
+
+        log.info("AUTHENTICATION SUCCESS {}", authentication);
+
+        String pathInfo = request.getPathInfo();
+        if (pathInfo != null && pathInfo.startsWith("/actuator")) {
+            log.info("Ignoring Authentication Success for [{}]", pathInfo);
+            return;
+        }
         // Get some details from the request
         String remoteAddress = request.getRemoteAddr();
         String userAgent = request.getHeader("User-Agent");
