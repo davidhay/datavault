@@ -15,6 +15,8 @@ public class HttpSecurityUtils {
             HttpSecurity http, boolean includeStandaloneOnly) throws Exception {
         http.authorizeRequests(requests -> {
 
+            requests.antMatchers("/favicon.ico").permitAll(); //OKAY
+
             if (includeStandaloneOnly) {
                 requests.antMatchers("/test/**", "/index").permitAll();
             }
