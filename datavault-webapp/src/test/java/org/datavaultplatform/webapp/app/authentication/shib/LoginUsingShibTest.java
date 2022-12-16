@@ -14,12 +14,14 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 
+import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.datavaultplatform.common.model.User;
 import org.datavaultplatform.common.request.ValidateUser;
@@ -42,6 +44,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.mock.web.MockHttpSession;
+import org.springframework.security.authentication.AuthenticationEventPublisher;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.event.AuthenticationSuccessEvent;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -56,6 +61,12 @@ import org.springframework.test.web.servlet.MvcResult;
 @ProfileShib
 @Slf4j
 public class LoginUsingShibTest {
+
+    @Autowired
+    AuthenticationEventPublisher eventPublisher;
+
+    @Autowired
+    AuthenticationManager authManager;
 
     @Autowired
     MockMvc mvc;
@@ -83,6 +94,24 @@ public class LoginUsingShibTest {
 
     @Captor
     ArgumentCaptor<AuthenticationSuccessEvent> argAuthSuccessEvent;
+
+    @Test
+    @SneakyThrows
+    void testEventPublisherAndEventListener() {
+        doNothing().when(mAuthListener).onApplicationEvent(argAuthSuccessEvent.capture());
+
+        Authentication mAuth = Mockito.mock(Authentication.class);
+
+        this.eventPublisher.publishAuthenticationSuccess(mAuth);
+
+        Mockito.verify(mAuthListener).onApplicationEvent(argAuthSuccessEvent.getValue());
+
+        // check that the EventPublisher is the one the AuthenticationManager is using.
+        Field ep = ProviderManager.class.getDeclaredField("eventPublisher");
+        ep.setAccessible(true);
+        AuthenticationEventPublisher actualEP = (AuthenticationEventPublisher) ep.get(this.authManager);
+        assertEquals(this.eventPublisher, actualEP);
+    }
 
     @Test
     void testNoUidHeader()  {

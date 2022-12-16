@@ -4,22 +4,29 @@ import org.datavaultplatform.webapp.authentication.AuthenticationSuccess;
 import org.datavaultplatform.webapp.services.EvaluatorService;
 import org.datavaultplatform.webapp.security.ScopedPermissionEvaluator;
 import org.datavaultplatform.webapp.services.NotifyLoginService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.access.PermissionEvaluator;
-import org.springframework.security.core.session.SessionRegistry;
-import org.springframework.security.core.session.SessionRegistryImpl;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 
 @Configuration
+@EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
 public class SecurityConfig {
 
+  @Value("${spring.security.debug:false}")
+  boolean securityDebug;
+
   @Bean
-  public SessionRegistry sessionRegistry() {
-    return new SessionRegistryImpl();
+  public WebSecurityCustomizer webSecurityCustomizer() {
+    return (web) -> web.debug(securityDebug);
   }
 
   @Bean
-  AuthenticationSuccess authenticationSuccess(NotifyLoginService service){
+  public AuthenticationSuccess authenticationSuccess(NotifyLoginService service){
     return new AuthenticationSuccess(service);
   }
 

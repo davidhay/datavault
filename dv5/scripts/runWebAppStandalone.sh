@@ -6,5 +6,5 @@ java -version
 #this script uses Maven with Spring Boot specific goal
 export PROJECT_ROOT=$(cd ../../;pwd)
 cd $PROJECT_ROOT
-DATAVAULT_HOME="$PROJECT_ROOT/dv5" SPRING_PROFILES_ACTIVE=standalone ./mvnw spring-boot:run --projects datavault-webapp
+SPRING_SECURITY_DEBUG=true DATAVAULT_HOME="$PROJECT_ROOT/dv5" SPRING_PROFILES_ACTIVE=standalone ./mvnw spring-boot:run --projects datavault-webapp
 
