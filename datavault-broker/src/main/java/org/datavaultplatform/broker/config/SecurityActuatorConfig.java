@@ -21,9 +21,7 @@ import org.springframework.security.web.SecurityFilterChain;
 
 @ConditionalOnExpression("${broker.security.enabled:true}")
 @Configuration
-@EnableWebSecurity
 @Slf4j
-@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
 public class SecurityActuatorConfig {
 
   @Value("${broker.actuator.username:bactor}")
