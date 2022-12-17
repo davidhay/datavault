@@ -30,6 +30,7 @@ import org.datavaultplatform.broker.config.SecurityActuatorConfig;
 import org.datavaultplatform.broker.config.SecurityConfig;
 import org.datavaultplatform.broker.config.ServiceConfig;
 import org.datavaultplatform.broker.config.StorageClassNameResolverConfig;
+import org.datavaultplatform.broker.config.WebConfig;
 import org.datavaultplatform.common.crypto.EncryptionValidator;
 import org.datavaultplatform.common.monitor.MemoryStats;
 import org.datavaultplatform.common.services.LDAPService;
@@ -56,7 +57,7 @@ import org.springframework.core.env.Environment;
     SecurityActuatorConfig.class, SecurityConfig.class, ControllerConfig.class,
     ServiceConfig.class,  DatabaseConfig.class,
     LdapConfig.class, EmailConfig.class, EmailLocalConfig.class, RabbitConfig.class,
-    StorageClassNameResolverConfig.class
+    StorageClassNameResolverConfig.class, WebConfig.class
 })
 @Slf4j
 //@EnableJSONDoc

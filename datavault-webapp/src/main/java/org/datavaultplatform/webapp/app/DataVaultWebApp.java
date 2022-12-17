@@ -11,7 +11,6 @@ import org.datavaultplatform.common.services.LDAPService;
 import org.datavaultplatform.webapp.config.ActutatorConfig;
 import org.datavaultplatform.webapp.config.LdapConfig;
 import org.datavaultplatform.webapp.config.MailConfig;
-import org.datavaultplatform.webapp.config.MvcConfig;
 import org.datavaultplatform.webapp.config.PropertiesConfig;
 import org.datavaultplatform.webapp.config.RestTemplateConfig;
 import org.datavaultplatform.webapp.config.SecurityActuatorConfig;
@@ -39,7 +38,7 @@ import org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer;
 @ComponentScan({
     "org.datavaultplatform.webapp.controllers",
     "org.datavaultplatform.webapp.services"})
-@Import({PropertiesConfig.class, WebConfig.class, MvcConfig.class, ActutatorConfig.class,
+@Import({PropertiesConfig.class, WebConfig.class, ActutatorConfig.class,
     SecurityActuatorConfig.class, SecurityConfig.class, MailConfig.class, LdapConfig.class,
         StandaloneProfileConfig.class, DatabaseProfileConfig.class,
     ShibProfileConfig.class, RestTemplateConfig.class})
