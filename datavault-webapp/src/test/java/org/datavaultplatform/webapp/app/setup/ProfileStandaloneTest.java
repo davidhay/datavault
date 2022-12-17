@@ -61,7 +61,7 @@ public class ProfileStandaloneTest {
     Set<String> names = toSet(ctx.getBeanNamesForAnnotation(Controller.class));
     Set<String> restNames = toSet(ctx.getBeanNamesForAnnotation(RestController.class));
     assertTrue(names.containsAll(restNames));
-    assertEquals(toSet("protectedTimeController", "timeController", "errorPageController", "simulateErrorController", "authController", "errorController", "fileUploadController", "helloController"), names);
+    assertEquals(toSet("protectedTimeController", "timeController", "errorPageController", "simulateErrorController", "authController", "errorController", "fileUploadController", "helloController", "faviconController"), names);
   }
 
   @TestConfiguration
