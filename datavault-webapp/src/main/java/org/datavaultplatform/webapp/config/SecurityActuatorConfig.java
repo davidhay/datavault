@@ -59,6 +59,7 @@ public class SecurityActuatorConfig {
             "/actuator",
             "/actuator/info",
             "/actuator/health",
+            "/actuator/brokerstatus",
             "/actuator/customtime").permitAll()
         .anyRequest().fullyAuthenticated();
 

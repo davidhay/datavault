@@ -2,6 +2,9 @@ package org.datavaultplatform.webapp.services;
 
 import static org.datavaultplatform.common.util.Constants.HEADER_CLIENT_KEY;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.datavaultplatform.common.model.*;
 import org.datavaultplatform.common.request.*;
@@ -15,6 +18,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -831,4 +835,21 @@ public class RestService implements NotifyLogoutService, NotifyLoginService, Eva
     }
 
 
+    @SneakyThrows
+    public String brokerStatus() {
+        try {
+            ResponseEntity<String> response = get(brokerURL + "/actuator/health", String.class);
+            if (response.getStatusCode() == HttpStatus.OK) {
+                ObjectMapper mapper = new ObjectMapper();
+                JsonNode node = mapper.readTree(response.getBody());
+                String status = node.get("status").asText();
+                return status;
+            } else {
+                return "NOT UP";
+            }
+        } catch (Exception ex) {
+            log.info("problem getting broker/status", ex);
+            return "NOT UP";
+        }
+    }
 }

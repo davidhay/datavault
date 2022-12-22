@@ -1,11 +1,14 @@
 package org.datavaultplatform.webapp.config;
 
 import java.time.Clock;
+import org.datavaultplatform.webapp.actuator.BrokerStatusEndpoint;
 import org.datavaultplatform.webapp.actuator.CurrentTimeEndpoint;
+import org.datavaultplatform.webapp.services.RestService;
 import org.springframework.boot.SpringBootVersion;
 import org.springframework.boot.actuate.info.InfoContributor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 
 @Configuration
 public class ActutatorConfig {
@@ -23,5 +26,11 @@ public class ActutatorConfig {
   @Bean
   public InfoContributor springBootVersionInfoContributor() {
     return builder -> builder.withDetail("spring-boot.version", SpringBootVersion.getVersion());
+  }
+
+  @Profile("!standalone")
+  @Bean
+  BrokerStatusEndpoint brokerStatus(RestService restService) {
+    return new BrokerStatusEndpoint(restService);
   }
 }
