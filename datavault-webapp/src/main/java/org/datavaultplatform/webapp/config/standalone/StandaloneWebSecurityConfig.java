@@ -83,7 +83,7 @@ public class StandaloneWebSecurityConfig {
       @Qualifier("actuatorAuthenticationProvider") AuthenticationProvider authenticationProvider1,
       @Qualifier("standaloneAuthenticationProvider") AuthenticationProvider authenticationProvider2
   ) {
-    ProviderManager result = new ProviderManager(authenticationProvider2);
+    ProviderManager result = new ProviderManager(authenticationProvider1, authenticationProvider2);
     result.setAuthenticationEventPublisher(eventPublisher);
     result.afterPropertiesSet();
     return result;

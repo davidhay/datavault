@@ -57,10 +57,10 @@ public class SecurityActuatorConfig {
 
     http.authenticationProvider(authenticationProvider);
 
-    http.antMatcher("/actuator/**")
+    http.securityMatcher("/actuator/**")
         .authorizeHttpRequests()
-        .antMatchers("/actuator/info", "/actuator/health").permitAll()
-        .anyRequest().authenticated();
+        .requestMatchers("/actuator/info", "/actuator/health").permitAll()
+        .anyRequest().fullyAuthenticated();
 
     return http.build();
   }

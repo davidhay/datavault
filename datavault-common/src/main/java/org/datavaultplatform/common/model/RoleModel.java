@@ -7,7 +7,7 @@ import com.google.common.collect.Sets;
 
 import java.util.ArrayList;
 import java.util.List;
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.text.MessageFormat;
 import java.util.Collection;
 import java.util.Objects;

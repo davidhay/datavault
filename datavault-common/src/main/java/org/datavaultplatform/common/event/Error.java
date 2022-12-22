@@ -1,6 +1,6 @@
 package org.datavaultplatform.common.event;
 
-import javax.persistence.Entity;
+import jakarta.persistence.Entity;
 
 import static org.datavaultplatform.common.event.Error.Type.*;
 

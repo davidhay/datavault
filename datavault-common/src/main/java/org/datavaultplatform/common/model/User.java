@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;

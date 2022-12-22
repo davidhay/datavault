@@ -8,8 +8,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Random;
 import java.util.UUID;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 import lombok.SneakyThrows;
 
 public abstract class BaseEntityTest<T, ID> {

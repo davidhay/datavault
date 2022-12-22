@@ -2,10 +2,10 @@ package org.datavaultplatform.broker.config;
 
 import static org.datavaultplatform.common.util.Constants.HEADER_USER_ID;
 
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
 import java.io.IOException;
 import lombok.extern.slf4j.Slf4j;
 import org.datavaultplatform.broker.authentication.RestAuthenticationFailureHandler;
@@ -74,21 +74,21 @@ public class SecurityConfig {
 
     http.authenticationProvider(restAuthenticationProvider);
 
-    http.antMatcher("/**")
+    http.securityMatcher("/**")
         .authorizeRequests()
-        .antMatchers("/admin/users/**").access("hasRole('ROLE_ADMIN')")
-        .antMatchers("/admin/archivestores/**").access("hasRole('ROLE_ADMIN_ARCHIVESTORES')")
-        .antMatchers("/admin/deposits/**").access("hasRole('ROLE_ADMIN_DEPOSITS')")
-        .antMatchers("/admin/retrieves/**").access("hasRole('ROLE_ADMIN_RETRIEVES')")
-        .antMatchers("/admin/vaults/**").access("hasRole('ROLE_ADMIN_VAULTS')")
-        .antMatchers("/admin/pendingVaults/**").access("hasRole('ROLE_ADMIN_PENDING_VAULTS')")
-        .antMatchers("/admin/events/**").access("hasRole('ROLE_ADMIN_EVENTS')")
-        .antMatchers("/admin/billing/**").access("hasRole('ROLE_ADMIN_BILLING')")
+        .requestMatchers("/admin/users/**").access("hasRole('ROLE_ADMIN')")
+        .requestMatchers("/admin/archivestores/**").access("hasRole('ROLE_ADMIN_ARCHIVESTORES')")
+        .requestMatchers("/admin/deposits/**").access("hasRole('ROLE_ADMIN_DEPOSITS')")
+        .requestMatchers("/admin/retrieves/**").access("hasRole('ROLE_ADMIN_RETRIEVES')")
+        .requestMatchers("/admin/vaults/**").access("hasRole('ROLE_ADMIN_VAULTS')")
+        .requestMatchers("/admin/pendingVaults/**").access("hasRole('ROLE_ADMIN_PENDING_VAULTS')")
+        .requestMatchers("/admin/events/**").access("hasRole('ROLE_ADMIN_EVENTS')")
+        .requestMatchers("/admin/billing/**").access("hasRole('ROLE_ADMIN_BILLING')")
         /* TODO : DavidHay : no controller mapped to /admin/reviews ! */
-        .antMatchers("/admin/reviews/**").access("hasRole('ROLE_ADMIN_REVIEWS')")
+        .requestMatchers("/admin/reviews/**").access("hasRole('ROLE_ADMIN_REVIEWS')")
         .anyRequest().authenticated();
 
-    return http.build();
+        return http.build();
   }
 
   /**

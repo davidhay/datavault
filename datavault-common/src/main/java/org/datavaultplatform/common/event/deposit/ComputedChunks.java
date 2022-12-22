@@ -2,9 +2,9 @@ package org.datavaultplatform.common.event.deposit;
 
 import java.util.HashMap;
 
-import javax.persistence.Convert;
-import javax.persistence.Entity;
-import javax.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import org.datavaultplatform.common.event.Event;
 import org.datavaultplatform.common.model.custom.HashMapConverter;
 

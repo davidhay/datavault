@@ -12,7 +12,7 @@ import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
-import javax.servlet.Filter;
+import jakarta.servlet.Filter;
 import lombok.SneakyThrows;
 import org.assertj.core.api.Assertions;
 import org.datavaultplatform.webapp.authentication.shib.ShibAuthenticationFilter;

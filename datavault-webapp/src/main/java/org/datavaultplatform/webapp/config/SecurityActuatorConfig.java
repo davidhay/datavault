@@ -3,6 +3,7 @@ package org.datavaultplatform.webapp.config;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -16,7 +17,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
-@Slf4j
+@ConditionalOnExpression("${broker.security.enabled:true}") @Slf4j
 @Configuration
 public class SecurityActuatorConfig {
 
@@ -53,9 +54,9 @@ public class SecurityActuatorConfig {
 
     http.authenticationProvider(authenticationProvider);
 
-    http.antMatcher("/actuator/**")
+    http.securityMatcher("/actuator/**")
         .authorizeRequests()
-        .antMatchers(
+        .requestMatchers(
             "/actuator",
             "/actuator/info",
             "/actuator/health",

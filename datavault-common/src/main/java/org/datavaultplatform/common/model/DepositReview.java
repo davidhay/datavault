@@ -6,7 +6,7 @@ import org.hibernate.Hibernate;
 import org.hibernate.annotations.GenericGenerator;
 import org.jsondoc.core.annotation.ApiObject;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.util.Date;
 import java.util.Objects;
 

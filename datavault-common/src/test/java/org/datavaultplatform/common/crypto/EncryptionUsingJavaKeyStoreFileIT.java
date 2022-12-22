@@ -22,7 +22,7 @@ import java.util.Locale;
 import java.util.Set;
 import java.util.UUID;
 import javax.crypto.SecretKey;
-import javax.xml.bind.DatatypeConverter;
+import jakarta.xml.bind.DatatypeConverter;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeAll;
