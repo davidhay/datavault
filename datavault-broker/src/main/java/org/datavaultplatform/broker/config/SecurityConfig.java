@@ -115,7 +115,7 @@ public class SecurityConfig {
     result.setAuthenticationFailureHandler(authenticationFailureHandler());
     //result.setFilterProcessesUrl("/**");
     RequestMatcher actualRM = result.getRequestMatcher();
-    Assert.isTrue(matcher.equals(actualRM), () -> String.format("Request Matcher has been overriden ", actualRM));
+    Assert.isTrue(matcher.equals(actualRM), () -> String.format("Request Matcher [%s] has been overridden ", actualRM));
     return result;
   }
 

@@ -1,12 +1,11 @@
 package org.datavaultplatform.worker.app;
 
-import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
-import ch.qos.logback.classic.Logger;
 import java.io.File;
 import java.nio.file.Files;
 import lombok.SneakyThrows;
