@@ -12,7 +12,7 @@
 # added tools jq, curl and ping to help with testing and diagnostics
 #
 #FROM eclipse-temurin:8
-FROM eclipse-temurin:eclipse-temurin:17.0.5_8-jdk
+FROM eclipse-temurin:17.0.5_8-jdk
 ARG JENKINS_UID
 ARG JENKINS_GID
 ARG DOCKER_GID
