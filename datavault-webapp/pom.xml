@@ -16,7 +16,7 @@
         <dependency>
             <groupId>datavault</groupId>
             <artifactId>datavault-common</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>${snap.version}</version>
         </dependency>
 
         <dependency>

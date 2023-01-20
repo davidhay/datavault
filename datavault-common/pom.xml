@@ -12,7 +12,7 @@
 
   <artifactId>datavault-common</artifactId>
   <name>datavault-common</name>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>${snap.version}</version>
 
   <dependencies>
 

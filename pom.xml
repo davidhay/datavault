@@ -28,6 +28,7 @@
 
   <properties>
     <!-- general -->
+    <snap.version>0.0.1-SNAPSHOT</snap.version>
     <java.version>1.8</java.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <skip.git.commit>false</skip.git.commit>
