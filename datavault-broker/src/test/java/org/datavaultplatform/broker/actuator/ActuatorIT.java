@@ -45,7 +45,7 @@ import org.springframework.test.web.servlet.MvcResult;
     "management.endpoints.web.exposure.include=*",
     "management.health.rabbit.enabled=false"})
 @AutoConfigureMockMvc
-public class ActuatorTest extends BaseDatabaseTest {
+public class ActuatorIT extends BaseDatabaseTest {
 
   @Autowired
   MockMvc mvc;
