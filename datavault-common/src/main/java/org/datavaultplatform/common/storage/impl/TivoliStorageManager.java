@@ -2,6 +2,7 @@ package org.datavaultplatform.common.storage.impl;
 
 import org.apache.commons.io.IOUtils;
 import org.datavaultplatform.common.io.Progress;
+import org.datavaultplatform.common.monitor.MemoryStats;
 import org.datavaultplatform.common.storage.ArchiveStore;
 import org.datavaultplatform.common.storage.Device;
 import org.datavaultplatform.common.storage.Verify;
@@ -9,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -78,7 +80,7 @@ public class TivoliStorageManager extends Device implements ArchiveStore {
 
         ProcessBuilder pb = new ProcessBuilder("dsmc", "query", "filespace");
 
-        Process p = pb.start();
+        Process p = startProcess(pb, "dsmc query");
 
         // This class is already running in its own thread so it can happily pause until finished.
         p.waitFor();
@@ -114,7 +116,7 @@ public class TivoliStorageManager extends Device implements ArchiveStore {
     	logger.info("Retrieve command is " + "dsmc " + " retrieve " + filePath + " -description=" + depositId + " -optfile=" + optFilePath + "-replace=true");
     	for (int r = 0; r < TivoliStorageManager.maxRetries; r++) {
 	        ProcessBuilder pb = new ProcessBuilder("dsmc", "retrieve", filePath, "-description=" + depositId, "-optfile=" + optFilePath, "-replace=true");
-	        Process p = pb.start();
+	        Process p = startProcess(pb, "dsmc retrieve", r);
 	        // This class is already running in its own thread so it can happily pause until finished.
 	        p.waitFor();
 	
@@ -259,7 +261,7 @@ public class TivoliStorageManager extends Device implements ArchiveStore {
 		//for (int r = 0; r < TivoliStorageManager.maxRetries; r++) {
 		logger.info("Delete command is " + "dsmc delete archive " + filePath +  " -noprompt -optfile=" + optFilePath);
 		ProcessBuilder pb = new ProcessBuilder("dsmc", "delete", "archive", filePath, "-noprompt" , "-optfile=" + optFilePath);
-		Process p = pb.start();
+		Process p = startProcess(pb, "dsmc delete");
 		p.waitFor();
 	
 		if (p.exitValue() != 0) {
@@ -351,7 +353,7 @@ public class TivoliStorageManager extends Device implements ArchiveStore {
 			ProcessBuilder pb = new ProcessBuilder("dsmc", "archive", working.getAbsolutePath(), "-description=" + description, "-optfile=" + location);
 			//pb.directory(path);
 			for (int r = 0; r < TivoliStorageManager.maxRetries; r++) {
-				Process p = pb.start();
+				Process p = startProcess(pb, "dsmc archive", r);
 
 				// This class is already running in its own thread so it can happily pause until finished.
 				p.waitFor();
@@ -414,7 +416,7 @@ public class TivoliStorageManager extends Device implements ArchiveStore {
 			logger.info("user.dir [{}]", System.getProperty("user.dir"));
 			logger.info("PB 'path' [{}]", pb.environment().get("PATH"));
 
-			Process process = pb.start();
+			Process process = startProcess(pb, "which dsmc");
 
 			int status = process.waitFor(5, TimeUnit.SECONDS) ? process.exitValue() : -1;
 			String pOutput = IOUtils.toString(process.getInputStream(), StandardCharsets.UTF_8).trim();
@@ -433,6 +435,29 @@ public class TivoliStorageManager extends Device implements ArchiveStore {
 			return false;
 		}
 	}
+
+	private static Process startProcess(ProcessBuilder pb, String label, int retry) throws IOException, InterruptedException {
+		return startProcess(pb, String.format("%s - retry[%d]", label, retry));
+	}
+
+	private static Process startProcess(ProcessBuilder pb, String label) throws IOException, InterruptedException {
+		try {
+			logger.info("Process[{}]Starting... {}", label, MemoryStats.getCurrent().toPretty());
+			Process p = pb.start();
+			logger.info("Process[{}]Started...", label);
+			return p;
+		} catch(IOException ex) {
+			logger.error("Process[{}]UnexpectedException", label, ex);
+			throw ex;
+		}
+	}
+	/*
+	public static void main(String[] args) throws Exception {
+		ProcessBuilder pb = new ProcessBuilder("ls","-l");
+		Process process = startProcess(pb, "dsmc retrieve", 123);
+		process.waitFor();
+	}
+	 */
 }
 
 
