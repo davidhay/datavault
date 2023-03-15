@@ -19,6 +19,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
+import org.datavaultplatform.common.storage.impl.ssh.UtilityJSchImproved;
+import org.datavaultplatform.common.storage.impl.ssh.UtilityJSchNonRecurse;
+import org.springframework.util.Assert;
 
 /**
  * An implementation of SFTPFileSystemDriver to use JCraft's Jsch ssh/sftp library.
@@ -52,16 +55,16 @@ public class SFTPFileSystemJSch extends Device implements SFTPFileSystemDriver {
         JSch.setLogger(JSchLogger.getInstance());
     }
 
-    public SFTPFileSystemJSch(String name, Map<String,String> config) {
+    public SFTPFileSystemJSch(String name, Map<String, String> config) {
         this(name, config, Clock.systemDefaultZone());
     }
 
-    public SFTPFileSystemJSch(String name, Map<String,String> config, Clock clock) {
+    public SFTPFileSystemJSch(String name, Map<String, String> config, Clock clock) {
         super(name, config);
         this.clock = clock;
 
         log.info("Construct SFTPFileSystemJSch...");
-        
+
         // Unpack the config parameters (in an implementation-specific way)
         host = config.get(PropNames.HOST);
         port = Integer.parseInt(config.get(PropNames.PORT));
@@ -85,7 +88,7 @@ public class SFTPFileSystemJSch extends Device implements SFTPFileSystemDriver {
         } else {
             byte[] privateKey = Encryption.decryptSecret(encPrivateKey, encIV);
 
-            log.debug("Private Key: "+new String(privateKey));
+            log.debug("Private Key: " + new String(privateKey));
             jsch.addIdentity(username, privateKey, null, passphrase.getBytes());
         }
 
@@ -96,59 +99,59 @@ public class SFTPFileSystemJSch extends Device implements SFTPFileSystemDriver {
         properties.put(STRICT_HOST_KEY_CHECKING, NO);
         session.setConfig(properties);
         for (int i = 0; i < RETRIES; i++) {
-            int attempt = i+1;
+            int attempt = i + 1;
             try {
-               log.info("Sftp connection attempt[{}/{}]", attempt, RETRIES);
-               session.connect();
-               break;
-            } catch(JSchException ex) {
-               if (i == RETRIES - 1) {
-                   log.error("problem with Jsch attempt[{}/{}]", attempt, RETRIES, ex);
-                   throw ex;
-               } else {
-                   log.warn("problem with Jsch attempt[{}/{}]", attempt, RETRIES, ex);
-               }
+                log.info("Sftp connection attempt[{}/{}]", attempt, RETRIES);
+                session.connect();
+                break;
+            } catch (JSchException ex) {
+                if (i == RETRIES - 1) {
+                    log.error("problem with Jsch attempt[{}/{}]", attempt, RETRIES, ex);
+                    throw ex;
+                } else {
+                    log.warn("problem with Jsch attempt[{}/{}]", attempt, RETRIES, ex);
+                }
             }
         }
-        
+
         // Start a channel for SFTP
         Channel channel = session.openChannel("sftp");
         channel.connect();
-        channelSftp = (ChannelSftp)channel;
+        channelSftp = (ChannelSftp) channel;
         channelSftp.cd(rootPath);
     }
-    
+
     private void Disconnect() {
         if (channelSftp != null) {
             channelSftp.exit();
         }
-        
+
         if (session != null) {
             session.disconnect();
         }
     }
 
     private String runCommand(String command) throws Exception {
-        
+
         ChannelExec channelExec = null;
-        
+
         try {
             Connect();
-            
+
             // Start a channel for commands
-            channelExec = (ChannelExec)(session.openChannel("exec"));
-            
+            channelExec = (ChannelExec) (session.openChannel("exec"));
+
             channelExec.setCommand(command);
             channelExec.setInputStream(null);
             channelExec.setErrStream(System.err);
             InputStream in = channelExec.getInputStream();
-            
+
             channelExec.connect();
-            
+
             byte[] tmp = new byte[1024];
             StringBuilder response = new StringBuilder();
 
-            while(true) {
+            while (true) {
                 while (in.available() > 0) {
                     int i = in.read(tmp, 0, 1024);
                     if (i < 0) {
@@ -165,10 +168,10 @@ public class SFTPFileSystemJSch extends Device implements SFTPFileSystemDriver {
                     break;
                 }
             }
-            
+
             log.info("response: " + response);
             return response.toString();
-            
+
         } catch (Exception e) {
             log.error("unexpected exception", e);
             throw e;
@@ -179,47 +182,48 @@ public class SFTPFileSystemJSch extends Device implements SFTPFileSystemDriver {
             Disconnect();
         }
     }
-    
+
     @Override
     public List<FileInfo> list(String path) {
-        
+
         ArrayList<FileInfo> files = new ArrayList<>();
-        
+
         try {
             Connect();
-            
-            @SuppressWarnings("unchecked") Vector<ChannelSftp.LsEntry> filelist = channelSftp.ls(rootPath + PATH_SEPARATOR + path);
+
+            @SuppressWarnings("unchecked") Vector<ChannelSftp.LsEntry> filelist = channelSftp.ls(
+                rootPath + PATH_SEPARATOR + path);
 
             for (int i = 0; i < filelist.size(); i++) {
                 ChannelSftp.LsEntry entry = filelist.get(i);
-                
+
                 if (entry.getFilename().equals(".") ||
-                        entry.getFilename().equals("..")) {
-                        continue;
+                    entry.getFilename().equals("..")) {
+                    continue;
                 }
-                
+
                 String entryKey = path + PATH_SEPARATOR + entry.getFilename();
-                
+
                 FileInfo info = new FileInfo(entryKey,
-                                             "", // Absolute path - unused?
-                                             entry.getFilename(),
-                                             entry.getAttrs().isDir());
+                    "", // Absolute path - unused?
+                    entry.getFilename(),
+                    entry.getAttrs().isDir());
                 files.add(info);
-                
+
                 // Other useful properties:
                 // entry.getAttrs().getSize()
                 // entry.getAttrs().isDir()
             }
-            
+
         } catch (Exception e) {
             log.error("unexpected exception", e);
         } finally {
             Disconnect();
         }
-        
+
         return files;
     }
-    
+
     @Override
     public boolean valid(String path) {
         /* Unimplemented */
@@ -228,43 +232,67 @@ public class SFTPFileSystemJSch extends Device implements SFTPFileSystemDriver {
 
     @Override
     public boolean exists(String relativePath) {
-        
+
         // TODO: handle symbolic links
         String path = getFullPath(relativePath);
         try {
             Connect();
-            
+
             channelSftp.stat(path);
             return true;
-            
+
         } catch (Exception e) {
-            log.warn(String.format("does not exist[%s]",path), e);
+            log.warn(String.format("does not exist[%s]", path), e);
             return false;
         } finally {
             Disconnect();
         }
     }
-    
+
     @Override
     public long getSize(String path) throws Exception {
-        
+
         try {
             Connect();
-            
+
             path = channelSftp.pwd() + "/" + path;
             final SftpATTRS attrs = channelSftp.stat(path);
-            
+
             if (attrs.isDir()) {
                 if (!path.endsWith("/")) {
                     path = path + "/";
                 }
-                
-                return UtilityJSch.calculateSize(channelSftp, path);
-                
+
+                Runtime.getRuntime().gc();
+                long t5 = System.currentTimeMillis();
+                long sizeNonRecurse = UtilityJSchNonRecurse.calculateSize(channelSftp, path);
+                long t6 = System.currentTimeMillis();
+                long timeNonRecurse = t6 - t5;
+                log.info("NON RECURSE TIME [{}]", timeNonRecurse);
+
+                Runtime.getRuntime().gc();
+                long t3 = System.currentTimeMillis();
+                long sizeImproved = UtilityJSchImproved.calculateSize(channelSftp, path);
+                long t4 = System.currentTimeMillis();
+                long timeImproved = t4 - t3;
+                log.info("IMPROVED TIME [{}]", timeImproved);
+
+                Runtime.getRuntime().gc();
+                long t1 = System.currentTimeMillis();
+                long sizeOriginal = UtilityJSch.calculateSize(channelSftp, path);
+                long t2 = System.currentTimeMillis();
+                long timeOriginal = t2 - t1;
+                log.info("ORIG TIME [{}]", timeOriginal);
+
+                Assert.isTrue(sizeOriginal == sizeImproved,
+                    String.format("original size[%s] != improved size[%s]", sizeOriginal, sizeImproved));
+                Assert.isTrue(sizeOriginal == sizeNonRecurse,
+                    String.format("original size[%s] != non-recurse size[%s]", sizeOriginal, sizeNonRecurse));
+                return sizeOriginal;
             } else {
                 return attrs.getSize();
             }
-            
+
         } catch (Exception e) {
             log.error("unexpected exception", e);
             throw e;
@@ -277,10 +305,10 @@ public class SFTPFileSystemJSch extends Device implements SFTPFileSystemDriver {
     public boolean isDirectory(String path) throws Exception {
         try {
             Connect();
-            
+
             SftpATTRS attrs = channelSftp.stat(rootPath + PATH_SEPARATOR + path);
             return attrs.isDir();
-            
+
         } catch (Exception e) {
             log.error("unexpected exception", e);
             throw e;
@@ -288,7 +316,7 @@ public class SFTPFileSystemJSch extends Device implements SFTPFileSystemDriver {
             Disconnect();
         }
     }
-    
+
     @Override
     public String getName(String path) {
         if (path.contains(PATH_SEPARATOR)) {
@@ -297,19 +325,19 @@ public class SFTPFileSystemJSch extends Device implements SFTPFileSystemDriver {
             return path;
         }
     }
-    
+
     @Override
     public long getUsableSpace() throws Exception {
         try {
             Connect();
-            
+
             // Requires the "statvfs" extension e.g. OpenSSL
             // getAvailForNonRoot() returns a count of 1k blocks
             // TODO: is this working correctly with different fragment sizes?
             // TODO: how widely supported is this extension?
             SftpStatVFS statVFS = channelSftp.statVFS(rootPath);
             return statVFS.getAvailForNonRoot() * statVFS.getBlockSize(); // bytes
-            
+
         } catch (Exception e) {
             log.error("unexpected exception", e);
             throw e;
@@ -323,18 +351,18 @@ public class SFTPFileSystemJSch extends Device implements SFTPFileSystemDriver {
 
         try {
             Connect();
-            
+
             String path = getFullPath(relativePath);
             final SftpATTRS attrs = channelSftp.stat(path);
-            
+
             if (attrs.isDir() && !path.endsWith("/")) {
                 path = path + "/";
             }
-            
+
             monitor = new UtilityJSch.SFTPMonitor(progress, clock);
-            
+
             UtilityJSch.getDir(channelSftp, path, working, attrs, monitor);
-            
+
         } catch (Exception e) {
             log.error("unexpected exception", e);
             throw e;
@@ -342,7 +370,7 @@ public class SFTPFileSystemJSch extends Device implements SFTPFileSystemDriver {
             Disconnect();
         }
     }
-    
+
     @Override
     public String store(String relativePath, File working, Progress progress) throws Exception {
 
@@ -358,14 +386,14 @@ public class SFTPFileSystemJSch extends Device implements SFTPFileSystemDriver {
 
             mkdir(channelSftp, timestampDirName);
             channelSftp.cd(timestampDirName);
-            
+
             if (working.isDirectory()) {
                 // Create top-level directory
                 String dirName = working.getName();
                 mkdir(channelSftp, dirName);
                 channelSftp.cd(dirName);
             }
-            
+
             monitor = new UtilityJSch.SFTPMonitor(progress, clock);
 
             UtilityJSch.send(channelSftp, working, monitor);
@@ -376,7 +404,7 @@ public class SFTPFileSystemJSch extends Device implements SFTPFileSystemDriver {
         } finally {
             Disconnect();
         }
-        
+
         return path;
     }
 
@@ -390,7 +418,8 @@ public class SFTPFileSystemJSch extends Device implements SFTPFileSystemDriver {
         try {
             SftpATTRS stat = channelSftp.stat(dirName);
             if (!stat.isDir()) {
-                throw new RuntimeException(String.format("[%s] exists but is not a directory", dirName));
+                throw new RuntimeException(
+                    String.format("[%s] exists but is not a directory", dirName));
             }
         } catch (SftpException ex) {
             channelSftp.mkdir(dirName);
@@ -401,5 +430,4 @@ public class SFTPFileSystemJSch extends Device implements SFTPFileSystemDriver {
     private String getFullPath(String relativePath) {
         return SftpUtils.getFullPath(rootPath, relativePath);
     }
-
-}
+ }

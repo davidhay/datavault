@@ -2,6 +2,8 @@ package org.datavaultplatform.common.storage;
 
 import java.io.File;
 import java.util.List;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.datavaultplatform.common.io.Progress;
 import org.datavaultplatform.common.model.FileInfo;
 
