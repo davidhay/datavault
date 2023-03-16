@@ -10,7 +10,9 @@ import org.datavaultplatform.common.storage.SFTPFileSystemDriver;
 import org.datavaultplatform.common.storage.impl.SFTPFileSystemJSch;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.slf4j.Logger;
 import org.testcontainers.containers.Container.ExecResult;
@@ -43,26 +45,19 @@ public class CombinedSizeSFTPJSchIT extends BaseSFTPFileSystemPrivatePublicKeyPa
     container.execInContainer("/bin/bash", "-c", "cd /config/files; rm -rf *");
   }
 
-  @Override
-  public SFTPFileSystemDriver getSftpDriver() {
-    Map<String, String> props = getStoreProperties();
-    return new SFTPFileSystemJSch("sftp-jsch", props, TEST_CLOCK);
+  static Stream<Arguments> getTestCaseParams() {
+    return Stream.of(
+        TestCaseParam.SMALL
+        //, TestCaseParam.SMALLISH
+        //, TestCaseParam.MEDIUM
+        //, TestCaseParam.LARGE
+    ).map(param -> Arguments.of(param, String.format("%s files[%s] depth[%s]",param,param.fileCount, param.depth)));
   }
 
-  @Override
-  public GenericContainer<?> getContainer() {
-    return container;
-  }
-
-  @Override
-  Logger getLog() {
-    return log;
-  }
-
-  @ParameterizedTest
+  @ParameterizedTest(name="{index}-{1}")
   @MethodSource("getTestCaseParams")
   @SneakyThrows
-  void testTotalSizeOfFilesViaSftp(TestCaseParam testCaseParam) {
+  void testTotalSizeOfFilesViaSftp(TestCaseParam testCaseParam, String testDescription) {
 
     log.info("Creating files beneath /config/files in SFTP Container");
     container.execInContainer("/tmp/createFileTree.sh", "/config/files", ""+ testCaseParam.depth);
@@ -88,13 +83,6 @@ public class CombinedSizeSFTPJSchIT extends BaseSFTPFileSystemPrivatePublicKeyPa
     assertEquals(testCaseParam.fileCount * BYTES_PER_FILE, size);
   }
 
-  static Stream<TestCaseParam> getTestCaseParams() {
-    return Stream.of(TestCaseParam.SMALL, TestCaseParam.SMALLISH
-        //, TestCaseParam.MEDIUM
-        //, TestCaseParam.LARGE
-        );
-  }
-
   /**
    * @See DirectrorySizeTest
    */
@@ -113,5 +101,22 @@ public class CombinedSizeSFTPJSchIT extends BaseSFTPFileSystemPrivatePublicKeyPa
       this.fileCount = fileCount;
     }
 
+
+  }
+
+  @Override
+  public SFTPFileSystemDriver getSftpDriver() {
+    Map<String, String> props = getStoreProperties();
+    return new SFTPFileSystemJSch("sftp-jsch", props, TEST_CLOCK);
+  }
+
+  @Override
+  public GenericContainer<?> getContainer() {
+    return container;
+  }
+
+  @Override
+  Logger getLog() {
+    return log;
   }
 }

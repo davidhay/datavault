@@ -16,6 +16,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+/**
+ * This is a test of
+ * 1) the Comparator used in UtilityJSchImproved
+ * 2) the removal of items from an underlying Vector using Iterator.remove()
+ */
 @ExtendWith(MockitoExtension.class)
 public class UtilityJSchImprovedTest {
 

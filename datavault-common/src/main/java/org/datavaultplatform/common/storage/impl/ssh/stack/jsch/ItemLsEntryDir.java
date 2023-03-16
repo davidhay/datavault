@@ -17,8 +17,6 @@ import org.springframework.util.Assert;
 @Slf4j
 public class ItemLsEntryDir implements Item<LsEntry, ChannelSftp> {
 
-  public static final List<String> ENTRIES_TO_IGNORE = Arrays.asList(".", "..");
-
   private final LsEntry listEntry;
 
   public ItemLsEntryDir(LsEntry listEntry) {
